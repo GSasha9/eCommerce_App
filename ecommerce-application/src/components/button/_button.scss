@@ -1,10 +1,11 @@
-@import '../../styles/scss/variables';
-@import '../../styles/scss/mixins';
+@import url('../../styles/scss/variables');
+@import url('../../styles/scss/mixins');
 
 .login__button {
   width: 300px;
   height: 45px;
-  color: $primary-button;
-  @include text-bold;
   font-size: 16px;
+  color: $primary-button;
+
+  @include text-bold;
 }

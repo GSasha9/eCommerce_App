@@ -8,23 +8,23 @@ $primary-text-green: #46a358;
 $text-secondary: #727272;
 $text-placeholder: #a5a5a5;
 
-$bg-primary: #ffffff;
-$bg-secondary: rgba(70, 163, 88, 0.1);
+$bg-primary: #fff;
+$bg-secondary: rgb(70 163 88 / 10%);
 $bg-cards: #fbfbfb;
-$bg-cards-hover: rgba(70, 163, 88, 0.1);
+$bg-cards-hover: rgb(70 163 88 / 10%);
 
-$border-color: rgba(70, 163, 88, 0.2);
+$border-color: rgb(70 163 88 / 20%);
 $input-border: #a5a5a5;
 
 $font-family-base:
   'Cera Pro',
   -apple-system,
-  BlinkMacSystemFont,
+  blinkmacsystemfont,
   'Segoe UI',
-  Roboto,
-  Oxygen,
-  Ubuntu,
-  Cantarell,
+  roboto,
+  oxygen,
+  ubuntu,
+  cantarell,
   'Open Sans',
   'Helvetica Neue',
   sans-serif;

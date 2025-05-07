@@ -1,24 +1,24 @@
-@import 'scss/variables';
+@import url('ecommerce-application/src/styles/scss/_variables.scss');
 
-// Regular (400) mixin
+/* Regular (400) mixin */
 @mixin text-regular {
   font-family: 'Cera Pro', sans-serif;
   font-weight: $font-weight-normal;
 }
 
-// Medium (500) mixin
+/* Medium (500) mixin */
 @mixin text-medium {
   font-family: 'Cera Pro', sans-serif;
   font-weight: $font-weight-medium;
 }
 
-// Bold (700) mixin
+/* Bold (700) mixin */
 @mixin text-bold {
   font-family: 'Cera Pro', sans-serif;
   font-weight: $font-weight-bold;
 }
 
-// Bold (900) mixin
+/* Bold (900) mixin */
 @mixin text-black {
   font-family: 'Cera Pro', sans-serif;
   font-weight: $font-weight-black;
