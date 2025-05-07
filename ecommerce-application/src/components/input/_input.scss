@@ -1,0 +1,15 @@
+@import '../../styles/scss/variables';
+@import '../../styles/scss/mixins';
+
+.login__input {
+  width: 300px;
+  height: 40px;
+  border-radius: $border-radius-input;
+  border: 1px solid $input-border;
+
+  &::placeholder {
+    @include text-regular;
+    font-size: 16px;
+    color: $text-placeholder;
+  }
+}

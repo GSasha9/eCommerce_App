@@ -1,17 +1,4 @@
-import './styles/style.scss';
+import './styles/style.css';
+import { App } from './app/main.ts';
 
-export function hello(): void {
-  const root = document.body;
-
-  const elem = document.createElement('div');
-
-  elem.innerHTML = 'Hello!';
-  root.append(elem);
-
-  console.log('hello');
-}
-hello();
-
-export function setTitle(title: string): void {
-  document.title = title;
-}
+new App();

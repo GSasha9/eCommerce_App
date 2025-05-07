@@ -1,1 +1,5 @@
 ecommerce-application/dist
+ecommerce-application/src/styles/scss
+ecommerce-application/src/styles/style.scss
+ecommerce-application/src/components/input/_input.scss
+ecommerce-application/src/components/button/_button.scss
