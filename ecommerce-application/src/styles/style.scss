@@ -1,6 +1,5 @@
-@import url('ecommerce-application/src/styles/scss/_variables.scss');
-@import url('ecommerce-application/src/styles/scss/_fonts.scss');
-@import url('ecommerce-application/src/styles/scss/_mixins.scss');
+@import url('./scss/_fonts.scss');
+@import './scss/_variables.scss';
 
 * {
   box-sizing: border-box;
@@ -23,4 +22,10 @@ html {
 img {
   max-width: 100%;
   height: auto;
+}
+
+.not-found__message {
+  font-family: 'Cera Pro', sans-serif;
+  font-size: 20px;
+  font-weight: $font-weight-black;
 }
