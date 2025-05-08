@@ -1,0 +1,83 @@
+$primary-button: #46a358;
+$stars-color: #ffac0c;
+$danger-color: #dc3545;
+$warning-color: #f03800;
+
+$text-primary: #3d3d3d;
+$primary-text-green: #46a358;
+$text-secondary: #727272;
+$text-placeholder: #a5a5a5;
+
+$bg-primary: #fff;
+$bg-secondary: rgb(70 163 88 / 10%);
+$bg-cards: #fbfbfb;
+$bg-cards-hover: rgb(70 163 88 / 10%);
+
+$border-color: rgb(70 163 88 / 20%);
+$input-border: #a5a5a5;
+
+$font-family-base:
+  'Cera Pro',
+  -apple-system,
+  blinkmacsystemfont,
+  'Segoe UI',
+  roboto,
+  oxygen,
+  ubuntu,
+  cantarell,
+  'Open Sans',
+  'Helvetica Neue',
+  sans-serif;
+
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-xxl: 48px;
+
+$border-radius-input: 5px;
+$border-radius-md: 8px;
+$border-radius-lg: 16px;
+$border-radius-circle: 50%;
+
+$font-size-regular: 14px;
+$font-size-button-cards: 16px;
+$font-size-h1: 70px;
+$font-size-h2: 30px;
+$font-size-h3: 20px;
+$font-size-h4: 18px;
+
+$font-weight-normal: 400;
+$font-weight-medium: 500;
+$font-weight-bold: 700;
+$font-weight-black: 900;
+
+$line-height-tight: 1.2;
+$line-height-normal: 1.5;
+$line-height-loose: 1.8;
+
+$transition-fast: 0.2s;
+$transition-normal: 0.3s;
+$transition-slow: 0.5s;
+
+$z-index-dropdown: 1000;
+$z-index-sticky: 1020;
+$z-index-fixed: 1030;
+$z-index-modal-backdrop: 1040;
+$z-index-modal: 1050;
+$z-index-popover: 1060;
+$z-index-tooltip: 1070;
+
+$breakpoint-xs: 0;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-xxl: 1400px;
+
+$container-sm: 540px;
+$container-md: 720px;
+$container-lg: 960px;
+$container-xl: 1140px;
+$container-xxl: 1320px;
