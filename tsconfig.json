@@ -20,5 +20,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["ecommerce-application/src"]
+  "include": ["ecommerce-application/src", "ecommerce-application/env.d.ts"]
 }
