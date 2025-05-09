@@ -4,7 +4,7 @@ import tseslint, { plugin } from 'typescript-eslint';
 
 export default defineConfig([
   {
-    ignores: ['eslint.config.js', 'vite.config.js', 'stylelint.config.js', 'commitlint.config.js', 'async-race/dist/'],
+    ignores: ['eslint.config.js', 'vite.config.js', 'ecommerce-application/coverage'],
   },
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
