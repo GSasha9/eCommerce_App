@@ -1,5 +1,5 @@
 export interface IRoutes {
-  REG: string;
+  REGISTRATION: string;
   PRODUCTS: string;
   HOME_ALT: string;
   NOT_FOUND: string;

@@ -1,0 +1,84 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/fonts';
+
+.registration-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100vw;
+  height: 100vw;
+  margin: 0;
+
+  background-color: $bg-page;
+}
+
+.wrapper-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  max-width: 800px;
+  margin: 0;
+  padding: $spacing-xl;
+  border-radius: 10px;
+
+  font-family: $font-family-base;
+
+  background-color: $bg-primary;
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-lg;
+  justify-content: space-between;
+
+  width: 100%;
+  padding: $spacing-md 0;
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  justify-content: space-between;
+
+  width: 48%;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.checkbox {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: $spacing-md;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.input-birth {
+  justify-content: start;
+  width: 48%;
+}
+
+.title {
+  padding-top: 40px;
+  text-align: start;
+}
+
+.label {
+  flex-shrink: 0;
+}
+
+.default-shipping,
+.as-billing {
+  flex-grow: 0;
+  flex-shrink: 1;
+}

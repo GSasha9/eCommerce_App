@@ -1,6 +1,7 @@
 import './_input.scss';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 import type { IParameters, IParametersInput } from '../../shared/models/interfaces';
+import './_input.scss';
 
 export class CreateInput extends CreateElement {
   private input: HTMLInputElement;
@@ -8,8 +9,7 @@ export class CreateInput extends CreateElement {
   constructor(parameters: IParametersInput) {
     const inputParams: IParameters = {
       tag: 'input',
-      classNames: parameters.classNames || [],
-      textContent: '',
+      classNames: ['root', ...(parameters.classNames || [])],
       callback: parameters.callback,
     };
 
@@ -28,6 +28,14 @@ export class CreateInput extends CreateElement {
 
     if (parameters.value) {
       this.input.value = parameters.value;
+    }
+
+    if (parameters.id) {
+      this.input.id = parameters.id;
+    }
+
+    if (parameters.name) {
+      this.input.name = parameters.name;
     }
   }
 

@@ -1,13 +1,23 @@
-@import '../../styles/scss/variables.scss';
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/fonts';
 
-input {
-  width: 300px;
-  height: 40px;
+.root {
+  padding: $spacing-sm;
   border: 1px solid $input-border;
   border-radius: $border-radius-input;
-
-  &::placeholder {
-    font-size: 16px;
-    color: $text-placeholder;
-  }
+  color: $text-placeholder;
 }
+
+// .login__input {
+//   width: 300px;
+//   height: 40px;
+//   border: 1px solid $input-border;
+//   border-radius: $border-radius-input;
+
+//   &::placeholder {
+//     @include text-regular;
+
+//     font-size: 16px;
+//     color: $text-placeholder;
+//   }
+// }

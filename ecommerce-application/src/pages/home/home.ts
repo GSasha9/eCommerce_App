@@ -69,7 +69,6 @@ export class HomePage extends View {
     });
 
     const loginButton: CreateButton = new CreateButton({
-      tag: 'button',
       classNames: ['header__button', 'header__button--login'],
       textContent: 'Login',
       type: 'button',
@@ -78,7 +77,6 @@ export class HomePage extends View {
     });
 
     const regButton: CreateButton = new CreateButton({
-      tag: 'button',
       classNames: ['header__button', 'header__button--register'],
       textContent: 'Register',
       type: 'button',
