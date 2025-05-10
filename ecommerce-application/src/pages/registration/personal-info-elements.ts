@@ -32,12 +32,17 @@ export class PersonalInfoElements extends CreateElement {
       id: 'surname',
       name: 'surname',
     });
-    this.birthdayLabel = new Label({ classNames: ['label'], for: 'birthday', textContent: 'Date of birth:' });
+    this.birthdayLabel = new Label({
+      classNames: ['label'],
+      for: 'birthday',
+      textContent: 'Date of birth:',
+    });
     this.inputBirthday = new CreateInput({
       classNames: ['input-birthday'],
       placeholder: 'your birthday',
       id: 'birthday',
       name: 'birthday',
+      type: 'date',
     });
 
     this.name = new CreateElement({

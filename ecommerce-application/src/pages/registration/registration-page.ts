@@ -7,6 +7,7 @@ import { CredentialElements } from './credentials-elements.ts';
 import { PersonalInfoElements } from './personal-info-elements.ts';
 import { ShippingAddressElements } from './shipping-address-elements.ts';
 import { BillingAddressElements } from './billing-address-elements.ts';
+import Element from '../../components/element/element.ts';
 
 class RegistrationPage extends View {
   public homeButton: CreateButton;
@@ -14,6 +15,7 @@ class RegistrationPage extends View {
   public personalInfoElements: PersonalInfoElements;
   public shippingAddressElements: ShippingAddressElements;
   public billingAddressElements: BillingAddressElements;
+  public containerForm: Element<'form'>;
 
   constructor(parameters: Partial<IParameters> = {}) {
     super({ tag: 'div', classNames: ['registration-page'], ...parameters });
@@ -45,22 +47,22 @@ class RegistrationPage extends View {
       textContent: 'Billing Address',
     });
 
-    const container = new CreateElement({
+    this.containerForm = new Element({
       tag: 'form',
-      classNames: ['wrapper-form'],
+      className: 'wrapper-form',
       children: [
-        mainTitle,
-        this.credentialElements,
-        personalInfoTitle,
-        this.personalInfoElements,
-        shippingAddressTitle,
-        this.shippingAddressElements,
-        billingAddressTitle,
-        this.billingAddressElements,
+        mainTitle.getElement(),
+        this.credentialElements.getElement(),
+        personalInfoTitle.getElement(),
+        this.personalInfoElements.getElement(),
+        shippingAddressTitle.getElement(),
+        this.shippingAddressElements.getElement(),
+        billingAddressTitle.getElement(),
+        this.billingAddressElements.getElement(),
       ],
     });
 
-    this.viewElementCreator.addInnerElement(container.getElement());
+    this.viewElementCreator.addInnerElement(this.containerForm.node);
   }
 }
 

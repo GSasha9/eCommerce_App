@@ -3,39 +3,41 @@ import { CreateElement } from '../../shared/utils/create-element.ts';
 import './registration.scss';
 import { CreateInput } from '../../components/input/create-input.ts';
 import { Label } from '../../components/label/label.ts';
+import { COUNTRIES } from '../../shared/utils/validator-сonstants.ts';
+import Element from '../../components/element';
 
 export class ShippingAddressElements extends CreateElement {
-  public addressLabel: Label;
+  public streetLabel: Label;
   public cityLabel: Label;
   public countryLabel: Label;
   public postalCodeLabel: Label;
   public defaultLabel: Label;
   public asBillingLabel: Label;
 
-  public inputAddress: CreateInput;
+  public inputStreet: CreateInput;
   public inputCity: CreateInput;
-  public inputCountry: CreateInput;
   public inputPostalCode: CreateInput;
   public checkboxDefault: CreateInput;
   public checkboxAsBilling: CreateInput;
 
-  public address: CreateElement;
+  public street: CreateElement;
   public city: CreateElement;
   public country: CreateElement;
   public postalCode: CreateElement;
   public default: CreateElement;
   public asBilling: CreateElement;
   public checkboxWrapper: CreateElement;
+  public countryList: Element<'select'>;
 
   constructor(parameters: Partial<IParameters> = {}) {
     super({ tag: 'div', classNames: ['group'], ...parameters });
 
-    this.addressLabel = new Label({ classNames: ['label'], for: 'address', textContent: 'Address:' });
-    this.inputAddress = new CreateInput({
-      classNames: ['input-address'],
-      placeholder: 'your address',
-      id: 'address',
-      name: 'address',
+    this.streetLabel = new Label({ classNames: ['label'], for: 'street', textContent: 'Street:' });
+    this.inputStreet = new CreateInput({
+      classNames: ['input-street'],
+      placeholder: 'your street',
+      id: 'street',
+      name: 'street',
     });
     this.cityLabel = new Label({ classNames: ['label'], for: 'city', textContent: 'City:' });
     this.inputCity = new CreateInput({
@@ -44,13 +46,6 @@ export class ShippingAddressElements extends CreateElement {
       id: 'city',
       name: 'city',
     });
-    this.countryLabel = new Label({ classNames: ['label'], for: 'country', textContent: 'Country:' });
-    this.inputCountry = new CreateInput({
-      classNames: ['input-country'],
-      placeholder: 'your country',
-      id: 'country',
-      name: 'country',
-    });
     this.postalCodeLabel = new Label({ classNames: ['label'], for: 'postal-code', textContent: 'Postal code:' });
     this.inputPostalCode = new CreateInput({
       classNames: ['input-postal-code'],
@@ -58,6 +53,31 @@ export class ShippingAddressElements extends CreateElement {
       id: 'postal-code',
       name: 'postal-code',
     });
+    this.countryLabel = new Label({ classNames: ['label'], for: 'country', textContent: 'Country:' });
+    this.countryList = new Element({
+      tag: 'select',
+      className: 'country-list',
+      name: 'country',
+      id: 'country',
+      children: [
+        new Element({
+          tag: 'option',
+          className: 'option',
+          value: '',
+          hidden: true,
+        }).node,
+        ...COUNTRIES.map(
+          (country) =>
+            new Element({
+              tag: 'option',
+              className: 'option',
+              value: country,
+              children: country,
+            }).node,
+        ),
+      ],
+    });
+
     this.defaultLabel = new Label({
       classNames: ['label'],
       for: 'default-shipping',
@@ -81,25 +101,25 @@ export class ShippingAddressElements extends CreateElement {
       name: 'as-billing',
     });
 
-    this.address = new CreateElement({
+    this.street = new CreateElement({
       tag: 'div',
       classNames: ['input'],
-      children: [this.addressLabel, this.inputAddress],
+      children: [this.streetLabel, this.inputStreet],
     });
     this.city = new CreateElement({
       tag: 'div',
       classNames: ['input'],
       children: [this.cityLabel, this.inputCity],
     });
-    this.country = new CreateElement({
-      tag: 'div',
-      classNames: ['input'],
-      children: [this.countryLabel, this.inputCountry],
-    });
     this.postalCode = new CreateElement({
       tag: 'div',
       classNames: ['input'],
       children: [this.postalCodeLabel, this.inputPostalCode],
+    });
+    this.country = new CreateElement({
+      tag: 'div',
+      classNames: ['input'],
+      children: [this.countryLabel, this.countryList.node],
     });
 
     this.default = new CreateElement({
@@ -118,6 +138,6 @@ export class ShippingAddressElements extends CreateElement {
       children: [this.default, this.asBilling],
     });
 
-    this.addInnerElement([this.address, this.city, this.country, this.postalCode, this.checkboxWrapper]);
+    this.addInnerElement([this.street, this.city, this.postalCode, this.country, this.checkboxWrapper]);
   }
 }

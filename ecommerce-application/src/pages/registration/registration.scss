@@ -82,3 +82,10 @@
   flex-grow: 0;
   flex-shrink: 1;
 }
+
+.country-list {
+  padding: $spacing-sm;
+  border: 1px solid $input-border;
+  border-radius: $border-radius-input;
+  color: $text-placeholder;
+}
