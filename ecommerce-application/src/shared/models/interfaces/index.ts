@@ -6,3 +6,4 @@ export type { ICreateElement } from './creator.ts';
 export type { IParameters } from './parameters.ts';
 export type { IButtonParameters } from './button-parameters.ts';
 export type { IParametersLabel } from './label-parameters.ts';
+export type { IFormValues } from './form-values.ts';
