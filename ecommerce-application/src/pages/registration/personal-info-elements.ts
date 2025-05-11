@@ -47,17 +47,17 @@ export class PersonalInfoElements extends CreateElement {
 
     this.name = new CreateElement({
       tag: 'div',
-      classNames: ['input'],
+      classNames: ['input', 'input-name'],
       children: [this.nameLabel, this.inputName],
     });
     this.surname = new CreateElement({
       tag: 'div',
-      classNames: ['input'],
+      classNames: ['input', 'input-surname'],
       children: [this.surnameLabel, this.inputSurname],
     });
     this.birthday = new CreateElement({
       tag: 'div',
-      classNames: ['input'],
+      classNames: ['input', 'input-birthday'],
       children: [this.birthdayLabel, this.inputBirthday],
     });
 

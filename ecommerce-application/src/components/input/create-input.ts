@@ -9,7 +9,7 @@ export class CreateInput extends CreateElement {
   constructor(parameters: IParametersInput) {
     const inputParams: IParameters = {
       tag: 'input',
-      classNames: ['root', ...(parameters.classNames || [])],
+      classNames: ['root-input', ...(parameters.classNames || [])],
       callback: parameters.callback,
     };
 

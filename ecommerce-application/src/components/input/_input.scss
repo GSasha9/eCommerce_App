@@ -1,11 +1,15 @@
 @use '../../styles/scss/variables' as *;
 @use '../../styles/scss/fonts';
 
-.root {
+.root-input {
   padding: $spacing-sm;
   border: 1px solid $input-border;
   border-radius: $border-radius-input;
-  color: $text-placeholder;
+  color: $text-primary;
+
+  &::placeholder {
+    color: $text-placeholder;
+  }
 }
 
 // .login__input {

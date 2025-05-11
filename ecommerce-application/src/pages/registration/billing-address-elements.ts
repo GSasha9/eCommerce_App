@@ -92,22 +92,22 @@ export class BillingAddressElements extends CreateElement {
 
     this.street = new CreateElement({
       tag: 'div',
-      classNames: ['input'],
+      classNames: ['input', 'input-street-billing'],
       children: [this.streetLabel, this.inputStreet],
     });
     this.city = new CreateElement({
       tag: 'div',
-      classNames: ['input'],
+      classNames: ['input', 'input-city-billing'],
       children: [this.cityLabel, this.inputCity],
     });
     this.postalCode = new CreateElement({
       tag: 'div',
-      classNames: ['input'],
+      classNames: ['input', 'input-postal-code-billing'],
       children: [this.postalCodeLabel, this.inputPostalCode],
     });
     this.country = new CreateElement({
       tag: 'div',
-      classNames: ['input'],
+      classNames: ['input', 'input-country-billing'],
       children: [this.countryLabel, this.countryList.node],
     });
 

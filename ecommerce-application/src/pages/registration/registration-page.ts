@@ -16,6 +16,7 @@ class RegistrationPage extends View {
   public shippingAddressElements: ShippingAddressElements;
   public billingAddressElements: BillingAddressElements;
   public containerForm: Element<'form'>;
+  public registrationButton: CreateButton;
 
   constructor(parameters: Partial<IParameters> = {}) {
     super({ tag: 'div', classNames: ['registration-page'], ...parameters });
@@ -47,6 +48,12 @@ class RegistrationPage extends View {
       textContent: 'Billing Address',
     });
 
+    this.registrationButton = new CreateButton({
+      classNames: ['register'],
+      textContent: 'REGISTER',
+      disabled: true,
+    });
+
     this.containerForm = new Element({
       tag: 'form',
       className: 'wrapper-form',
@@ -59,10 +66,45 @@ class RegistrationPage extends View {
         this.shippingAddressElements.getElement(),
         billingAddressTitle.getElement(),
         this.billingAddressElements.getElement(),
+        this.registrationButton.getElement(),
       ],
     });
 
     this.viewElementCreator.addInnerElement(this.containerForm.node);
+  }
+
+  public renderDisabledRegister(isDisabled: boolean): void {
+    console.log('REND');
+
+    if (isDisabled) {
+      this.registrationButton.getElement().setAttribute('disabled', 'true');
+    } else {
+      this.registrationButton.getElement().setAttribute('disabled', 'false');
+    }
+  }
+
+  public renderErrorMassage(inputName: string, message: string): void {
+    const elem = this.containerForm.node.querySelector(`.input-${inputName}`);
+
+    const node = new CreateElement({
+      tag: 'div',
+      classNames: ['error-message'],
+      textContent: `${message}`,
+    });
+
+    if (elem) {
+      elem.append(node.getElement());
+    }
+  }
+
+  public deleteErrorMessage(inputName: string): void {
+    const elem = this.containerForm.node.querySelector(`.input-${inputName}`);
+
+    if (elem?.children && elem?.children.length > 2) {
+      if (elem?.lastElementChild) {
+        elem?.lastElementChild.remove();
+      }
+    }
   }
 }
 

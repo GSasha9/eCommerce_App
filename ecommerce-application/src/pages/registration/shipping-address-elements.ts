@@ -103,22 +103,22 @@ export class ShippingAddressElements extends CreateElement {
 
     this.street = new CreateElement({
       tag: 'div',
-      classNames: ['input'],
+      classNames: ['input', 'input-street'],
       children: [this.streetLabel, this.inputStreet],
     });
     this.city = new CreateElement({
       tag: 'div',
-      classNames: ['input'],
+      classNames: ['input', 'input-city'],
       children: [this.cityLabel, this.inputCity],
     });
     this.postalCode = new CreateElement({
       tag: 'div',
-      classNames: ['input'],
+      classNames: ['input', 'input-postal-code'],
       children: [this.postalCodeLabel, this.inputPostalCode],
     });
     this.country = new CreateElement({
       tag: 'div',
-      classNames: ['input'],
+      classNames: ['input', 'input-country'],
       children: [this.countryLabel, this.countryList.node],
     });
 

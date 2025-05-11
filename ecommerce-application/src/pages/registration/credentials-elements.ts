@@ -12,34 +12,33 @@ export class CredentialElements extends CreateElement {
   public email: CreateElement;
   public password: CreateElement;
 
-  private inputEmailId = 'email';
-  private inputPasswordId = 'password';
-
   constructor(parameters: Partial<IParameters> = {}) {
     super({ tag: 'div', classNames: ['group'], ...parameters });
 
-    this.emailLabel = new Label({ classNames: ['label'], for: this.inputEmailId, textContent: 'Email:' });
+    this.emailLabel = new Label({ classNames: ['label'], for: 'email', textContent: 'Email:' });
     this.inputEmail = new CreateInput({
-      classNames: ['input-email'],
-      id: this.inputEmailId,
-      name: this.inputEmailId,
+      classNames: ['email'],
+      id: 'email',
+      name: 'email',
       placeholder: 'your email',
     });
-    this.passwordLabel = new Label({ classNames: ['label'], for: this.inputPasswordId, textContent: 'Password:' });
+
+    this.passwordLabel = new Label({ classNames: ['label'], for: 'password', textContent: 'Password:' });
     this.inputPassword = new CreateInput({
       classNames: ['input-password'],
-      id: this.inputPasswordId,
-      name: this.inputPasswordId,
+      id: 'password',
+      name: 'password',
       placeholder: 'your password',
     });
+
     this.email = new CreateElement({
       tag: 'div',
-      classNames: ['input'],
+      classNames: ['input', 'input-email'],
       children: [this.emailLabel, this.inputEmail],
     });
     this.password = new CreateElement({
       tag: 'div',
-      classNames: ['input'],
+      classNames: ['input', 'input-password'],
       children: [this.passwordLabel, this.inputPassword],
     });
 
