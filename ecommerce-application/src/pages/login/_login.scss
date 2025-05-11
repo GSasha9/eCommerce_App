@@ -1,0 +1,35 @@
+@import '../../components/input/input.scss';
+@import '../../components/button/button.scss';
+
+.login {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  justify-content: center;
+
+  max-width: 500px;
+  padding: 20px 40px;
+}
+
+.login__header {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.login__message {
+  font-size: $font-size-regular;
+  font-weight: normal;
+}
+
+.login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+  align-items: center;
+}

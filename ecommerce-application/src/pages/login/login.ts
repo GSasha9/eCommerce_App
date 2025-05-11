@@ -1,18 +1,31 @@
+import './_login.scss';
 import type { IParameters } from '../../shared/models/interfaces';
-import { CreateElement } from '../../shared/utils/create-element.ts';
-import { View } from '../view.ts';
-import { CreateButton } from '../../components/button/create-button.ts';
+import { CreateElement } from '../../shared/utils/create-element';
+import { View } from '../view';
+import { CreateButton } from '../../components/button/create-button';
+import { CreateInput } from '../../components/input/create-input';
 
 export class LoginPage extends View {
+  private wrapper: CreateElement;
   constructor(parameters: Partial<IParameters> = {}) {
     super({ tag: 'div', classNames: ['login-page'], ...parameters });
+    this.wrapper = LoginPage.createWrapper();
     this.createLoginPageContent();
   }
 
-  private static createHeader(): CreateElement {
+  private static createWrapper(): CreateElement {
+    return new CreateElement({
+      tag: 'section',
+      classNames: ['login'],
+      textContent: '',
+      callback: (): void => {},
+    });
+  }
+
+  private createHeader(): void {
     const header = new CreateElement({
       tag: 'header',
-      classNames: ['header'],
+      classNames: ['login__header'],
       textContent: '',
       callback: (): void => {},
     });
@@ -33,39 +46,60 @@ export class LoginPage extends View {
       header.addInnerElement(link);
     });
 
-    return header;
+    this.wrapper.addInnerElement(header);
   }
 
-  private createLoginPageContent(): void {
-    const container: CreateElement = new CreateElement({
-      tag: 'section',
-      classNames: ['login'],
+  private createForm(): void {
+    const form: CreateElement = new CreateElement({
+      tag: 'form',
+      classNames: ['login__form'],
       textContent: '',
       callback: (): void => {},
     });
 
     const message: CreateElement = new CreateElement({
-      tag: 'h1',
-      classNames: ['not-found__message'],
-      textContent: 'This is login',
+      tag: 'h2',
+      classNames: ['login__message'],
+      textContent: 'Enter your username and password to login',
       callback: (): void => {},
     });
 
-    const header = LoginPage.createHeader();
+    form.addInnerElement(message);
 
-    const homeButton: CreateButton = new CreateButton({
+    const inputsType = ['username', 'password'];
+
+    inputsType.forEach((item) => {
+      const input = new CreateInput({
+        tag: 'input',
+        classNames: [`form__input-${item}`],
+        textContent: '',
+        callback: (): void => {},
+      });
+
+      if (item === 'password') input.getElement().setAttribute('type', 'password');
+
+      form.addInnerElement(input);
+    });
+
+    const loginButton: CreateButton = new CreateButton({
       tag: 'button',
-      classNames: ['not-found__button'],
+      classNames: ['form__button'],
       textContent: 'login',
       type: 'button',
       disabled: false,
       callback: (): void => {},
     });
 
-    container.addInnerElement(header.getElement());
-    container.addInnerElement(message.getElement());
-    container.addInnerElement(homeButton.getElement());
+    form.addInnerElement(loginButton);
 
-    this.viewElementCreator.addInnerElement(container.getElement());
+    this.wrapper.addInnerElement(form);
+  }
+
+  private createLoginPageContent(): void {
+    this.createHeader();
+
+    this.createForm();
+
+    this.viewElementCreator.addInnerElement(this.wrapper.getElement());
   }
 }
