@@ -47,13 +47,11 @@ export class Validator {
 
   public static isPostalCode(value: string, country: string): boolean {
     const regexes: Record<string, RegExp> = {
-      Belarus: /^(2[1-4]|3[0-4])\d{3}$/,
+      Belarus: /^(2[0-4]|3[0-4])\d{4}$/,
       Germany: /^\d{5}$/,
       USA: /^\d{5}(-\d{4})?$/,
       UK: /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i,
     };
-
-    console.log('country--', regexes[country]);
 
     return regexes[country]?.test(value) ?? false;
   }

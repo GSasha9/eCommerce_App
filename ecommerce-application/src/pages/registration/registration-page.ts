@@ -57,6 +57,7 @@ class RegistrationPage extends View {
     this.containerForm = new Element({
       tag: 'form',
       className: 'wrapper-form',
+      autocomplete: 'off',
       children: [
         mainTitle.getElement(),
         this.credentialElements.getElement(),
@@ -74,12 +75,10 @@ class RegistrationPage extends View {
   }
 
   public renderDisabledRegister(isDisabled: boolean): void {
-    console.log('REND');
-
     if (isDisabled) {
       this.registrationButton.getElement().setAttribute('disabled', 'true');
     } else {
-      this.registrationButton.getElement().setAttribute('disabled', 'false');
+      this.registrationButton.getElement().removeAttribute('disabled');
     }
   }
 

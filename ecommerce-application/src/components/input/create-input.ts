@@ -37,6 +37,10 @@ export class CreateInput extends CreateElement {
     if (parameters.name) {
       this.input.name = parameters.name;
     }
+
+    if (parameters.autocomplete) {
+      this.input.autocomplete = parameters.autocomplete;
+    }
   }
 
   public getValue(): string {

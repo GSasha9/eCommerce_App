@@ -6,4 +6,5 @@ export interface IParametersInput extends Omit<IParameters, 'tag'> {
   value?: string;
   name?: string;
   id?: string;
+  autocomplete?: 'off';
 }

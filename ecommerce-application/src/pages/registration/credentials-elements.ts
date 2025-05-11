@@ -25,7 +25,7 @@ export class CredentialElements extends CreateElement {
 
     this.passwordLabel = new Label({ classNames: ['label'], for: 'password', textContent: 'Password:' });
     this.inputPassword = new CreateInput({
-      classNames: ['input-password'],
+      classNames: ['password'],
       id: 'password',
       name: 'password',
       placeholder: 'your password',

@@ -64,6 +64,7 @@
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
+  padding-top: 14px;
 }
 
 .checkbox {
@@ -72,6 +73,10 @@
   gap: $spacing-md;
   align-items: center;
   justify-content: flex-start;
+}
+
+.checkbox-wrapper-billind {
+  padding-top: 14px;
 }
 
 .input-birth {

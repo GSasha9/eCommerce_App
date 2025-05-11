@@ -34,24 +34,25 @@ export class ShippingAddressElements extends CreateElement {
 
     this.streetLabel = new Label({ classNames: ['label'], for: 'street', textContent: 'Street:' });
     this.inputStreet = new CreateInput({
-      classNames: ['input-street'],
+      classNames: ['street'],
       placeholder: 'your street',
       id: 'street',
       name: 'street',
     });
     this.cityLabel = new Label({ classNames: ['label'], for: 'city', textContent: 'City:' });
     this.inputCity = new CreateInput({
-      classNames: ['input-city'],
+      classNames: ['city'],
       placeholder: 'your city',
       id: 'city',
       name: 'city',
     });
     this.postalCodeLabel = new Label({ classNames: ['label'], for: 'postal-code', textContent: 'Postal code:' });
     this.inputPostalCode = new CreateInput({
-      classNames: ['input-postal-code'],
+      classNames: ['postal-code'],
       placeholder: 'your postal code',
       id: 'postal-code',
       name: 'postal-code',
+      value: '',
     });
     this.countryLabel = new Label({ classNames: ['label'], for: 'country', textContent: 'Country:' });
     this.countryList = new Element({

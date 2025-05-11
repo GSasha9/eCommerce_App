@@ -30,14 +30,14 @@ export class BillingAddressElements extends CreateElement {
 
     this.streetLabel = new Label({ classNames: ['label'], for: 'addressBilling', textContent: 'Street:' });
     this.inputStreet = new CreateInput({
-      classNames: ['input-street'],
+      classNames: ['street'],
       placeholder: 'your street',
       id: 'street-billing',
       name: 'street-billing',
     });
     this.cityLabel = new Label({ classNames: ['label'], for: 'city-billing', textContent: 'City:' });
     this.inputCity = new CreateInput({
-      classNames: ['input-city'],
+      classNames: ['city'],
       placeholder: 'your city',
       id: 'city-billing',
       name: 'city-billing',
@@ -48,7 +48,7 @@ export class BillingAddressElements extends CreateElement {
       textContent: 'Postal code:',
     });
     this.inputPostalCode = new CreateInput({
-      classNames: ['input-postal-code'],
+      classNames: ['postal-code-billing'],
       placeholder: 'your postal code',
       id: 'postal-code-billing',
       name: 'postal-code-billing',
@@ -57,7 +57,7 @@ export class BillingAddressElements extends CreateElement {
     this.countryList = new Element({
       tag: 'select',
       className: 'country-list',
-      name: 'country',
+      name: 'country-billing',
       id: 'country-billing',
       children: [
         new Element({
@@ -113,7 +113,7 @@ export class BillingAddressElements extends CreateElement {
 
     this.default = new CreateElement({
       tag: 'div',
-      classNames: ['checkbox'],
+      classNames: ['checkbox', 'checkbox-wrapper-billind'],
       children: [this.checkboxDefault, this.defaultLabel],
     });
 

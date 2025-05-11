@@ -20,14 +20,15 @@ export class PersonalInfoElements extends CreateElement {
 
     this.nameLabel = new Label({ classNames: ['label'], for: 'name', textContent: 'First name:' });
     this.inputName = new CreateInput({
-      classNames: ['input-name'],
+      classNames: ['name'],
       placeholder: 'your name',
       id: 'name',
       name: 'name',
+      autocomplete: 'off',
     });
     this.surnameLabel = new Label({ classNames: ['label'], for: 'surname', textContent: 'Last name:' });
     this.inputSurname = new CreateInput({
-      classNames: ['input-surname'],
+      classNames: ['surname'],
       placeholder: 'your surname',
       id: 'surname',
       name: 'surname',
@@ -38,7 +39,7 @@ export class PersonalInfoElements extends CreateElement {
       textContent: 'Date of birth:',
     });
     this.inputBirthday = new CreateInput({
-      classNames: ['input-birthday'],
+      classNames: ['birthday'],
       placeholder: 'your birthday',
       id: 'birthday',
       name: 'birthday',
