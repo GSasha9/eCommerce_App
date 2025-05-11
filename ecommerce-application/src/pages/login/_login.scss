@@ -32,4 +32,30 @@
   flex-direction: column;
   gap: 17px;
   align-items: center;
+
+  .form__inputbox--password {
+    position: relative;
+    display: flex;
+
+    .eye {
+      cursor: pointer;
+
+      position: absolute;
+      top: 10px;
+      right: 10px;
+
+      width: 25px;
+      height: 18px;
+
+      background-size: cover;
+    }
+
+    .eye-close {
+      background-image: url('../../assets/images/eye_close.png');
+    }
+
+    .eye-open {
+      background-image: url('../../assets/images/eye_open.png');
+    }
+  }
 }

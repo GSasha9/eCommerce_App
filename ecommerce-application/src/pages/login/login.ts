@@ -4,6 +4,7 @@ import { CreateElement } from '../../shared/utils/create-element';
 import { View } from '../view';
 import { CreateButton } from '../../components/button/create-button';
 import { CreateInput } from '../../components/input/create-input';
+import { eyeCallback } from './utils';
 
 export class LoginPage extends View {
   private wrapper: CreateElement;
@@ -66,19 +67,38 @@ export class LoginPage extends View {
 
     form.addInnerElement(message);
 
-    const inputsType = ['username', 'password'];
+    const inputsType = ['email', 'password'];
 
     inputsType.forEach((item) => {
-      const input = new CreateInput({
-        tag: 'input',
-        classNames: [`form__input-${item}`],
+      const inputContainer: CreateElement = new CreateElement({
+        tag: 'div',
+        classNames: [`form__inputbox--${item}`],
         textContent: '',
         callback: (): void => {},
       });
 
-      if (item === 'password') input.getElement().setAttribute('type', 'password');
+      const input = new CreateInput({
+        tag: 'input',
+        classNames: [`input-${item}`],
+        textContent: '',
+        callback: (): void => {},
+        type: item,
+      });
 
-      form.addInnerElement(input);
+      inputContainer.addInnerElement(input);
+
+      if (item === 'password') {
+        const eye: CreateElement = new CreateElement({
+          tag: 'div',
+          classNames: ['eye', 'eye-close'],
+          textContent: '',
+          callback: eyeCallback,
+        });
+
+        inputContainer.addInnerElement(eye);
+      }
+
+      form.addInnerElement(inputContainer);
     });
 
     const loginButton: CreateButton = new CreateButton({
