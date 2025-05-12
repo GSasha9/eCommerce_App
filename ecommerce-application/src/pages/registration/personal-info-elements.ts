@@ -24,7 +24,6 @@ export class PersonalInfoElements extends CreateElement {
       placeholder: 'your name',
       id: 'name',
       name: 'name',
-      autocomplete: 'off',
     });
     this.surnameLabel = new Label({ classNames: ['label'], for: 'surname', textContent: 'Last name:' });
     this.inputSurname = new CreateInput({

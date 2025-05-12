@@ -12,4 +12,7 @@ export interface IFormValues {
   'city-billing': string;
   'postal-code-billing': string;
   'country-billing': string;
+  ['is-default-shipping']?: boolean;
+  ['is-shipping-as-billing']?: boolean;
+  ['is-default-billing']?: boolean;
 }

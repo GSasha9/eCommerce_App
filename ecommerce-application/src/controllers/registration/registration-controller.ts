@@ -23,18 +23,28 @@ export class RegistrationController {
     this.page.containerForm.node.addEventListener('input', this.onChangeInputs);
     this.page.containerForm.node.addEventListener('input', this.onFocusOut);
     this.page.credentialElements.visibilityIcon.node.addEventListener('click', this.onClickChangeVisibility);
-    this.page.containerForm.node.addEventListener('change', this.onChangeCheckbox);
   }
 
   private onChangeInputs = (event: Event): void => {
     if (!(isHTMLInputElement(event.target) || isHTMLSelectElement(event.target))) return;
 
     const inputName = event.target.name;
-    const value = event.target.value;
 
-    if (isFormName(inputName)) {
-      this.model.setValue(value, inputName);
+    if (isHTMLCheckboxElement(event.target)) {
+      const value = event.target.checked;
+
+      if (isFormName(inputName)) {
+        this.model.setBooleanValue(value, inputName);
+      }
+    } else {
+      const value = event.target.value;
+
+      if (isFormName(inputName)) {
+        this.model.setStringValue(value, inputName);
+      }
     }
+
+    this.page.updateBillingAddress(this.model);
   };
 
   private onFocusOut = (event: Event): void => {
@@ -65,23 +75,5 @@ export class RegistrationController {
     }
 
     return;
-  };
-
-  private onChangeCheckbox = (event: Event): void => {
-    if (!isHTMLCheckboxElement(event.target)) return;
-
-    const name = event.target.name;
-
-    console.log('name--', this.page, name);
-
-    //   if (name === 'default-shipping') {
-    //   }
-
-    //   if (name === 'default-billing') {
-    //   }
-
-    //   if (name === 'as-billing') {
-    //   }
-    // };
   };
 }

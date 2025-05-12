@@ -81,25 +81,25 @@ export class ShippingAddressElements extends CreateElement {
 
     this.defaultLabel = new Label({
       classNames: ['label'],
-      for: 'default-shipping',
+      for: 'is-default-shipping',
       textContent: 'Set as default address',
     });
     this.checkboxDefault = new CreateInput({
       classNames: ['default-shipping'],
       type: 'checkbox',
-      id: 'default-shipping',
-      name: 'default-shipping',
+      id: 'is-default-shipping',
+      name: 'is-default-shipping',
     });
     this.asBillingLabel = new Label({
       classNames: ['label'],
-      for: 'as-billing',
+      for: 'is-shipping-as-billing',
       textContent: 'Make shipping address as billing address',
     });
     this.checkboxAsBilling = new CreateInput({
       classNames: ['as-billing'],
       type: 'checkbox',
-      id: 'as-billing',
-      name: 'as-billing',
+      id: 'is-shipping-as-billing',
+      name: 'is-shipping-as-billing',
     });
 
     this.street = new CreateElement({

@@ -71,8 +71,8 @@ export class BillingAddressElements extends CreateElement {
             new Element({
               tag: 'option',
               className: 'option',
-              value: country,
-              children: country,
+              value: country[1],
+              children: country[0],
             }).node,
         ),
       ],
@@ -80,14 +80,14 @@ export class BillingAddressElements extends CreateElement {
 
     this.defaultLabel = new Label({
       classNames: ['label'],
-      for: 'default-billing',
+      for: 'is-default-billing',
       textContent: 'Set as default address',
     });
     this.checkboxDefault = new CreateInput({
       classNames: ['default-billing'],
       type: 'checkbox',
-      id: 'default-billing',
-      name: 'default-billing',
+      id: 'is-default-billing',
+      name: 'is-default-billing',
     });
 
     this.street = new CreateElement({

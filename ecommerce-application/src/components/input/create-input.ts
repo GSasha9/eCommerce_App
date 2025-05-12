@@ -47,8 +47,10 @@ export class CreateInput extends CreateElement {
     return this.input.value;
   }
 
-  public setValue(value: string): void {
-    this.input.value = value;
+  public setValue(value?: string | boolean): void {
+    if (this.input.type === 'checkbox') {
+      this.input.checked = Boolean(value);
+    } else this.input.value = String(value || '');
   }
 
   public setPlaceholder(placeholder: string): void {

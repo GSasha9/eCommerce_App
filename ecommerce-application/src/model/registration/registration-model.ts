@@ -1,6 +1,6 @@
 import type RegistrationPage from '../../pages/registration';
 import type { IFormValues } from '../../shared/models/interfaces/form-values.ts';
-import { isFormName } from '../../shared/models/typeguards.ts/typeguards.ts';
+import { isBooleanFormName, isStringFormName } from '../../shared/models/typeguards.ts/typeguards.ts';
 import { Validator } from '../../shared/utils/validator.ts';
 
 class RegistrationModel {
@@ -23,11 +23,18 @@ class RegistrationModel {
       ['city-billing']: '',
       ['postal-code-billing']: '',
       ['country-billing']: '',
+      ['is-default-shipping']: false,
+      ['is-shipping-as-billing']: false,
+      ['is-default-billing']: false,
     };
   }
 
-  public setValue(value: string, inputName: keyof IFormValues): void {
-    this.currentFormValues[inputName] = value;
+  public setStringValue(value: string, inputName: keyof IFormValues): void {
+    if (isStringFormName(inputName)) this.currentFormValues[inputName] = value;
+  }
+
+  public setBooleanValue(value: boolean, inputName: keyof IFormValues): void {
+    if (isBooleanFormName(inputName)) this.currentFormValues[inputName] = value;
   }
 
   public validateForm(): { errors: (keyof IFormValues)[]; isValidForm: boolean } {
@@ -35,7 +42,7 @@ class RegistrationModel {
     let isValidForm = true;
 
     for (const key in this.currentFormValues) {
-      if (!isFormName(key)) continue;
+      if (!isStringFormName(key)) continue;
 
       if (!this.currentFormValues[key]) {
         isValidForm = false;

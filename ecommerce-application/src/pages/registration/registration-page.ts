@@ -8,6 +8,7 @@ import { PersonalInfoElements } from './personal-info-elements.ts';
 import { ShippingAddressElements } from './shipping-address-elements.ts';
 import { BillingAddressElements } from './billing-address-elements.ts';
 import Element from '../../components/element/element.ts';
+import type RegistrationModel from '../../model/registration/registration-model.ts';
 
 class RegistrationPage extends View {
   public homeButton: CreateButton;
@@ -54,10 +55,9 @@ class RegistrationPage extends View {
       disabled: true,
     });
 
-    this.containerForm = new Element({
+    this.containerForm = new Element<'form'>({
       tag: 'form',
       className: 'wrapper-form',
-      autocomplete: 'off',
       children: [
         mainTitle.getElement(),
         this.credentialElements.getElement(),
@@ -82,7 +82,7 @@ class RegistrationPage extends View {
     }
   }
 
-  public renderErrorMassage(inputName: string, message: string): void {
+  public renderErrorMassage(inputName: string, message?: string): void {
     const elem = this.containerForm.node.querySelector(`.input-${inputName}`);
 
     const node = new CreateElement({
@@ -101,6 +101,38 @@ class RegistrationPage extends View {
 
     if (messages) {
       messages.forEach((message) => message.remove());
+    }
+  }
+
+  public updateBillingAddress(model: RegistrationModel): void {
+    const isDisabled = model.currentFormValues['is-shipping-as-billing'];
+
+    const street = this.billingAddressElements.inputStreet;
+    const city = this.billingAddressElements.inputCity;
+    const postal = this.billingAddressElements.inputPostalCode;
+    const country = this.billingAddressElements.countryList;
+    const isDefault = this.billingAddressElements.checkboxDefault;
+
+    [street.getElement(), city.getElement(), postal.getElement(), country.node, isDefault.getElement()].forEach(
+      (node) => {
+        if (isDisabled) node.setAttribute('disabled', 'true');
+        else node.removeAttribute('disabled');
+      },
+    );
+
+    if (isDisabled) {
+      const values = model.currentFormValues;
+
+      street.setValue(values.street);
+      city.setValue(values.city);
+      postal.setValue(values['postal-code']);
+      country.node.value = values.country;
+      isDefault.setValue(values['is-default-shipping']);
+
+      model.setStringValue(values.street, 'street-billing');
+      model.setStringValue(values.city, 'city-billing');
+      model.setStringValue(values['postal-code'], 'postal-code-billing');
+      model.setStringValue(values['country'], 'postal-code-billing');
     }
   }
 }
