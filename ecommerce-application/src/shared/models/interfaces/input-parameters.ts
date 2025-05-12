@@ -1,4 +1,4 @@
-import type { IParameters } from './parameters.ts';
+import type { IParameters } from './parameters';
 
 export interface IParametersInput extends IParameters {
   placeholder?: string;

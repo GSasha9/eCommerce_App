@@ -1,3 +1,4 @@
+import './_input.scss';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 import type { IParameters, IParametersInput } from '../../shared/models/interfaces';
 
