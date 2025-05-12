@@ -1,5 +1,10 @@
 export const MIN_AGE = 13;
-export const COUNTRIES = ['Belarus', 'Germany', 'USA', 'UK'];
+export const COUNTRIES = [
+  ['Belarus', 'be'],
+  ['Germany', 'de'],
+  ['USA', 'en-US'],
+  ['UK', 'en-GB'],
+];
 export const MESSAGE_CONTENT = {
   email: 'Invalid email (example example@email.com)',
   password: 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number',

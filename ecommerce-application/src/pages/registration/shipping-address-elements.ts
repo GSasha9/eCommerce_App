@@ -72,8 +72,8 @@ export class ShippingAddressElements extends CreateElement {
             new Element({
               tag: 'option',
               className: 'option',
-              value: country,
-              children: country,
+              value: country[1],
+              children: country[0],
             }).node,
         ),
       ],

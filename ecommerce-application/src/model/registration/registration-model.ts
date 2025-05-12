@@ -1,5 +1,5 @@
 import type RegistrationPage from '../../pages/registration';
-import type { IFormValues } from '../../shared/models/interfaces';
+import type { IFormValues } from '../../shared/models/interfaces/form-values.ts';
 import { isFormName } from '../../shared/models/typeguards.ts/typeguards.ts';
 import { Validator } from '../../shared/utils/validator.ts';
 
