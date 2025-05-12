@@ -4,7 +4,7 @@ import { CreateElement } from '../../shared/utils/create-element';
 import { View } from '../view';
 import { CreateButton } from '../../components/button/create-button';
 import { CreateInput } from '../../components/input/create-input';
-import { eyeCallback } from './utils';
+import { eyeCallback, emailValidation, passwordValidation, formValidation } from './utils';
 
 export class LoginPage extends View {
   private wrapper: CreateElement;
@@ -38,7 +38,7 @@ export class LoginPage extends View {
         tag: 'a',
         classNames: ['header__menu-link'],
         textContent: item,
-        callback: (event: MouseEvent): void => {
+        callback: (event: Event): void => {
           event.preventDefault();
           window.location.href = `/${item.toLowerCase()}`;
         },
@@ -85,6 +85,12 @@ export class LoginPage extends View {
         type: item,
       });
 
+      if (item === 'email') {
+        input.getElement().addEventListener('keyup', emailValidation);
+      } else {
+        input.getElement().addEventListener('keyup', passwordValidation);
+      }
+
       inputContainer.addInnerElement(input);
 
       if (item === 'password') {
@@ -107,7 +113,7 @@ export class LoginPage extends View {
       textContent: 'login',
       type: 'button',
       disabled: false,
-      callback: (): void => {},
+      callback: formValidation,
     });
 
     form.addInnerElement(loginButton);

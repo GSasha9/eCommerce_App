@@ -1,5 +1,6 @@
 @import '../../components/input/input.scss';
 @import '../../components/button/button.scss';
+@import '../../styles/scss/variables.scss';
 
 .login {
   position: absolute;
@@ -30,8 +31,14 @@
 .login__form {
   display: flex;
   flex-direction: column;
-  gap: 17px;
+  gap: 25px;
   align-items: center;
+
+  .error-message {
+    position: fixed;
+    font-size: 0.85rem;
+    color: $warning-color;
+  }
 
   .form__inputbox--password {
     position: relative;

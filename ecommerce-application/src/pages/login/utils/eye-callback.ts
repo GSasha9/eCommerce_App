@@ -1,4 +1,4 @@
-export const eyeCallback = (event: MouseEvent): void => {
+export const eyeCallback = (event: Event): void => {
   if (event.target instanceof HTMLElement) {
     const container = event.target.closest('.form__inputbox--password');
     const containerElements = container?.childNodes;
