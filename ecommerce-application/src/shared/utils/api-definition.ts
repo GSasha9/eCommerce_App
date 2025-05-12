@@ -1,9 +1,5 @@
 import { ClientBuilder, type Client } from '@commercetools/ts-client';
-import {
-  createApiBuilderFromCtpClient,
-  type ClientResponse,
-  type CustomerPagedQueryResponse,
-} from '@commercetools/platform-sdk';
+import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import type { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk';
 
 const projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
@@ -41,7 +37,7 @@ const getClient = (auth: AuthState): Client => {
       .build();
   } else {
     return builder
-      .withAnonymousSessionFlow({
+      .withClientCredentialsFlow({
         host: authUrl,
         projectKey,
         credentials: {
@@ -60,35 +56,31 @@ export const apiDefinition = (auth: AuthState): ByProjectKeyRequestBuilder => {
   return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });
 };
 
-//Anonymous user
-// const api = apiDefinition({ type: 'anonymous' });
+export const getAccessToken = async (auth: AuthState): Promise<string | undefined> => {
+  const basicAuth = btoa(`${clientId}:${clientSecret}`);
 
-// Authenticated user
-const api2 = apiDefinition({
-  type: 'authenticated',
-  email: 'test@example.com',
-  password: '123456',
-});
+  const body =
+    auth.type === 'authenticated'
+      ? `grant_type=password&username=${encodeURIComponent(auth.email)}&password=${encodeURIComponent(auth.password)}&scope=manage_my_profile manage_my_orders view_published_products`
+      : `grant_type=client_credentials&scope=manage_my_profile:${projectKey}`;
 
-export const returnCustomerByEmail = (customerEmail: string): Promise<ClientResponse<CustomerPagedQueryResponse>> => {
-  return api2
-    .customers()
-    .get({
-      queryArgs: {
-        where: `email="${customerEmail}"`,
-      },
-    })
-    .execute();
-};
+  const response = await fetch(`${authUrl}/oauth/token`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${basicAuth}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body,
+  });
 
-export const createCustomer = (email: string, password: string): Promise<ClientResponse> => {
-  return api2
-    .customers()
-    .post({
-      body: {
-        email: email,
-        password: password,
-      },
-    })
-    .execute();
+  if (!response.ok) {
+    const error = await response.text();
+
+    throw new Error(`Failed to fetch token: ${error}`);
+  }
+
+  const data: unknown = await response.json();
+
+  if (data && typeof data === 'object' && 'access_token' in data && typeof data.access_token === 'string')
+    return data.access_token;
 };
