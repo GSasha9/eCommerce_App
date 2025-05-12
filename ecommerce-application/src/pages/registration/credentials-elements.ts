@@ -3,6 +3,7 @@ import { CreateElement } from '../../shared/utils/create-element.ts';
 import './registration.scss';
 import { CreateInput } from '../../components/input/create-input.ts';
 import { Label } from '../../components/label/label.ts';
+import Element from '../../components/element/element.ts';
 
 export class CredentialElements extends CreateElement {
   public inputEmail: CreateInput;
@@ -11,6 +12,7 @@ export class CredentialElements extends CreateElement {
   public passwordLabel: Label;
   public email: CreateElement;
   public password: CreateElement;
+  public visibilityIcon: Element<'button'>;
 
   constructor(parameters: Partial<IParameters> = {}) {
     super({ tag: 'div', classNames: ['group'], ...parameters });
@@ -24,11 +26,17 @@ export class CredentialElements extends CreateElement {
     });
 
     this.passwordLabel = new Label({ classNames: ['label'], for: 'password', textContent: 'Password:' });
+    this.visibilityIcon = new Element({
+      tag: 'button',
+      className: 'visibility-icon',
+      type: 'button',
+    });
     this.inputPassword = new CreateInput({
       classNames: ['password'],
       id: 'password',
       name: 'password',
-      placeholder: 'your password',
+      placeholder: '********',
+      type: 'password',
     });
 
     this.email = new CreateElement({
@@ -39,7 +47,7 @@ export class CredentialElements extends CreateElement {
     this.password = new CreateElement({
       tag: 'div',
       classNames: ['input', 'input-password'],
-      children: [this.passwordLabel, this.inputPassword],
+      children: [this.passwordLabel, this.visibilityIcon.node, this.inputPassword],
     });
 
     this.addInnerElement([this.email, this.password]);

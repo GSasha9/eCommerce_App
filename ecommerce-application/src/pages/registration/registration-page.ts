@@ -96,13 +96,11 @@ class RegistrationPage extends View {
     }
   }
 
-  public deleteErrorMessage(inputName: string): void {
-    const elem = this.containerForm.node.querySelector(`.input-${inputName}`);
+  public deleteErrorMessage(): void {
+    const messages = this.containerForm.node.querySelectorAll(`.error-message`);
 
-    if (elem?.children && elem?.children.length > 2) {
-      if (elem?.lastElementChild) {
-        elem?.lastElementChild.remove();
-      }
+    if (messages) {
+      messages.forEach((message) => message.remove());
     }
   }
 }

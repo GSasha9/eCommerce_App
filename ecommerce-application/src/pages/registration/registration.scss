@@ -105,3 +105,39 @@
   border: 1px solid $input-border;
   border-radius: $border-radius-input;
 }
+
+.input-password {
+  position: relative;
+}
+
+.root-input,
+.password {
+  padding-right: 8px 40px 8px 8px;
+}
+
+.visibility-icon {
+  cursor: pointer;
+
+  position: absolute;
+  z-index: 100;
+  top: 28px;
+  right: 5px;
+
+  width: 24px;
+  height: 24px;
+  border: none;
+
+  background-color: transparent;
+  background-image: $visibility-icon-off;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  &:hover {
+    scale: 1.15;
+  }
+
+  &.hide {
+    background-image: $visibility-icon-on;
+  }
+}

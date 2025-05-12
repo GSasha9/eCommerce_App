@@ -17,6 +17,7 @@ export class RegistrationController {
     document.body.replaceChildren(this.page.getHtmlElement());
     this.page.containerForm.node.addEventListener('input', this.onChangeInputs);
     this.page.containerForm.node.addEventListener('input', this.onFocusOut);
+    this.page.credentialElements.visibilityIcon.node.addEventListener('click', this.onClickChangeVisibility);
   }
 
   private onChangeInputs = (event: Event): void => {
@@ -34,10 +35,29 @@ export class RegistrationController {
     if (!(isHTMLInputElement(event.target) || isHTMLSelectElement(event.target))) return;
 
     const { errors, isValidForm } = this.model.validateForm();
-    const keys = Object.keys(this.model.currentFormValues);
 
-    keys.forEach((name) => this.page.deleteErrorMessage(name));
+    this.page.deleteErrorMessage();
     errors.forEach((name) => this.page.renderErrorMassage(name, MESSAGE_CONTENT[name]));
     this.page.renderDisabledRegister(!isValidForm);
+  };
+
+  private onClickChangeVisibility = (): void => {
+    const input = this.page.credentialElements.inputPassword.getElement();
+    const icon = this.page.credentialElements.visibilityIcon.node;
+    const inputType = input.getAttribute('type');
+
+    if (inputType === 'text') {
+      input.setAttribute('type', 'password');
+      input.setAttribute('placeholder', '********');
+      icon.classList.remove('hide');
+    }
+
+    if (inputType === 'password') {
+      input.setAttribute('type', 'text');
+      input.setAttribute('placeholder', 'your password');
+      icon.classList.add('hide');
+    }
+
+    return;
   };
 }
