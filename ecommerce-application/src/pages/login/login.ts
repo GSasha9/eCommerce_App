@@ -69,6 +69,9 @@ export class LoginPage extends View {
 
     const inputsType = ['email', 'password'];
 
+    let inputEmail: HTMLElement;
+    let inputPassword: HTMLElement;
+
     inputsType.forEach((item) => {
       const inputContainer: CreateElement = new CreateElement({
         tag: 'div',
@@ -86,9 +89,23 @@ export class LoginPage extends View {
       });
 
       if (item === 'email') {
-        input.getElement().addEventListener('keyup', emailValidation);
+        inputEmail = input.getElement();
+        inputEmail.addEventListener('keyup', () => {
+          const inputElement = input.getElement();
+
+          if (inputElement instanceof HTMLInputElement) {
+            emailValidation(inputElement);
+          }
+        });
       } else {
-        input.getElement().addEventListener('keyup', passwordValidation);
+        inputPassword = input.getElement();
+        inputPassword.addEventListener('keyup', () => {
+          const inputElement = input.getElement();
+
+          if (inputElement instanceof HTMLInputElement) {
+            passwordValidation(inputElement);
+          }
+        });
       }
 
       inputContainer.addInnerElement(input);
@@ -113,7 +130,11 @@ export class LoginPage extends View {
       textContent: 'login',
       type: 'button',
       disabled: false,
-      callback: formValidation,
+      callback: (): void => {
+        if (inputEmail instanceof HTMLInputElement && inputPassword instanceof HTMLInputElement) {
+          formValidation(inputEmail, inputPassword);
+        }
+      },
     });
 
     form.addInnerElement(loginButton);

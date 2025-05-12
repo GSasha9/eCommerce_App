@@ -1,9 +1,15 @@
 import { emailValidation } from './email-validation';
 import { passwordValidation } from './password-validation';
 
-export const formValidation = (): void => {
-  const email = emailValidation();
-  const password = passwordValidation();
+export const formValidation = (email: HTMLInputElement, password: HTMLInputElement): void => {
+  if (!emailValidation(email) || !passwordValidation(password)) {
+    return;
+  } else {
+    const user = {
+      email: email.value,
+      password: password.value,
+    };
 
-  console.log(email, password);
+    console.log(user);
+  }
 };
