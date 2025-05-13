@@ -24,6 +24,8 @@ export const emailValidation = (input: HTMLInputElement): boolean => {
         errorMessageOptions.textContent = 'Email address must include the @ symbol.';
       } else if (!input.value.substring(input.value.indexOf('@')).includes('.')) {
         errorMessageOptions.textContent = 'Enter the rest of the email address after the @ symbol.';
+      } else if (/\s/g.test(input.value)) {
+        errorMessageOptions.textContent = 'Email address must not contain leading or trailing whitespace';
       } else {
         errorMessageOptions.textContent = 'Enter a valid email address.';
       }
