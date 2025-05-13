@@ -8,7 +8,10 @@ import { eyeCallback, emailValidation, passwordValidation, formValidation } from
 
 export class LoginPage extends View {
   private wrapper: CreateElement;
-  constructor(parameters: Partial<IParameters> = {}) {
+  constructor(
+    parameters: Partial<IParameters> = {},
+    private onSubmit: (email: string, password: string) => Promise<void>,
+  ) {
     super({ tag: 'div', classNames: ['login-page'], ...parameters });
     this.wrapper = LoginPage.createWrapper();
     this.createLoginPageContent();
@@ -130,7 +133,14 @@ export class LoginPage extends View {
       disabled: false,
       callback: (): void => {
         if (inputEmail instanceof HTMLInputElement && inputPassword instanceof HTMLInputElement) {
-          formValidation(inputEmail, inputPassword).catch(console.error);
+          const valid = formValidation(inputEmail, inputPassword);
+
+          if (valid) {
+            const email = inputEmail.value;
+            const password = inputPassword.value;
+
+            this.onSubmit(email, password).catch(console.error);
+          }
         }
       },
     });

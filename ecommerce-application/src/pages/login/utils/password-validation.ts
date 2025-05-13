@@ -18,11 +18,13 @@ export const passwordValidation = (input: HTMLInputElement): boolean => {
       const errorMessageOptions = {
         tag: 'p' as const,
         classNames: ['error-message'],
-        textContent: 'Password must be at least 8 characters long',
+        textContent: '',
         callback: (): void => {},
       };
 
-      if (!/[A-Z]{1,}/.test(value)) {
+      if (inputLength < 8 || value === '') {
+        errorMessageOptions.textContent = 'Password must be at least 8 characters long';
+      } else if (!/[A-Z]{1,}/.test(value)) {
         errorMessageOptions.textContent = 'Password must contain at least one uppercase letter';
       } else if (!/[a-z]{1,}/.test(value)) {
         errorMessageOptions.textContent = 'Password must contain at least one lowercase letter';
@@ -30,6 +32,8 @@ export const passwordValidation = (input: HTMLInputElement): boolean => {
         errorMessageOptions.textContent = 'Password must contain at least one digit';
       } else if (!/[!@#$%^&*]{1,}/.test(value)) {
         errorMessageOptions.textContent = 'Password must contain at least one special character';
+      } else if (/\s/g.test(input.value)) {
+        errorMessageOptions.textContent = 'Password must not contain leading or trailing whitespace';
       }
 
       const errorMessage: CreateElement = new CreateElement(errorMessageOptions);
