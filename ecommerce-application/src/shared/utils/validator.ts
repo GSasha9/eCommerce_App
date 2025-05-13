@@ -8,7 +8,7 @@ export class Validator {
   }
 
   public static isPassword(value: string): boolean {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    const passwordRegex = /^(?!\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}(?<!\s)$/;
 
     return passwordRegex.test(value);
   }
@@ -47,9 +47,9 @@ export class Validator {
 
   public static isPostalCode(value: string, country: string): boolean {
     const regexes: Record<string, RegExp> = {
-      Belarus: /^(2[0-4]|3[0-4])\d{4}$/,
-      Germany: /^\d{5}$/,
-      USA: /^\d{5}(-\d{4})?$/,
+      BY: /^(2[0-4]|3[0-4])\d{4}$/,
+      DE: /^\d{5}$/,
+      US: /^\d{5}(-\d{4})?$/,
       UK: /^[A-Z]{1,2}\d[A-Z\d]?\s?\d[A-Z]{2}$/i,
     };
 

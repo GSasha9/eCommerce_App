@@ -132,7 +132,7 @@ class RegistrationPage extends View {
       model.setStringValue(values.street, 'street-billing');
       model.setStringValue(values.city, 'city-billing');
       model.setStringValue(values['postal-code'], 'postal-code-billing');
-      model.setStringValue(values['country'], 'postal-code-billing');
+      model.setStringValue(values['country'], 'country-billing');
     }
   }
 }

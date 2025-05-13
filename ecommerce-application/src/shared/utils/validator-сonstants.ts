@@ -2,15 +2,16 @@ import type { IFormValues } from '../models/interfaces';
 
 export const MIN_AGE = 13;
 export const COUNTRIES = [
-  ['Belarus', 'be'],
-  ['Germany', 'de'],
-  ['USA', 'en-US'],
-  ['UK', 'en-GB'],
+  ['Belarus', 'BY'],
+  ['Germany', 'DE'],
+  ['USA', 'US'],
+  ['UK', 'UK'],
 ];
 
 export const MESSAGE_CONTENT: Partial<Record<keyof IFormValues, string>> = {
-  email: 'Invalid email (example example@email.com)',
-  password: 'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number',
+  email: 'Invalid email (example@email.com)',
+  password:
+    'Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number, must not contain whitespace',
   name: 'Must contain at least one character and no special characters or numbers',
   surname: 'Must contain at least one character and no special characters or numbers',
   birthday: 'You must be at least 13 years old.',

@@ -16,7 +16,7 @@ export const passwordValidation = (input: HTMLInputElement): boolean => {
 
     if (inputLength < 8 || value === '') {
       const errorMessageOptions = {
-        tag: 'p',
+        tag: 'p' as const,
         classNames: ['error-message'],
         textContent: 'Password must be at least 8 characters long',
         callback: (): void => {},
