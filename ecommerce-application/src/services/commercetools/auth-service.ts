@@ -44,14 +44,10 @@ class AuthorizationService {
         ? `grant_type=password&username=${encodeURIComponent(auth.email)}&password=${encodeURIComponent(auth.password)}&scope=${scope}`
         : `grant_type=client_credentials&scope=manage_my_profile:${this.projectKey}`;
 
-    console.log('TOKEN REQUEST BODY:', body);
-
     const url =
       auth.type === 'authenticated'
         ? `${this.authUrl}/oauth/${this.projectKey}/customers/token` // Правильный URL для Password Flow
         : `${this.authUrl}/oauth/token`; // URL для Client Credentials Flow
-
-    console.log('TOKEN REQUEST BODY:', url);
 
     const response = await fetch(url, {
       method: 'POST',
@@ -121,8 +117,6 @@ class AuthorizationService {
     const data: unknown = await response.json();
 
     if (data && typeof data === 'object') {
-      console.log('Customer login response:', data);
-
       return data;
     }
   };

@@ -1,8 +1,8 @@
 import type { IRoutes } from '../shared/models/interfaces';
 
 export const ROUTES: IRoutes = {
-  HOME: '/',
-  HOME_ALT: '/home',
+  MAIN: '/',
+  MAIN_ALT: '/main',
   LOGIN: '/login',
   REGISTRATION: '/registration',
   PRODUCTS: '/products',

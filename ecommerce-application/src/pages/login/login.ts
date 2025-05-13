@@ -34,7 +34,7 @@ export class LoginPage extends View {
       callback: (): void => {},
     });
 
-    const links = ['Login', 'Register'];
+    const links = ['Login', 'Registration'];
 
     links.forEach((item) => {
       const link = new CreateElement({
@@ -84,7 +84,7 @@ export class LoginPage extends View {
       });
 
       const input = new CreateInput({
-        classNames: [`input-${item}`],
+        classNames: [`${item}`],
         textContent: '',
         callback: (): void => {},
         type: item,

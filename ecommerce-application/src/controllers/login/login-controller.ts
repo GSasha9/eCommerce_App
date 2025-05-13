@@ -1,13 +1,13 @@
-import { UserModel } from '../../model/user/user-model';
+import { LoginModel } from '../../model/user/login-model';
 import { LoginPage } from '../../pages/login/login';
 
 export class LoginPageController {
   private loginPage: LoginPage;
-  private userModel: UserModel;
+  private userModel: LoginModel;
 
   constructor() {
     this.loginPage = new LoginPage({}, this.handleLoginSubmit);
-    this.userModel = new UserModel();
+    this.userModel = new LoginModel();
     this.render();
   }
 
@@ -26,7 +26,7 @@ export class LoginPageController {
       const response = await this.userModel.sendLoginAuthData(email, password);
 
       console.log('Login success:', response);
-      //  редирект
+      window.location.href = '/main';
     } catch (error) {
       console.error('Login error:', error);
     }

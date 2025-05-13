@@ -1,6 +1,6 @@
 import { authService } from '../../services/commercetools/auth-service';
 
-export class UserModel {
+export class LoginModel {
   public token: string | undefined;
   constructor() {
     this.token = undefined;

@@ -23,11 +23,11 @@ export class Controller {
   }
 
   private setupRoutes(): void {
-    this.router.addRoute(ROUTES.HOME, () => {
+    this.router.addRoute(ROUTES.MAIN, () => {
       this.homeController.render();
     });
 
-    this.router.addRoute(ROUTES.HOME_ALT, () => {
+    this.router.addRoute(ROUTES.MAIN_ALT, () => {
       this.homeController.render();
     });
 
