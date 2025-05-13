@@ -75,6 +75,60 @@ class AuthorizationService {
     }
   };
 
+  public registerCustomer = async (
+    email: string,
+    password: string,
+    //accessToken?: string,
+    anonymousCartId?: string,
+  ): Promise<void> => {
+    if (!this.projectKey || !this.apiUrl) {
+      throw new Error('Missing required config for Commercetools');
+    }
+
+    const body: Record<string, string | object> = {
+      email,
+      password,
+    };
+
+    if (anonymousCartId) {
+      body.anonymousCart = {
+        id: anonymousCartId,
+        typeId: 'cart',
+      };
+    }
+
+    try {
+      const anonymusToken = await this.getAccessToken({ type: 'anonymous' });
+
+      console.log(anonymusToken);
+
+      const api = this.apiDefinition({ type: 'anonymous' });
+
+      const response = await api
+        .customers()
+        .post({
+          body: {
+            email: email,
+            password: password,
+          },
+        })
+        .execute();
+
+      console.log('Customer created:', response.body);
+
+      // optionally: login and get token
+      const token = await this.getAccessToken({ type: 'authenticated', email: email, password: password });
+
+      if (token) {
+        const response = await this.signInCustomer(email, password, token);
+
+        console.log(response);
+      }
+    } catch (error) {
+      console.error('Registration failed:', error);
+    }
+  };
+
   public signInCustomer = async (
     email: string,
     password: string,
