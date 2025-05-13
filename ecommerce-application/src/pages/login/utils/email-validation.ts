@@ -14,7 +14,7 @@ export const emailValidation = (input: HTMLInputElement): boolean => {
 
     if (!/^[a-z0-9._%+-]+@[a-z.-]+\.[a-z]{2,}$/gi.test(value) || value === '') {
       const errorMessageOptions = {
-        tag: 'p',
+        tag: 'p' as const,
         classNames: ['error-message'],
         textContent: 'Enter a valid email address.',
         callback: (): void => {},

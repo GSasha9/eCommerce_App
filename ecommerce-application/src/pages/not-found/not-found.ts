@@ -25,7 +25,6 @@ export class NotFoundPage extends View {
     });
 
     const homeButton: CreateButton = new CreateButton({
-      tag: 'button',
       classNames: ['not-found__button'],
       textContent: 'Go to Home',
       type: 'button',

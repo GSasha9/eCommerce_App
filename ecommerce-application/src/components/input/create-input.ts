@@ -1,6 +1,7 @@
 import './_input.scss';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 import type { IParameters, IParametersInput } from '../../shared/models/interfaces';
+import './_input.scss';
 
 export class CreateInput extends CreateElement {
   private input: HTMLInputElement;
@@ -8,8 +9,7 @@ export class CreateInput extends CreateElement {
   constructor(parameters: IParametersInput) {
     const inputParams: IParameters = {
       tag: 'input',
-      classNames: parameters.classNames || [],
-      textContent: '',
+      classNames: ['root-input', ...(parameters.classNames || [])],
       callback: parameters.callback,
     };
 
@@ -29,14 +29,28 @@ export class CreateInput extends CreateElement {
     if (parameters.value) {
       this.input.value = parameters.value;
     }
+
+    if (parameters.id) {
+      this.input.id = parameters.id;
+    }
+
+    if (parameters.name) {
+      this.input.name = parameters.name;
+    }
+
+    if (parameters.autocomplete) {
+      this.input.autocomplete = parameters.autocomplete;
+    }
   }
 
   public getValue(): string {
     return this.input.value;
   }
 
-  public setValue(value: string): void {
-    this.input.value = value;
+  public setValue(value?: string | boolean): void {
+    if (this.input.type === 'checkbox') {
+      this.input.checked = Boolean(value);
+    } else this.input.value = String(value || '');
   }
 
   public setPlaceholder(placeholder: string): void {

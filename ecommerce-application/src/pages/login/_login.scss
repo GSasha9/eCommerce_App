@@ -1,6 +1,6 @@
-@import '../../components/input/input.scss';
-@import '../../components/button/button.scss';
-@import '../../styles/scss/variables.scss';
+@use '../../components/input/input.scss';
+@use '../../components/button/button.scss';
+@use '../../styles/scss/variables.scss' as *;
 
 .login {
   position: absolute;

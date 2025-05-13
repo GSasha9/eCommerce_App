@@ -1,5 +1,6 @@
 import { CreateElement } from '../../shared/utils/create-element.ts';
 import type { IButtonParameters, IParameters } from '../../shared/models/interfaces';
+import './_button.scss';
 
 export class CreateButton extends CreateElement {
   private button: HTMLButtonElement;
@@ -7,7 +8,7 @@ export class CreateButton extends CreateElement {
   constructor(parameters: IButtonParameters) {
     const buttonParams: IParameters = {
       tag: 'button',
-      classNames: parameters.classNames || [],
+      classNames: ['root-button', ...(parameters.classNames || [])],
       textContent: parameters.textContent,
       callback: parameters.callback,
     };

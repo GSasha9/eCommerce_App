@@ -1,8 +1,31 @@
-@import '../../styles/scss/variables.scss';
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/fonts';
 
-button {
-  width: 300px;
-  height: 45px;
-  font-size: 16px;
-  color: $primary-button;
+// .login__button {
+//   width: 300px;
+//   height: 45px;
+//   font-size: 16px;
+//   color: $primary-button;
+
+// }
+
+.root-button {
+  padding: $spacing-sm;
+  border: none;
+  border-radius: $border-radius-input;
+
+  color: $text-primary;
+
+  background-color: rgb(210 210 210);
+
+  &:disabled {
+    cursor: not-allowed;
+    color: rgb(37 37 32);
+    background-color: rgb(83 83 83);
+  }
+
+  &:not(:disabled):hover {
+    color: rgb(88 168 70);
+    background-color: rgb(224 229 211);
+  }
 }

@@ -1,17 +1,18 @@
 $primary-button: #46a358;
 $stars-color: #ffac0c;
 $danger-color: #dc3545;
-$warning-color: #f03800;
+$warning-color: #ff3c00;
 
 $text-primary: #3d3d3d;
 $primary-text-green: #46a358;
 $text-secondary: #727272;
-$text-placeholder: #a5a5a5;
+$text-placeholder: #bcbcbc;
 
 $bg-primary: #fff;
 $bg-secondary: rgb(70 163 88 / 10%);
 $bg-cards: #fbfbfb;
 $bg-cards-hover: rgb(70 163 88 / 10%);
+$bg-page: #ebe8e5;
 
 $border-color: rgb(70 163 88 / 20%);
 $input-border: #a5a5a5;
@@ -29,6 +30,7 @@ $font-family-base:
   'Helvetica Neue',
   sans-serif;
 
+$spacing-xxs: 2px;
 $spacing-xs: 4px;
 $spacing-sm: 8px;
 $spacing-md: 16px;
@@ -41,6 +43,7 @@ $border-radius-md: 8px;
 $border-radius-lg: 16px;
 $border-radius-circle: 50%;
 
+$font-size-error-message: 12px;
 $font-size-regular: 14px;
 $font-size-button-cards: 16px;
 $font-size-h1: 70px;
@@ -81,3 +84,6 @@ $container-md: 720px;
 $container-lg: 960px;
 $container-xl: 1140px;
 $container-xxl: 1320px;
+
+$visibility-icon-on: url('../../assets/images/svg/visibility-on.svg');
+$visibility-icon-off: url('../../assets/images/svg/visibility-off.svg');

@@ -1,0 +1,143 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/fonts';
+
+.registration-page {
+  scroll-behavior: auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100vw;
+  margin: 0;
+  padding: $spacing-xxl 0;
+
+  background-color: $bg-page;
+}
+
+.wrapper-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  max-width: 800px;
+  margin: 0;
+  padding: $spacing-xl;
+  border-radius: 10px;
+
+  font-family: $font-family-base;
+
+  background-color: $bg-primary;
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  width: 100%;
+  padding: $spacing-md 0;
+}
+
+.input {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  justify-content: space-between;
+
+  width: 48%;
+  padding-bottom: 30px;
+}
+
+.error-message {
+  position: absolute;
+  top: 60px;
+  font-size: $font-size-error-message;
+  color: $warning-color;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding-top: 14px;
+}
+
+.checkbox {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: $spacing-md;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.checkbox-wrapper-billind {
+  padding-top: 14px;
+}
+
+.input-birth {
+  justify-content: start;
+  width: 48%;
+}
+
+.title {
+  padding-top: 40px;
+  text-align: start;
+}
+
+.label {
+  flex-shrink: 0;
+  color: $text-secondary;
+}
+
+.default-shipping,
+.as-billing {
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.country-list {
+  padding: $spacing-sm;
+  border: 1px solid $input-border;
+  border-radius: $border-radius-input;
+}
+
+.input-password {
+  position: relative;
+}
+
+.root-input,
+.password {
+  padding-right: 8px 40px 8px 8px;
+}
+
+.visibility-icon {
+  cursor: pointer;
+
+  position: absolute;
+  z-index: 100;
+  top: 28px;
+  right: 5px;
+
+  width: 24px;
+  height: 24px;
+  border: none;
+
+  background-color: transparent;
+  background-image: $visibility-icon-off;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  &:hover {
+    scale: 1.15;
+  }
+
+  &.hide {
+    background-image: $visibility-icon-on;
+  }
+}

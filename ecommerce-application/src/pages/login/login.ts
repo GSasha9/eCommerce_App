@@ -81,7 +81,6 @@ export class LoginPage extends View {
       });
 
       const input = new CreateInput({
-        tag: 'input',
         classNames: [`input-${item}`],
         textContent: '',
         callback: (): void => {},
@@ -125,14 +124,13 @@ export class LoginPage extends View {
     });
 
     const loginButton: CreateButton = new CreateButton({
-      tag: 'button',
       classNames: ['form__button'],
       textContent: 'login',
       type: 'button',
       disabled: false,
       callback: (): void => {
         if (inputEmail instanceof HTMLInputElement && inputPassword instanceof HTMLInputElement) {
-          formValidation(inputEmail, inputPassword);
+          formValidation(inputEmail, inputPassword).catch(console.error);
         }
       },
     });
