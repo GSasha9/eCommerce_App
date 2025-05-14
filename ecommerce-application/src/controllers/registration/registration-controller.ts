@@ -1,5 +1,6 @@
 import RegistrationModel from '../../model/registration/registration-model.ts';
 import RegistrationPage from '../../pages/registration';
+import { authService } from '../../services/commercetools/auth-service.ts';
 import {
   isFormName,
   isHTMLCheckboxElement,
@@ -23,7 +24,45 @@ export class RegistrationController {
     this.page.containerForm.node.addEventListener('input', this.onChangeInputs);
     this.page.containerForm.node.addEventListener('input', this.onFocusOut);
     this.page.credentialElements.visibilityIcon.node.addEventListener('click', this.onClickChangeVisibility);
+    this.page.registrationButton.getElement().addEventListener('click', () => {
+      void this.inClickRegistration();
+    });
   }
+
+  private inClickRegistration = async (): Promise<void> => {
+    const data = {
+      email: this.model.currentFormValues.email,
+      password: this.model.currentFormValues.password,
+      dateOfBirth: this.model.currentFormValues.birthday,
+      firstName: this.model.currentFormValues.name,
+      lastName: this.model.currentFormValues.surname,
+      addresses: [
+        {
+          country: this.model.currentFormValues.country,
+          streetName: this.model.currentFormValues.street,
+          postalCode: this.model.currentFormValues['postal-code'],
+          city: this.model.currentFormValues.city,
+        },
+        {
+          country: this.model.currentFormValues['country-billing'],
+          streetName: this.model.currentFormValues['street-billing'],
+          postalCode: this.model.currentFormValues['postal-code-billing'],
+          city: this.model.currentFormValues['city-billing'],
+        },
+      ],
+      shippingAddresses: [0],
+      billingAddresses: this.model.currentFormValues['is-shipping-as-billing'] ? [0] : [1],
+
+      ...(this.model.currentFormValues['is-default-shipping'] && {
+        defaultShippingAddress: 0,
+      }),
+      ...(this.model.currentFormValues['is-default-billing'] && {
+        defaultBillingAddress: 1,
+      }),
+    };
+
+    await authService.registerCustomer(data);
+  };
 
   private onChangeInputs = (event: Event): void => {
     if (!(isHTMLInputElement(event.target) || isHTMLSelectElement(event.target))) return;

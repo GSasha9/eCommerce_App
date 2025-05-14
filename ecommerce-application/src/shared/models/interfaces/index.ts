@@ -8,3 +8,4 @@ export type { IButtonParameters } from './button-parameters.ts';
 export type { IParametersLabel } from './label-parameters.ts';
 export type { IFormValues } from './form-values.ts';
 export type { IValidationResult } from './validation-result.ts';
+export type { IResponce } from './responce.ts';
