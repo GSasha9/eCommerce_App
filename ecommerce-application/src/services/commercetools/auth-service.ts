@@ -8,7 +8,7 @@ type LoginResponse = object;
 class AuthorizationService {
   private static instance: AuthorizationService;
 
-  public api: ByProjectKeyRequestBuilder;
+  private api: ByProjectKeyRequestBuilder;
 
   private projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
   private authUrl = import.meta.env.VITE_CTP_AUTH_URL;
@@ -31,8 +31,35 @@ class AuthorizationService {
     return AuthorizationService.instance;
   }
 
-  public getIsAuthenticated(): boolean {
+  public getAuthenticatedStatus(): boolean {
     return this.isAuthenticated;
+  }
+
+  public async initializeAnonymousSession(): Promise<void> {
+    if (!this.isAuthenticated) {
+      const saveToken = localStorage.getItem('pl_anonymousAccessToken');
+
+      if (saveToken) {
+        console.log('Restoring anonymous session from storage', saveToken);
+
+        this.api = this.apiDefinition({ type: 'anonymous' });
+
+        return;
+      }
+
+      try {
+        const anonymusToken = await this.getAccessToken({ type: 'anonymous' });
+
+        console.log('Anonymus token', anonymusToken);
+
+        if (anonymusToken) {
+          this.api = this.apiDefinition({ type: 'anonymous' });
+          console.log('Anonymous session initialized');
+        }
+      } catch {
+        console.error('Failed to initialize anonymous session:', Error);
+      }
+    }
   }
 
   public apiDefinition = (auth: AuthState, projectKey = this.projectKey): ByProjectKeyRequestBuilder => {
@@ -76,63 +103,48 @@ class AuthorizationService {
     const data: unknown = await response.json();
 
     if (data && typeof data === 'object' && 'access_token' in data && typeof data.access_token === 'string') {
-      console.log('Access token:', data);
+      const accessToken = data.access_token;
 
-      return data.access_token;
+      if (auth.type === 'anonymous') {
+        localStorage.setItem('pl_anonymousAccessToken', accessToken);
+      }
+
+      return accessToken;
     } else {
       console.error('Invalid token response:', data);
     }
   };
 
-  public registerCustomer = async (
-    email: string,
-    password: string,
-    //accessToken?: string,
-    anonymousCartId?: string,
-  ): Promise<void> => {
+  public registerCustomer = async (email: string, password: string, anonymousCartId?: string): Promise<void> => {
     if (!this.projectKey || !this.apiUrl) {
       throw new Error('Missing required config for Commercetools');
     }
 
-    const body: Record<string, string | object> = {
+    const bodySignUp = {
       email,
       password,
+      ...(anonymousCartId && {
+        anonymousCart: {
+          id: anonymousCartId,
+          typeId: 'cart',
+        },
+      }),
     };
 
-    if (anonymousCartId) {
-      body.anonymousCart = {
-        id: anonymousCartId,
-        typeId: 'cart',
-      };
-    }
+    try {
+      const response = await this.api.me().signup().post({ body: bodySignUp }).execute();
 
-  try {
-    const anonymusToken = await this.getAccessToken({ type: 'anonymous' });
+      console.log(response.statusCode === 200, '200');
 
-      console.log(anonymusToken);
+      if (response.statusCode === 200) {
+        // optionally: login and get token
+        const token = await this.getAccessToken({ type: 'authenticated', email: email, password: password });
 
-      const response = await this.api
-        .customers()
-        .post({
-          body: {
-            email: email,
-            password: password,
-          },
-        })
-        .execute();
+        if (token) {
+          const loginResponse = await this.signInCustomer(email, password, undefined, anonymousCartId);
 
-      console.log('Customer created:', response.body);
-
-      // optionally: login and get token
-      const token = await this.getAccessToken({ type: 'authenticated', email: email, password: password });
-
-      if (token) {
-        const response = await this.signInCustomer(email, password, token);
-
-        this.api = this.apiDefinition({ type: 'authenticated', email: email, password: password });
-        this.isAuthenticated = true;
-
-        console.log(response);
+          console.log(loginResponse);
+        }
       }
     } catch (error) {
       console.error('Registration failed:', error);
@@ -142,49 +154,40 @@ class AuthorizationService {
   public signInCustomer = async (
     email: string,
     password: string,
-    accessToken: string,
+    _accessToken?: string,
     anonymousCartId?: string,
   ): Promise<LoginResponse | undefined> => {
-    if (!this.projectKey || !this.apiUrl) {
-      throw new Error('Missing required config for Commercetools');
+    if (!this.projectKey) {
+      throw new Error('Missing required project key for Commercetools');
     }
 
-    const url = `${this.apiUrl}/${this.projectKey}/login`;
+    try {
+      const response = await this.api
+        .me()
+        .login()
+        .post({
+          body: {
+            email,
+            password,
+            ...(anonymousCartId && {
+              anonymousCart: {
+                id: anonymousCartId,
+                typeId: 'cart',
+              },
+            }),
+          },
+        })
+        .execute();
 
-    const body: Record<string, string | object> = {
-      email,
-      password,
-    };
+      this.api = this.apiDefinition({ type: 'authenticated', email, password });
+      this.isAuthenticated = true;
 
-    if (anonymousCartId) {
-      body.anonymousCart = {
-        id: anonymousCartId,
-        typeId: 'cart',
-      };
-    }
+      console.log('Login successful:', response.body);
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      const error = await response.text();
-
-      throw new Error(`Login failed: ${error}`);
-    }
-
-    this.api = this.apiDefinition({ type: 'authenticated', email: email, password: password });
-    this.isAuthenticated = true;
-
-    const data: unknown = await response.json();
-
-    if (data && typeof data === 'object') {
-      return data;
+      return response.body;
+    } catch (error) {
+      console.error('Login failed:', error);
+      throw new Error('Login failed');
     }
   };
 
@@ -229,7 +232,7 @@ class AuthorizationService {
         .build();
     } else {
       return builder
-        .withClientCredentialsFlow({
+        .withAnonymousSessionFlow({
           host: this.authUrl,
           projectKey,
           credentials: {
