@@ -1,23 +1,27 @@
-import { ClientBuilder, type Client } from '@commercetools/ts-client';
-import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import type { ByProjectKeyRequestBuilder, CustomerDraft } from '@commercetools/platform-sdk';
+import { ClientBuilder, type Client, type ClientResponse } from '@commercetools/ts-client';
+import { createApiBuilderFromCtpClient, type CustomerPagedQueryResponse } from '@commercetools/platform-sdk';
+import type { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk';
 import type { AuthState } from './models/types';
-import { isResponce } from '../../shared/models/typeguards.ts';
 
 type LoginResponse = object;
 
 class AuthorizationService {
   private static instance: AuthorizationService;
 
+  public api: ByProjectKeyRequestBuilder;
+
   private projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
   private authUrl = import.meta.env.VITE_CTP_AUTH_URL;
   private clientId = import.meta.env.VITE_CTP_CLIENT_ID;
   private clientSecret = import.meta.env.VITE_CTP_CLIENT_SECRET;
   private apiUrl = import.meta.env.VITE_CTP_API_URL;
+  private isAuthenticated = false;
 
   //private clientCache: Map<string, Client> = new Map();
 
-  private constructor() {}
+  private constructor() {
+    this.api = this.apiDefinition({ type: 'anonymous' });
+  }
 
   public static getInstance(): AuthorizationService {
     if (!AuthorizationService.instance) {
@@ -25,6 +29,10 @@ class AuthorizationService {
     }
 
     return AuthorizationService.instance;
+  }
+
+  public getIsAuthenticated(): boolean {
+    return this.isAuthenticated;
   }
 
   public apiDefinition = (auth: AuthState, projectKey = this.projectKey): ByProjectKeyRequestBuilder => {
@@ -76,62 +84,58 @@ class AuthorizationService {
     }
   };
 
-  public registerCustomer = async (data: CustomerDraft, anonymousCartId?: string): Promise<object | undefined> => {
+  public registerCustomer = async (
+    email: string,
+    password: string,
+    //accessToken?: string,
+    anonymousCartId?: string,
+  ): Promise<void> => {
     if (!this.projectKey || !this.apiUrl) {
       throw new Error('Missing required config for Commercetools');
     }
 
-    const customerDraft: CustomerDraft = {
-      ...data,
-      ...(anonymousCartId && {
-        anonymousCart: {
-          id: anonymousCartId,
-          typeId: 'cart',
-        },
-      }),
+    const body: Record<string, string | object> = {
+      email,
+      password,
     };
 
-    try {
-      const anonymusToken = await this.getAccessToken({ type: 'anonymous' });
+    if (anonymousCartId) {
+      body.anonymousCart = {
+        id: anonymousCartId,
+        typeId: 'cart',
+      };
+    }
 
-      console.log('1 anonymusToken--', anonymusToken);
-      const api = this.apiDefinition({ type: 'anonymous' });
-      const response = await api.customers().post({ body: customerDraft }).execute();
+  try {
+    const anonymusToken = await this.getAccessToken({ type: 'anonymous' });
 
-      console.log('2 пользователь создан--', response.body);
+      console.log(anonymusToken);
 
-      if (data.password) {
-        const token = await this.getAccessToken({ type: 'authenticated', email: data.email, password: data.password });
+      const response = await this.api
+        .customers()
+        .post({
+          body: {
+            email: email,
+            password: password,
+          },
+        })
+        .execute();
 
-        if (token) {
-          const response = await this.signInCustomer(data.email, data.password, token);
+      console.log('Customer created:', response.body);
 
-          if (isResponce(response)) {
-            const { access_token, refresh_token } = response;
+      // optionally: login and get token
+      const token = await this.getAccessToken({ type: 'authenticated', email: email, password: password });
 
-            localStorage.setItem(
-              'token',
-              JSON.stringify({ access_token: String(access_token), refresh_token: String(refresh_token) }),
-            );
-            const customer = await api
-              .me()
-              .get({
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              })
-              .execute();
+      if (token) {
+        const response = await this.signInCustomer(email, password, token);
 
-            localStorage.setItem('customer', JSON.stringify(customer.body));
-            console.log('3 созданный пользователь залогинен--', response);
-            console.log('4 данные me--', customer);
+        this.api = this.apiDefinition({ type: 'authenticated', email: email, password: password });
+        this.isAuthenticated = true;
 
-            return response;
-          }
-        }
+        console.log(response);
       }
     } catch (error) {
-      console.error('Registration failed---', error);
+      console.error('Registration failed:', error);
     }
   };
 
@@ -174,12 +178,26 @@ class AuthorizationService {
       throw new Error(`Login failed: ${error}`);
     }
 
+    this.api = this.apiDefinition({ type: 'authenticated', email: email, password: password });
+    this.isAuthenticated = true;
+
     const data: unknown = await response.json();
 
     if (data && typeof data === 'object') {
       return data;
     }
   };
+
+  public getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
+    return this.api
+      .customers()
+      .get({
+        queryArgs: {
+          where: `email="${email}"`,
+        },
+      })
+      .execute();
+  }
 
   private getClient = (
     auth: AuthState,
