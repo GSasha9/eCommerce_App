@@ -1,5 +1,5 @@
-import { ClientBuilder, type Client } from '@commercetools/ts-client';
-import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
+import { ClientBuilder, type Client, type ClientResponse } from '@commercetools/ts-client';
+import { createApiBuilderFromCtpClient, type CustomerPagedQueryResponse } from '@commercetools/platform-sdk';
 import type { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk';
 import type { AuthState } from './models/types';
 
@@ -8,15 +8,20 @@ type LoginResponse = object;
 class AuthorizationService {
   private static instance: AuthorizationService;
 
+  public api: ByProjectKeyRequestBuilder;
+
   private projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
   private authUrl = import.meta.env.VITE_CTP_AUTH_URL;
   private clientId = import.meta.env.VITE_CTP_CLIENT_ID;
   private clientSecret = import.meta.env.VITE_CTP_CLIENT_SECRET;
   private apiUrl = import.meta.env.VITE_CTP_API_URL;
+  private isAuthenticated = false;
 
   //private clientCache: Map<string, Client> = new Map();
 
-  private constructor() {}
+  private constructor() {
+    this.api = this.apiDefinition({ type: 'anonymous' });
+  }
 
   public static getInstance(): AuthorizationService {
     if (!AuthorizationService.instance) {
@@ -24,6 +29,10 @@ class AuthorizationService {
     }
 
     return AuthorizationService.instance;
+  }
+
+  public getIsAuthenticated(): boolean {
+    return this.isAuthenticated;
   }
 
   public apiDefinition = (auth: AuthState, projectKey = this.projectKey): ByProjectKeyRequestBuilder => {
@@ -102,9 +111,7 @@ class AuthorizationService {
 
       console.log(anonymusToken);
 
-      const api = this.apiDefinition({ type: 'anonymous' });
-
-      const response = await api
+      const response = await this.api
         .customers()
         .post({
           body: {
@@ -121,6 +128,9 @@ class AuthorizationService {
 
       if (token) {
         const response = await this.signInCustomer(email, password, token);
+
+        this.api = this.apiDefinition({ type: 'authenticated', email: email, password: password });
+        this.isAuthenticated = true;
 
         console.log(response);
       }
@@ -168,12 +178,26 @@ class AuthorizationService {
       throw new Error(`Login failed: ${error}`);
     }
 
+    this.api = this.apiDefinition({ type: 'authenticated', email: email, password: password });
+    this.isAuthenticated = true;
+
     const data: unknown = await response.json();
 
     if (data && typeof data === 'object') {
       return data;
     }
   };
+
+  public getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
+    return this.api
+      .customers()
+      .get({
+        queryArgs: {
+          where: `email="${email}"`,
+        },
+      })
+      .execute();
+  }
 
   private getClient = (
     auth: AuthState,
