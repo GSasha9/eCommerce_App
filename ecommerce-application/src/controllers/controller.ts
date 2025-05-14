@@ -4,6 +4,7 @@ import { HomeController } from './home/home-controller.ts';
 import { NotFoundController } from './not-found/notfound-controller.ts';
 import { LoginPageController } from './login/login-controller.ts';
 import { RegistrationController } from './registration/registration-controller.ts';
+import { authService } from '../services/commercetools/auth-service.ts';
 
 export class Controller {
   private router: Router;
@@ -11,8 +12,12 @@ export class Controller {
   private notFoundController: NotFoundController;
   private loginPageController: LoginPageController;
   private registrationController: RegistrationController;
+  private authorizationService = authService;
 
   constructor() {
+    this.authorizationService.initializeAnonymousSession().catch((err) => {
+      console.error('Anonymous session init failed:', err);
+    });
     this.homeController = new HomeController();
     this.notFoundController = new NotFoundController();
     this.loginPageController = new LoginPageController();
