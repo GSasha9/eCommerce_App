@@ -1,13 +1,14 @@
-import { LoginModel } from '../../model/user/login-model';
+// import { LoginModel } from '../../model/user/login-model';
 import { LoginPage } from '../../pages/login/login';
+// import { login } from '../../services/sdk';
 
 export class LoginPageController {
   private loginPage: LoginPage;
-  private userModel: LoginModel;
+  // private userModel: LoginModel;
 
   constructor() {
-    this.loginPage = new LoginPage({}, this.handleLoginSubmit);
-    this.userModel = new LoginModel();
+    this.loginPage = new LoginPage({} /* , this.handleLoginSubmit */);
+    // this.userModel = new LoginModel();
     this.render();
   }
 
@@ -21,14 +22,14 @@ export class LoginPageController {
     }
   }
 
-  private handleLoginSubmit = async (email: string, password: string): Promise<void> => {
-    try {
-      const response = await this.userModel.sendLoginAuthData(email, password);
+  // private handleLoginSubmit = async (email: string, password: string): Promise<void> => {
+  //   try {
+  //     const response = await login(email, password);
 
-      console.log('Login success:', response);
-      window.location.href = '/main';
-    } catch (error) {
-      console.error('Login error:', error);
-    }
-  };
+  //     console.log('Login success:', response);
+  //     window.location.href = '/main';
+  //   } catch (error) {
+  //     console.error('Login error:', error);
+  //   }
+  // };
 }

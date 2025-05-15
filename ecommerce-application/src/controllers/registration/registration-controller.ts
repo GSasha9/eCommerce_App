@@ -1,6 +1,6 @@
 import RegistrationModel from '../../model/registration/registration-model.ts';
 import RegistrationPage from '../../pages/registration';
-import { authService } from '../../services/commercetools/auth-service.ts';
+import { register } from '../../services/sdk';
 import {
   isFormName,
   isHTMLCheckboxElement,
@@ -16,7 +16,6 @@ export class RegistrationController {
   constructor() {
     this.page = new RegistrationPage();
     this.model = new RegistrationModel(this.page);
-    this.render();
   }
 
   public render(): void {
@@ -24,12 +23,10 @@ export class RegistrationController {
     this.page.containerForm.node.addEventListener('input', this.onChangeInputs);
     this.page.containerForm.node.addEventListener('input', this.onFocusOut);
     this.page.credentialElements.visibilityIcon.node.addEventListener('click', this.onClickChangeVisibility);
-    this.page.registrationButton.getElement().addEventListener('click', () => {
-      void this.inClickRegistration();
-    });
+    this.page.registrationButton.getElement().addEventListener('click', () => void this.onClickRegistration());
   }
 
-  private inClickRegistration = async (): Promise<void> => {
+  private onClickRegistration = async (): Promise<void> => {
     const data = {
       email: this.model.currentFormValues.email,
       password: this.model.currentFormValues.password,
@@ -61,7 +58,15 @@ export class RegistrationController {
       }),
     };
 
-    await authService.registerCustomer(data);
+    try {
+      await register(data);
+      // const api = getApi();
+      // const me = await api.me().get().execute();
+
+      // console.log(me);
+    } catch (error) {
+      console.log(1, error);
+    }
   };
 
   private onChangeInputs = (event: Event): void => {

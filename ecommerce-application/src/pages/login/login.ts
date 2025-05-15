@@ -5,12 +5,13 @@ import { View } from '../view';
 import { CreateButton } from '../../components/button/create-button';
 import { CreateInput } from '../../components/input/create-input';
 import { eyeCallback, emailValidation, passwordValidation, formValidation } from './utils';
+import { login } from '../../services/sdk';
 
 export class LoginPage extends View {
   private wrapper: CreateElement;
   constructor(
     parameters: Partial<IParameters> = {},
-    private onSubmit: (email: string, password: string) => Promise<void>,
+    // private onSubmit: (email: string, password: string) => Promise<void>,
   ) {
     super({ tag: 'div', classNames: ['login-page'], ...parameters });
     this.wrapper = LoginPage.createWrapper();
@@ -139,7 +140,11 @@ export class LoginPage extends View {
             const email = inputEmail.value;
             const password = inputPassword.value;
 
-            this.onSubmit(email, password).catch(console.error);
+            login({ email, password })
+              .then(() => {
+                window.location.href = '/main';
+              })
+              .catch(console.error);
           }
         }
       },

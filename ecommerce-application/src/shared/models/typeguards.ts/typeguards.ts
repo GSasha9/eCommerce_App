@@ -1,5 +1,7 @@
+import type { TokenStore } from '@commercetools/ts-client';
 import type { IFormValues, IResponce } from '../interfaces';
 
+export const isHTMLElement = (value: unknown): value is HTMLElement => value instanceof HTMLElement;
 export const isHTMLInputElement = (value: unknown): value is HTMLInputElement => value instanceof HTMLInputElement;
 export const isHTMLSelectElement = (value: unknown): value is HTMLSelectElement => value instanceof HTMLSelectElement;
 export const isHTMLCheckboxElement = (value: unknown): value is HTMLInputElement & { type: 'checkbox' } =>
@@ -20,6 +22,17 @@ export const isResponce = (value: unknown): value is IResponce =>
       'refresh_token' in value &&
       typeof value['refresh_token'] === 'string',
   );
+
+export const isTokenStore = (obj: unknown): obj is TokenStore => {
+  return Boolean(
+    obj &&
+      typeof obj === 'object' &&
+      'token' in obj &&
+      typeof obj.token === 'string' &&
+      'expirationTime' in obj &&
+      typeof obj.expirationTime === 'number',
+  );
+};
 
 export const isFormName = (value: unknown): value is keyof IFormValues =>
   isBooleanFormName(value) || isStringFormName(value);
