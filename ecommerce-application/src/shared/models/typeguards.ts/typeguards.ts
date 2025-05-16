@@ -1,5 +1,6 @@
 import type { TokenStore } from '@commercetools/ts-client';
 import type { IFormValues, IResponce } from '../interfaces';
+import type { CommercetoolsApiError } from '../type/commercetools-api-errors';
 
 export const isHTMLElement = (value: unknown): value is HTMLElement => value instanceof HTMLElement;
 export const isHTMLInputElement = (value: unknown): value is HTMLInputElement => value instanceof HTMLInputElement;
@@ -33,6 +34,17 @@ export const isTokenStore = (obj: unknown): obj is TokenStore => {
       typeof obj.expirationTime === 'number',
   );
 };
+export const isCommercetoolsApiError = (value: unknown): value is CommercetoolsApiError =>
+  typeof value === 'object' &&
+  value !== null &&
+  'body' in value &&
+  typeof value.body === 'object' &&
+  value.body !== null &&
+  'statusCode' in value &&
+  typeof value.statusCode === 'number' &&
+  'errors' in value.body &&
+  Array.isArray(value.body.errors) &&
+  value.body.errors.length >= 1;
 
 export const isFormName = (value: unknown): value is keyof IFormValues =>
   isBooleanFormName(value) || isStringFormName(value);

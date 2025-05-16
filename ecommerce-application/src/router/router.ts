@@ -55,20 +55,10 @@ export class Router implements IRouter {
   public init(): void {
     window.addEventListener('popstate', () => {
       this.handleRoute();
-      // this.test();
     });
-    // globalThis.addEventListener('load', () => this.test());
 
     this.handleRoute();
   }
-
-  // private test(): void {
-  //   const aToken = tokenCache('ct_anon_token').get();
-  //   const usToken = tokenCache('ct_user_token').get();
-
-  //   console.log('aToken---------', aToken);
-  //   console.log('usToken---------', usToken);
-  // }
 
   private handleRoute(): void {
     const path: string = this.getPathFromUrl();

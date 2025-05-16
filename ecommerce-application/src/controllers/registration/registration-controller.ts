@@ -1,8 +1,10 @@
 import RegistrationModel from '../../model/registration/registration-model.ts';
 import RegistrationPage from '../../pages/registration';
-import { authService } from '../../services/commercetools/auth-service.ts';
-//import { register } from '../../services/sdk';
+import { route } from '../../router/index.ts';
+import { register } from '../../services/sdk';
+import { handleApiError } from '../../services/sdk/handle-api-error.ts';
 import {
+  isCommercetoolsApiError,
   isFormName,
   isHTMLCheckboxElement,
   isHTMLInputElement,
@@ -60,14 +62,15 @@ export class RegistrationController {
     };
 
     try {
-      await authService.registerCustomer(data.email, data.password);
-      //await register(data);
-      // const api = getApi();
-      // const me = await api.me().get().execute();
-
-      // console.log(me);
+      await register(data);
+      // await authService.registerCustomer(data.email, data.password)
+      route.navigate('/main');
     } catch (error) {
-      console.log(1, error);
+      if (isCommercetoolsApiError(error)) {
+        handleApiError(error);
+      } else {
+        console.error('Unknown error', error);
+      }
     }
   };
 
