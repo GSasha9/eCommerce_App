@@ -1,4 +1,5 @@
 import { HomePage } from '../../pages/home/home.ts';
+import { getApi } from '../../services/sdk/auth.ts';
 
 export class HomeController {
   private homeView: HomePage;
@@ -19,5 +20,19 @@ export class HomeController {
       container.replaceChildren();
       container.appendChild(this.homeView.getHtmlElement());
     }
+
+    void this.temporarily(); // временно
   }
+
+  private temporarily = async (): Promise<void> => {
+    try {
+      const api = getApi();
+      const me = await api.me().carts().get().execute(); // запрос просто чтобы увидеть в LS token
+
+      console.log('ME=', me);
+      console.log('заглушка', this.homeView);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 }
