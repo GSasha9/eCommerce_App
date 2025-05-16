@@ -1,5 +1,6 @@
 import RegistrationModel from '../../model/registration/registration-model.ts';
 import RegistrationPage from '../../pages/registration';
+import { register } from '../../services/sdk';
 import {
   isFormName,
   isHTMLCheckboxElement,
@@ -15,7 +16,6 @@ export class RegistrationController {
   constructor() {
     this.page = new RegistrationPage();
     this.model = new RegistrationModel(this.page);
-    this.render();
   }
 
   public render(): void {
@@ -23,7 +23,51 @@ export class RegistrationController {
     this.page.containerForm.node.addEventListener('input', this.onChangeInputs);
     this.page.containerForm.node.addEventListener('input', this.onFocusOut);
     this.page.credentialElements.visibilityIcon.node.addEventListener('click', this.onClickChangeVisibility);
+    this.page.registrationButton.getElement().addEventListener('click', () => void this.onClickRegistration());
   }
+
+  private onClickRegistration = async (): Promise<void> => {
+    const data = {
+      email: this.model.currentFormValues.email,
+      password: this.model.currentFormValues.password,
+      dateOfBirth: this.model.currentFormValues.birthday,
+      firstName: this.model.currentFormValues.name,
+      lastName: this.model.currentFormValues.surname,
+      addresses: [
+        {
+          country: this.model.currentFormValues.country,
+          streetName: this.model.currentFormValues.street,
+          postalCode: this.model.currentFormValues['postal-code'],
+          city: this.model.currentFormValues.city,
+        },
+        {
+          country: this.model.currentFormValues['country-billing'],
+          streetName: this.model.currentFormValues['street-billing'],
+          postalCode: this.model.currentFormValues['postal-code-billing'],
+          city: this.model.currentFormValues['city-billing'],
+        },
+      ],
+      shippingAddresses: [0],
+      billingAddresses: this.model.currentFormValues['is-shipping-as-billing'] ? [0] : [1],
+
+      ...(this.model.currentFormValues['is-default-shipping'] && {
+        defaultShippingAddress: 0,
+      }),
+      ...(this.model.currentFormValues['is-default-billing'] && {
+        defaultBillingAddress: 1,
+      }),
+    };
+
+    try {
+      await register(data);
+      // const api = getApi();
+      // const me = await api.me().get().execute();
+
+      // console.log(me);
+    } catch (error) {
+      console.log(1, error);
+    }
+  };
 
   private onChangeInputs = (event: Event): void => {
     if (!(isHTMLInputElement(event.target) || isHTMLSelectElement(event.target))) return;

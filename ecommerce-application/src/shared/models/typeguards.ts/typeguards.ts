@@ -1,9 +1,38 @@
-import type { IFormValues } from '../interfaces';
+import type { TokenStore } from '@commercetools/ts-client';
+import type { IFormValues, IResponce } from '../interfaces';
 
+export const isHTMLElement = (value: unknown): value is HTMLElement => value instanceof HTMLElement;
 export const isHTMLInputElement = (value: unknown): value is HTMLInputElement => value instanceof HTMLInputElement;
 export const isHTMLSelectElement = (value: unknown): value is HTMLSelectElement => value instanceof HTMLSelectElement;
 export const isHTMLCheckboxElement = (value: unknown): value is HTMLInputElement & { type: 'checkbox' } =>
   value instanceof HTMLInputElement && value.type === 'checkbox';
+
+export const isResponce = (value: unknown): value is IResponce =>
+  Boolean(
+    value &&
+      typeof value === 'object' &&
+      'access_token' in value &&
+      typeof value['access_token'] === 'number' &&
+      'expires_in' in value &&
+      typeof value['expires_in'] === 'string' &&
+      'token_type' in value &&
+      typeof value['token_type'] === 'string' &&
+      'scope' in value &&
+      typeof value.scope === 'string' &&
+      'refresh_token' in value &&
+      typeof value['refresh_token'] === 'string',
+  );
+
+export const isTokenStore = (obj: unknown): obj is TokenStore => {
+  return Boolean(
+    obj &&
+      typeof obj === 'object' &&
+      'token' in obj &&
+      typeof obj.token === 'string' &&
+      'expirationTime' in obj &&
+      typeof obj.expirationTime === 'number',
+  );
+};
 
 export const isFormName = (value: unknown): value is keyof IFormValues =>
   isBooleanFormName(value) || isStringFormName(value);
