@@ -1,6 +1,7 @@
 import RegistrationModel from '../../model/registration/registration-model.ts';
 import RegistrationPage from '../../pages/registration';
-import { register } from '../../services/sdk';
+import { authService } from '../../services/commercetools/auth-service.ts';
+//import { register } from '../../services/sdk';
 import {
   isFormName,
   isHTMLCheckboxElement,
@@ -59,7 +60,8 @@ export class RegistrationController {
     };
 
     try {
-      await register(data);
+      await authService.registerCustomer(data.email, data.password);
+      //await register(data);
       // const api = getApi();
       // const me = await api.me().get().execute();
 

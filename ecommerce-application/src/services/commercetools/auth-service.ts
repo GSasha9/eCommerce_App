@@ -1,9 +1,9 @@
 import { ClientBuilder, type Client, type ClientResponse } from '@commercetools/ts-client';
 import { createApiBuilderFromCtpClient, type CustomerPagedQueryResponse } from '@commercetools/platform-sdk';
-import type { ByProjectKeyRequestBuilder } from '@commercetools/platform-sdk';
+import type { ByProjectKeyRequestBuilder, CustomerSignInResult } from '@commercetools/platform-sdk';
 import type { AuthState } from './models/types';
-
-type LoginResponse = object;
+import { tokenCache } from '../sdk/token';
+import { TOKEN } from './models/constants';
 
 class AuthorizationService {
   private static instance: AuthorizationService;
@@ -15,12 +15,11 @@ class AuthorizationService {
   private clientId = import.meta.env.VITE_CTP_CLIENT_ID;
   private clientSecret = import.meta.env.VITE_CTP_CLIENT_SECRET;
   private apiUrl = import.meta.env.VITE_CTP_API_URL;
+  private scopes = import.meta.env.VITE_CTP_SCOPES;
   private isAuthenticated = false;
 
-  //private clientCache: Map<string, Client> = new Map();
-
   private constructor() {
-    this.api = this.apiDefinition({ type: 'anonymous' });
+    this.api = this.initializeAnonymousSession();
   }
 
   public static getInstance(): AuthorizationService {
@@ -34,86 +33,6 @@ class AuthorizationService {
   public getAuthenticatedStatus(): boolean {
     return this.isAuthenticated;
   }
-
-  public async initializeAnonymousSession(): Promise<void> {
-    if (!this.isAuthenticated) {
-      const saveToken = localStorage.getItem('pl_anonymousAccessToken');
-
-      if (saveToken) {
-        console.log('Restoring anonymous session from storage', saveToken);
-
-        this.api = this.apiDefinition({ type: 'anonymous' });
-
-        return;
-      }
-
-      try {
-        const anonymusToken = await this.getAccessToken({ type: 'anonymous' });
-
-        console.log('Anonymus token', anonymusToken);
-
-        if (anonymusToken) {
-          this.api = this.apiDefinition({ type: 'anonymous' });
-          console.log('Anonymous session initialized');
-        }
-      } catch {
-        console.error('Failed to initialize anonymous session:', Error);
-      }
-    }
-  }
-
-  public apiDefinition = (auth: AuthState, projectKey = this.projectKey): ByProjectKeyRequestBuilder => {
-    const client = this.getClient(auth);
-
-    return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });
-  };
-
-  public getAccessToken = async (auth: AuthState): Promise<string | undefined> => {
-    const basicAuth = btoa(`${this.clientId}:${this.clientSecret}`);
-
-    const scope = encodeURIComponent(
-      `manage_my_profile:${this.projectKey} manage_my_orders:${this.projectKey} view_published_products:${this.projectKey} manage_customers:${this.projectKey}`,
-    );
-
-    const body =
-      auth.type === 'authenticated'
-        ? `grant_type=password&username=${encodeURIComponent(auth.email)}&password=${encodeURIComponent(auth.password)}&scope=${scope}`
-        : `grant_type=client_credentials&scope=manage_my_profile:${this.projectKey}`;
-
-    const url =
-      auth.type === 'authenticated'
-        ? `${this.authUrl}/oauth/${this.projectKey}/customers/token` // Правильный URL для Password Flow
-        : `${this.authUrl}/oauth/token`; // URL для Client Credentials Flow
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${basicAuth}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body,
-    });
-
-    if (!response.ok) {
-      const error = await response.text();
-
-      throw new Error(`Failed to fetch token: ${error}`);
-    }
-
-    const data: unknown = await response.json();
-
-    if (data && typeof data === 'object' && 'access_token' in data && typeof data.access_token === 'string') {
-      const accessToken = data.access_token;
-
-      if (auth.type === 'anonymous') {
-        localStorage.setItem('pl_anonymousAccessToken', accessToken);
-      }
-
-      return accessToken;
-    } else {
-      console.error('Invalid token response:', data);
-    }
-  };
 
   public registerCustomer = async (email: string, password: string, anonymousCartId?: string): Promise<void> => {
     if (!this.projectKey || !this.apiUrl) {
@@ -132,20 +51,7 @@ class AuthorizationService {
     };
 
     try {
-      const response = await this.api.me().signup().post({ body: bodySignUp }).execute();
-
-      console.log(response.statusCode === 200, '200');
-
-      if (response.statusCode === 200) {
-        // optionally: login and get token
-        const token = await this.getAccessToken({ type: 'authenticated', email: email, password: password });
-
-        if (token) {
-          const loginResponse = await this.signInCustomer(email, password, undefined, anonymousCartId);
-
-          console.log(loginResponse);
-        }
-      }
+      await this.api.me().signup().post({ body: bodySignUp }).execute();
     } catch (error) {
       console.error('Registration failed:', error);
     }
@@ -156,10 +62,13 @@ class AuthorizationService {
     password: string,
     _accessToken?: string,
     anonymousCartId?: string,
-  ): Promise<LoginResponse | undefined> => {
+  ): Promise<CustomerSignInResult | undefined> => {
     if (!this.projectKey) {
       throw new Error('Missing required project key for Commercetools');
     }
+
+    this.api = this.apiDefinition({ type: 'authenticated', email, password });
+    this.isAuthenticated = true;
 
     try {
       const response = await this.api
@@ -179,16 +88,21 @@ class AuthorizationService {
         })
         .execute();
 
-      this.api = this.apiDefinition({ type: 'authenticated', email, password });
-      this.isAuthenticated = true;
-
-      console.log('Login successful:', response.body);
-
       return response.body;
     } catch (error) {
       console.error('Login failed:', error);
       throw new Error('Login failed');
     }
+  };
+
+  public logOutCustomer = (): void => {
+    const cacheKey = TOKEN.USER;
+
+    if (!localStorage.getItem(cacheKey)) return;
+
+    localStorage.removeItem(cacheKey);
+
+    this.isAuthenticated = false;
   };
 
   public getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
@@ -201,6 +115,16 @@ class AuthorizationService {
       })
       .execute();
   }
+
+  private initializeAnonymousSession(): ByProjectKeyRequestBuilder {
+    return this.apiDefinition({ type: 'anonymous' });
+  }
+
+  private apiDefinition = (auth: AuthState, projectKey = this.projectKey): ByProjectKeyRequestBuilder => {
+    const client = this.getClient(auth);
+
+    return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });
+  };
 
   private getClient = (
     auth: AuthState,
@@ -215,6 +139,8 @@ class AuthorizationService {
     const builder = new ClientBuilder();
 
     if (auth.type === 'authenticated') {
+      console.log('Scopes used for authenticated client:', this.scopes);
+
       return builder
         .withPasswordFlow({
           host: this.authUrl,
@@ -227,20 +153,23 @@ class AuthorizationService {
               password: auth.password,
             },
           },
+          scopes: this.scopes.split(' '),
+          tokenCache: tokenCache('ct_user_token'),
+          httpClient: fetch,
         })
-        .withHttpMiddleware({ host: this.apiUrl })
+        .withHttpMiddleware({ host: this.apiUrl, httpClient: fetch })
         .build();
     } else {
       return builder
         .withAnonymousSessionFlow({
           host: this.authUrl,
           projectKey,
-          credentials: {
-            clientId,
-            clientSecret,
-          },
+          credentials: { clientId, clientSecret },
+          scopes: ['view_published_products:plants', 'manage_my_profile:plants'],
+          httpClient: fetch,
+          tokenCache: tokenCache('ct_anon_token'), //чтобы сохранять токен между перезагрузками страницы, не делать авторизацию каждый раз. Позволяет SDK автоматически обновлять токен
         })
-        .withHttpMiddleware({ host: this.apiUrl })
+        .withHttpMiddleware({ host: this.apiUrl, httpClient: fetch })
         .build();
     }
   };

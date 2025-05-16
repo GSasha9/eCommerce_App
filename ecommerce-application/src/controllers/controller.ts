@@ -2,25 +2,21 @@ import type { Router } from '../router/router';
 import { route, ROUTES } from '../router/';
 import { HomeController } from './home/home-controller.ts';
 import { NotFoundController } from './not-found/notfound-controller.ts';
-import { LoginPageController } from './login/login-controller.ts';
+import { LoginController } from './login/login-controller.ts';
 import { RegistrationController } from './registration/registration-controller.ts';
-import { authService } from '../services/commercetools/auth-service.ts';
 
 export class Controller {
   private router: Router;
   private homeController: HomeController;
   private notFoundController: NotFoundController;
-  private loginPageController: LoginPageController;
+  private loginPageController: LoginController;
   private registrationController: RegistrationController;
-  private authorizationService = authService;
+  //private authorizationService = authService;
 
   constructor() {
-    this.authorizationService.initializeAnonymousSession().catch((err) => {
-      console.error('Anonymous session init failed:', err);
-    });
     this.homeController = new HomeController();
     this.notFoundController = new NotFoundController();
-    this.loginPageController = new LoginPageController();
+    this.loginPageController = new LoginController();
     this.registrationController = new RegistrationController();
     this.router = route;
     this.setupRoutes();

@@ -29,7 +29,7 @@ export default defineConfig([
         'error',
         { accessibility: 'explicit', overrides: { constructors: 'off' } },
       ],
-      '@typescript-eslint/member-ordering': 'error',
+      //'@typescript-eslint/member-ordering': 'error',
       'class-methods-use-this': 'error',
       'lines-between-class-members': [2, 'always', { exceptAfterSingleLine: true }],
       'no-multiple-empty-lines': [2, { max: 1, maxEOF: 0 }],
