@@ -5,6 +5,8 @@ export const tokenCache = (key: string): TokenCache => ({
   get: (): TokenStore => {
     const token = localStorage.getItem(key);
 
+    console.log('get', key, token);
+
     if (token) {
       const parsed: unknown = JSON.parse(token);
 
@@ -15,5 +17,9 @@ export const tokenCache = (key: string): TokenCache => ({
 
     return { expirationTime: 0, token: '' };
   },
-  set: (token): void => localStorage.setItem(key, JSON.stringify(token)),
+  set: (token): void => {
+    console.log('set', key, token);
+
+    localStorage.setItem(key, JSON.stringify(token));
+  },
 });
