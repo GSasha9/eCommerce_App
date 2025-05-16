@@ -6,6 +6,7 @@ export class Modal {
   public message: Element<'p'>;
   protected modal: Element<'div'>;
   private wrapper: Element<'div'>;
+  private button: Element<'button'>;
   private root = document.body;
 
   constructor(message: string) {
@@ -15,10 +16,15 @@ export class Modal {
       children: [],
       textContent: message,
     });
+    this.button = new Element<'button'>({
+      tag: 'button',
+      className: 'button-close',
+      textContent: 'close',
+    });
     this.modal = new Element<'div'>({
       tag: 'div',
       className: 'modal',
-      children: [this.message.node],
+      children: [this.message.node, this.button.node],
     });
     this.wrapper = new Element<'div'>({
       tag: 'div',
@@ -26,6 +32,7 @@ export class Modal {
       children: [this.modal.node],
     });
     this.wrapper.node.addEventListener('click', this.closeOutsideClick);
+    this.button.node.addEventListener('click', this.close);
   }
 
   public open(): void {
