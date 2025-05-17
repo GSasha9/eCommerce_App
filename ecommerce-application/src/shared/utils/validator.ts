@@ -2,13 +2,13 @@ import { MIN_AGE } from './validator-сonstants';
 
 export class Validator {
   public static isEmail(value: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
     return emailRegex.test(value);
   }
 
   public static isPassword(value: string): boolean {
-    const passwordRegex = /^(?!\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}(?<!\s)$/;
+    const passwordRegex = /^(?!\s)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*]).{8,}(?<!\s)$/;
 
     return passwordRegex.test(value);
   }

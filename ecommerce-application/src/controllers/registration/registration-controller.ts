@@ -1,3 +1,4 @@
+import { ModalMessage } from '../../components/modals/modal-message.ts';
 import RegistrationModel from '../../model/registration/registration-model.ts';
 import RegistrationPage from '../../pages/registration';
 import { route } from '../../router/index.ts';
@@ -64,6 +65,7 @@ export class RegistrationController {
     try {
       await register(data);
       // await authService.registerCustomer(data.email, data.password)
+      await new ModalMessage('The account was created successfully', 'info').open();
       route.navigate('/main');
     } catch (error) {
       if (isCommercetoolsApiError(error)) {
@@ -99,12 +101,16 @@ export class RegistrationController {
   private onFocusOut = (event: Event): void => {
     if (!(isHTMLInputElement(event.target) || isHTMLSelectElement(event.target))) return;
 
-    const { errors, isValidForm } = this.model.validateForm();
-
-    this.page.deleteErrorMessage();
-    errors.forEach((name) => this.page.renderErrorMassage(name, MESSAGE_CONTENT[name]));
-    this.page.renderDisabledRegister(!isValidForm);
+    this.renderErrors();
   };
+
+  private renderErrors(): void {
+    this.model.validateForm();
+    this.model.determineValidForm();
+    this.page.deleteErrorMessage();
+    this.model.errors.forEach((name) => this.page.renderErrorMassage(name, MESSAGE_CONTENT[name]));
+    this.page.renderDisabledRegister(this.model.isValidForm);
+  }
 
   private onClickChangeVisibility = (): void => {
     const input = this.page.credentialElements.inputPassword.getElement();
