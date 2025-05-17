@@ -28,6 +28,14 @@
 
 .content {
   font-size: medium;
+
+  &.info {
+    color: green;
+  }
+
+  &.error {
+    color: rgb(195 0 0);
+  }
 }
 
 .button-close {

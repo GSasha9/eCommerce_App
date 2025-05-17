@@ -8,6 +8,7 @@ export class Modal {
   private wrapper: Element<'div'>;
   private button: Element<'button'>;
   private root = document.body;
+  private resolver?: () => void;
 
   constructor(message: string) {
     this.message = new Element<'p'>({
@@ -32,18 +33,26 @@ export class Modal {
       children: [this.modal.node],
     });
     this.wrapper.node.addEventListener('click', this.closeOutsideClick);
-    this.button.node.addEventListener('click', this.close);
   }
 
-  public open(): void {
+  public open(): Promise<void> {
     this.root.append(this.wrapper.node);
     globalThis.addEventListener('keydown', this.closeEscape);
+
+    return new Promise<void>((resolve) => {
+      this.resolver = resolve;
+    });
   }
 
   public close = (): void => {
     this.root.classList.toggle('.noScroll');
     this.wrapper.node.remove();
     globalThis.removeEventListener('keydown', this.closeEscape);
+
+    if (this.resolver) {
+      this.resolver();
+      this.resolver = undefined;
+    }
   };
 
   private closeOutsideClick = (event: MouseEvent): void => {
