@@ -16,7 +16,7 @@ const client = new ClientBuilder()
     credentials: { clientId, clientSecret },
     scopes,
     httpClient: fetch,
-    tokenCache: tokenCache('ct_anon_token'), //чтобы сохранять токен между перезагрузками страницы, не делать авторизацию каждый раз. Позволяет SDK автоматически обновлять токен
+    tokenCache: tokenCache('ct_anon_token'),
   })
   .withHttpMiddleware({ host: apiUrl, httpClient: fetch })
   .build();

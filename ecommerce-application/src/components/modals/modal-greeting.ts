@@ -2,7 +2,7 @@ import Element from '../element';
 import { Modal } from './modal';
 import './modal.scss';
 
-export class ModalMessage extends Modal {
+export class ModalGreeting extends Modal {
   private content: Element<'div'>;
   private button: Element<'button'>;
   private message: string;
@@ -13,11 +13,11 @@ export class ModalMessage extends Modal {
     this.button = new Element<'button'>({
       tag: 'button',
       className: 'button-close',
-      textContent: 'CLOSE',
+      textContent: 'Ok',
     });
     this.content = new Element<'div'>({
       tag: 'div',
-      className: 'content error',
+      className: 'content info',
       textContent: this.message,
     });
 

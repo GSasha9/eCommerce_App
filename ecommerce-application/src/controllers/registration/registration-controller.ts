@@ -1,8 +1,8 @@
-import { ModalMessage } from '../../components/modals/modal-message.ts';
+import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import RegistrationModel from '../../model/registration/registration-model.ts';
 import RegistrationPage from '../../pages/registration';
 import { route } from '../../router/index.ts';
-import { register } from '../../services/sdk';
+import { authService } from '../../services/commercetools/auth-service.ts';
 import { handleApiError } from '../../services/sdk/handle-api-error.ts';
 import {
   isCommercetoolsApiError,
@@ -63,9 +63,9 @@ export class RegistrationController {
     };
 
     try {
-      await register(data);
+      await authService.registerCustomer(data);
       // await authService.registerCustomer(data.email, data.password)
-      await new ModalMessage('The account was created successfully', 'info').open();
+      await new ModalGreeting('The account was created successfully').open();
       route.navigate('/main');
     } catch (error) {
       if (isCommercetoolsApiError(error)) {
