@@ -94,6 +94,25 @@
   color: $text-secondary;
 }
 
+.wrapper-question {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: flex-start;
+
+  width: 100%;
+  padding: 46px 0;
+
+  color: $text-secondary;
+}
+
+.link-sign-in {
+  color: rgb(217 162 90);
+
+  &:hover {
+    color: rgb(88 168 70);
+  }
+}
+
 .default-shipping,
 .as-billing {
   flex-grow: 0;

@@ -17,6 +17,8 @@ class RegistrationPage extends View {
   public shippingAddressElements: ShippingAddressElements;
   public billingAddressElements: BillingAddressElements;
   public containerForm: Element<'form'>;
+  public linkToSignIn: Element<'a'>;
+  public wrapperQuestion: Element<'div'>;
   public registrationButton: CreateButton;
 
   constructor(parameters: Partial<IParameters> = {}) {
@@ -49,6 +51,25 @@ class RegistrationPage extends View {
       textContent: 'Billing Address',
     });
 
+    this.linkToSignIn = new Element<'a'>({
+      tag: 'a',
+      className: 'link-sign-in',
+      href: '/login',
+      textContent: 'Sign In',
+    });
+    this.wrapperQuestion = new Element<'div'>({
+      tag: 'div',
+      className: 'wrapper-question',
+      children: [
+        new Element<'div'>({
+          tag: 'div',
+          className: 'question',
+          textContent: 'Already have an account?',
+        }).node,
+        this.linkToSignIn.node,
+      ],
+    });
+
     this.registrationButton = new CreateButton({
       classNames: ['register'],
       textContent: 'REGISTER',
@@ -67,6 +88,7 @@ class RegistrationPage extends View {
         this.shippingAddressElements.getElement(),
         billingAddressTitle.getElement(),
         this.billingAddressElements.getElement(),
+        this.wrapperQuestion.node,
         this.registrationButton.getElement(),
       ],
     });
@@ -74,11 +96,11 @@ class RegistrationPage extends View {
     this.viewElementCreator.addInnerElement(this.containerForm.node);
   }
 
-  public renderDisabledRegister(isDisabled: boolean): void {
-    if (isDisabled) {
-      this.registrationButton.getElement().setAttribute('disabled', 'true');
-    } else {
+  public renderDisabledRegister(isValidForm: boolean): void {
+    if (isValidForm) {
       this.registrationButton.getElement().removeAttribute('disabled');
+    } else {
+      this.registrationButton.getElement().setAttribute('disabled', 'true');
     }
   }
 
