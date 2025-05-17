@@ -27,12 +27,12 @@ export class HomeController {
   private temporarily = async (): Promise<void> => {
     try {
       const api = getApi();
-      const me = await api.me().carts().get().execute(); // запрос просто чтобы увидеть в LS token
+      const me = await api.me().carts().get().execute(); // запрос просто чтобы увидеть в LS token который сгенерил sdk
 
       console.log('ME=', me);
       console.log('заглушка', this.homeView);
     } catch (error) {
-      console.log(error);
+      console.log('1', error);
     }
   };
 }

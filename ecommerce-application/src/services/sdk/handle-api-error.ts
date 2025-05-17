@@ -1,4 +1,4 @@
-import { ErrorModal } from '../../components/modals/error-modal.ts';
+import { ModalMessage } from '../../components/modals/modal-message.ts';
 import type { CommercetoolsApiError } from '../../shared/models/type';
 import { isCommercetoolsApiError } from '../../shared/models/typeguards.ts';
 
@@ -9,46 +9,52 @@ export const handleApiError = (error: CommercetoolsApiError): void => {
 
     if (statusCode === 400) {
       switch (code) {
+        case 'InvalidCredentials':
+          void new ModalMessage('Incorrect email or password. Please try again.', 'error').open();
+
+          break;
         case 'InvalidJsonInput':
-          new ErrorModal('Invalid input data. Please check the form and try again.').open();
+          void new ModalMessage('Invalid input data. Please check the form and try again.', 'error').open();
+          console.log(error.body.errors[0].message);
 
           break;
         case 'InvalidQueryParam':
-          new ErrorModal('Invalid query parameter provided.').open();
+          void new ModalMessage('Invalid query parameter provided.', 'error').open();
 
           break;
         case 'InvalidPathParam':
-          new ErrorModal('Invalid path parameter.').open();
+          void new ModalMessage('Invalid path parameter.', 'error').open();
 
           break;
         case 'DuplicateField':
-          new ErrorModal('A user with this email already exists.').open();
+          void new ModalMessage('A user with this email already exists.', 'error').open();
 
           break;
         case 'FieldValueNotFound':
-          new ErrorModal('A required field is missing.').open();
+          void new ModalMessage('A required field is missing.', 'error').open();
 
           break;
         case 'GitRepositoryNotReachableError':
-          new ErrorModal('Git repository could not be reached.').open();
+          void new ModalMessage('Git repository could not be reached.', 'error').open();
 
           break;
         default:
-          new ErrorModal(error.body.errors[0].message || 'Bad request. Please try again.').open();
+          void new ModalMessage(error.body.errors[0].message || 'Bad request. Please try again.', 'error').open();
+          console.log('error.body---', error.body);
       }
     }
 
     if (statusCode === 401) {
       switch (code) {
         case 'InvalidCredentials':
-          new ErrorModal('Incorrect email or password. Please try again.').open();
+          void new ModalMessage('Incorrect email or password. Please try again.', 'error').open();
 
           break;
         default:
-          new ErrorModal(error.body.errors[0].message || 'Unauthorized access.').open();
+          void new ModalMessage(error.body.errors[0].message || 'Unauthorized access.', 'error').open();
       }
     }
   } else {
-    new ErrorModal('An unexpected error occurred. Please try again later.').open();
+    void new ModalMessage('An unexpected error occurred. Please try again later.', 'error').open();
   }
 };
