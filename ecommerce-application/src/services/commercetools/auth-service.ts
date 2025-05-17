@@ -1,23 +1,26 @@
-import { ClientBuilder, type Client } from '@commercetools/ts-client';
-import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
-import type { ByProjectKeyRequestBuilder, CustomerDraft } from '@commercetools/platform-sdk';
+import { ClientBuilder, type Client, type ClientResponse } from '@commercetools/ts-client';
+import { createApiBuilderFromCtpClient, type CustomerPagedQueryResponse } from '@commercetools/platform-sdk';
+import type { ByProjectKeyRequestBuilder, CustomerSignInResult } from '@commercetools/platform-sdk';
 import type { AuthState } from './models/types';
-import { isResponce } from '../../shared/models/typeguards.ts';
-
-type LoginResponse = object;
+import { tokenCache } from '../sdk/token';
+import { TOKEN } from './models/constants';
 
 class AuthorizationService {
   private static instance: AuthorizationService;
+
+  private api: ByProjectKeyRequestBuilder;
 
   private projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
   private authUrl = import.meta.env.VITE_CTP_AUTH_URL;
   private clientId = import.meta.env.VITE_CTP_CLIENT_ID;
   private clientSecret = import.meta.env.VITE_CTP_CLIENT_SECRET;
   private apiUrl = import.meta.env.VITE_CTP_API_URL;
+  private scopes = import.meta.env.VITE_CTP_SCOPES;
+  private isAuthenticated = false;
 
-  //private clientCache: Map<string, Client> = new Map();
-
-  private constructor() {}
+  private constructor() {
+    this.api = this.initializeAnonymousSession();
+  }
 
   public static getInstance(): AuthorizationService {
     if (!AuthorizationService.instance) {
@@ -27,62 +30,18 @@ class AuthorizationService {
     return AuthorizationService.instance;
   }
 
-  public apiDefinition = (auth: AuthState, projectKey = this.projectKey): ByProjectKeyRequestBuilder => {
-    const client = this.getClient(auth);
+  public getAuthenticatedStatus(): boolean {
+    return this.isAuthenticated;
+  }
 
-    return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });
-  };
-
-  public getAccessToken = async (auth: AuthState): Promise<string | undefined> => {
-    const basicAuth = btoa(`${this.clientId}:${this.clientSecret}`);
-
-    const scope = encodeURIComponent(
-      `manage_my_profile:${this.projectKey} manage_my_orders:${this.projectKey} view_published_products:${this.projectKey} manage_customers:${this.projectKey}`,
-    );
-
-    const body =
-      auth.type === 'authenticated'
-        ? `grant_type=password&username=${encodeURIComponent(auth.email)}&password=${encodeURIComponent(auth.password)}&scope=${scope}`
-        : `grant_type=client_credentials&scope=manage_my_profile:${this.projectKey}`;
-
-    const url =
-      auth.type === 'authenticated'
-        ? `${this.authUrl}/oauth/${this.projectKey}/customers/token` // Правильный URL для Password Flow
-        : `${this.authUrl}/oauth/token`; // URL для Client Credentials Flow
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Basic ${basicAuth}`,
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body,
-    });
-
-    if (!response.ok) {
-      const error = await response.text();
-
-      throw new Error(`Failed to fetch token: ${error}`);
-    }
-
-    const data: unknown = await response.json();
-
-    if (data && typeof data === 'object' && 'access_token' in data && typeof data.access_token === 'string') {
-      console.log('Access token:', data);
-
-      return data.access_token;
-    } else {
-      console.error('Invalid token response:', data);
-    }
-  };
-
-  public registerCustomer = async (data: CustomerDraft, anonymousCartId?: string): Promise<object | undefined> => {
+  public registerCustomer = async (email: string, password: string, anonymousCartId?: string): Promise<void> => {
     if (!this.projectKey || !this.apiUrl) {
       throw new Error('Missing required config for Commercetools');
     }
 
-    const customerDraft: CustomerDraft = {
-      ...data,
+    const bodySignUp = {
+      email,
+      password,
       ...(anonymousCartId && {
         anonymousCart: {
           id: anonymousCartId,
@@ -92,93 +51,79 @@ class AuthorizationService {
     };
 
     try {
-      const anonymusToken = await this.getAccessToken({ type: 'anonymous' });
-
-      console.log('1 anonymusToken--', anonymusToken);
-      const api = this.apiDefinition({ type: 'anonymous' });
-      const response = await api.customers().post({ body: customerDraft }).execute();
-
-      console.log('2 пользователь создан--', response.body);
-
-      if (data.password) {
-        const token = await this.getAccessToken({ type: 'authenticated', email: data.email, password: data.password });
-
-        if (token) {
-          const response = await this.signInCustomer(data.email, data.password, token);
-
-          if (isResponce(response)) {
-            const { access_token, refresh_token } = response;
-
-            localStorage.setItem(
-              'token',
-              JSON.stringify({ access_token: String(access_token), refresh_token: String(refresh_token) }),
-            );
-            const customer = await api
-              .me()
-              .get({
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              })
-              .execute();
-
-            localStorage.setItem('customer', JSON.stringify(customer.body));
-            console.log('3 созданный пользователь залогинен--', response);
-            console.log('4 данные me--', customer);
-
-            return response;
-          }
-        }
-      }
+      await this.api.me().signup().post({ body: bodySignUp }).execute();
     } catch (error) {
-      console.error('Registration failed---', error);
+      console.error('Registration failed:', error);
     }
   };
 
   public signInCustomer = async (
     email: string,
     password: string,
-    accessToken: string,
+    _accessToken?: string,
     anonymousCartId?: string,
-  ): Promise<LoginResponse | undefined> => {
-    if (!this.projectKey || !this.apiUrl) {
-      throw new Error('Missing required config for Commercetools');
+  ): Promise<CustomerSignInResult | undefined> => {
+    if (!this.projectKey) {
+      throw new Error('Missing required project key for Commercetools');
     }
 
-    const url = `${this.apiUrl}/${this.projectKey}/login`;
+    this.api = this.apiDefinition({ type: 'authenticated', email, password });
+    this.isAuthenticated = true;
 
-    const body: Record<string, string | object> = {
-      email,
-      password,
-    };
+    try {
+      const response = await this.api
+        .me()
+        .login()
+        .post({
+          body: {
+            email,
+            password,
+            ...(anonymousCartId && {
+              anonymousCart: {
+                id: anonymousCartId,
+                typeId: 'cart',
+              },
+            }),
+          },
+        })
+        .execute();
 
-    if (anonymousCartId) {
-      body.anonymousCart = {
-        id: anonymousCartId,
-        typeId: 'cart',
-      };
+      return response.body;
+    } catch (error) {
+      console.error('Login failed:', error);
+      throw new Error('Login failed');
     }
+  };
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
-    });
+  public logOutCustomer = (): void => {
+    const cacheKey = TOKEN.USER;
 
-    if (!response.ok) {
-      const error = await response.text();
+    if (!localStorage.getItem(cacheKey)) return;
 
-      throw new Error(`Login failed: ${error}`);
-    }
+    localStorage.removeItem(cacheKey);
 
-    const data: unknown = await response.json();
+    this.isAuthenticated = false;
+  };
 
-    if (data && typeof data === 'object') {
-      return data;
-    }
+  public getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
+    return this.api
+      .customers()
+      .get({
+        queryArgs: {
+          where: `email="${email}"`,
+        },
+      })
+      .execute();
+  }
+
+  private initializeAnonymousSession(): ByProjectKeyRequestBuilder {
+    return this.apiDefinition({ type: 'anonymous' });
+  }
+
+  private apiDefinition = (auth: AuthState, projectKey = this.projectKey): ByProjectKeyRequestBuilder => {
+    const client = this.getClient(auth);
+
+    return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey });
   };
 
   private getClient = (
@@ -194,6 +139,8 @@ class AuthorizationService {
     const builder = new ClientBuilder();
 
     if (auth.type === 'authenticated') {
+      console.log('Scopes used for authenticated client:', this.scopes);
+
       return builder
         .withPasswordFlow({
           host: this.authUrl,
@@ -206,20 +153,23 @@ class AuthorizationService {
               password: auth.password,
             },
           },
+          scopes: this.scopes.split(' '),
+          tokenCache: tokenCache('ct_user_token'),
+          httpClient: fetch,
         })
-        .withHttpMiddleware({ host: this.apiUrl })
+        .withHttpMiddleware({ host: this.apiUrl, httpClient: fetch })
         .build();
     } else {
       return builder
-        .withClientCredentialsFlow({
+        .withAnonymousSessionFlow({
           host: this.authUrl,
           projectKey,
-          credentials: {
-            clientId,
-            clientSecret,
-          },
+          credentials: { clientId, clientSecret },
+          scopes: ['view_published_products:plants', 'manage_my_profile:plants'],
+          httpClient: fetch,
+          tokenCache: tokenCache('ct_anon_token'), //чтобы сохранять токен между перезагрузками страницы, не делать авторизацию каждый раз. Позволяет SDK автоматически обновлять токен
         })
-        .withHttpMiddleware({ host: this.apiUrl })
+        .withHttpMiddleware({ host: this.apiUrl, httpClient: fetch })
         .build();
     }
   };

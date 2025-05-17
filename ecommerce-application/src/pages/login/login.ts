@@ -3,163 +3,87 @@ import type { IParameters } from '../../shared/models/interfaces';
 import { CreateElement } from '../../shared/utils/create-element';
 import { View } from '../view';
 import { CreateButton } from '../../components/button/create-button';
-import { CreateInput } from '../../components/input/create-input';
-import { eyeCallback, emailValidation, passwordValidation, formValidation } from './utils';
-import { login } from '../../services/sdk';
+import Element from '../../components/element/element.ts';
+import { CredentialElements } from '../registration/credentials-elements.ts';
+import type { LoginController } from '../../controllers/login/login-controller.ts';
 
 export class LoginPage extends View {
-  private wrapper: CreateElement;
-  constructor(
-    parameters: Partial<IParameters> = {},
-    // private onSubmit: (email: string, password: string) => Promise<void>,
-  ) {
+  public credentialElements: CredentialElements;
+  public loginButton: CreateButton;
+  public containerForm: Element<'form'>;
+  public loginController: LoginController;
+
+  constructor(parameters: Partial<IParameters> = {}, controller: LoginController) {
     super({ tag: 'div', classNames: ['login-page'], ...parameters });
-    this.wrapper = LoginPage.createWrapper();
-    this.createLoginPageContent();
-  }
 
-  private static createWrapper(): CreateElement {
-    return new CreateElement({
-      tag: 'section',
-      classNames: ['login'],
-      textContent: '',
-      callback: (): void => {},
-    });
-  }
+    this.loginController = controller;
 
-  private createHeader(): void {
-    const header = new CreateElement({
-      tag: 'header',
-      classNames: ['login__header'],
-      textContent: '',
-      callback: (): void => {},
-    });
-
-    const links = ['Login', 'Registration'];
-
-    links.forEach((item) => {
-      const link = new CreateElement({
-        tag: 'a',
-        classNames: ['header__menu-link'],
-        textContent: item,
-        callback: (event: Event): void => {
-          event.preventDefault();
-          window.location.href = `/${item.toLowerCase()}`;
-        },
-      });
-
-      header.addInnerElement(link);
-    });
-
-    this.wrapper.addInnerElement(header);
-  }
-
-  private createForm(): void {
-    const form: CreateElement = new CreateElement({
-      tag: 'form',
-      classNames: ['login__form'],
-      textContent: '',
-      callback: (): void => {},
-    });
-
-    const message: CreateElement = new CreateElement({
+    const mainTitle = new CreateElement({
       tag: 'h2',
-      classNames: ['login__message'],
-      textContent: 'Enter your username and password to login',
-      callback: (): void => {},
+      classNames: ['title-login'],
+      textContent: 'Login',
     });
 
-    form.addInnerElement(message);
-
-    const inputsType = ['email', 'password'];
-
-    let inputEmail: HTMLElement;
-    let inputPassword: HTMLElement;
-
-    inputsType.forEach((item) => {
-      const inputContainer: CreateElement = new CreateElement({
-        tag: 'div',
-        classNames: [`form__inputbox--${item}`],
-        textContent: '',
-        callback: (): void => {},
-      });
-
-      const input = new CreateInput({
-        classNames: [`${item}`],
-        textContent: '',
-        callback: (): void => {},
-        type: item,
-      });
-
-      if (item === 'email') {
-        inputEmail = input.getElement();
-        inputEmail.addEventListener('keyup', () => {
-          const inputElement = input.getElement();
-
-          if (inputElement instanceof HTMLInputElement) {
-            emailValidation(inputElement);
-          }
-        });
-      } else {
-        inputPassword = input.getElement();
-        inputPassword.addEventListener('keyup', () => {
-          const inputElement = input.getElement();
-
-          if (inputElement instanceof HTMLInputElement) {
-            passwordValidation(inputElement);
-          }
-        });
-      }
-
-      inputContainer.addInnerElement(input);
-
-      if (item === 'password') {
-        const eye: CreateElement = new CreateElement({
-          tag: 'div',
-          classNames: ['eye', 'eye-close'],
-          textContent: '',
-          callback: eyeCallback,
-        });
-
-        inputContainer.addInnerElement(eye);
-      }
-
-      form.addInnerElement(inputContainer);
-    });
-
-    const loginButton: CreateButton = new CreateButton({
-      classNames: ['form__button'],
-      textContent: 'login',
-      type: 'button',
-      disabled: false,
-      callback: (): void => {
-        if (inputEmail instanceof HTMLInputElement && inputPassword instanceof HTMLInputElement) {
-          const valid = formValidation(inputEmail, inputPassword);
-
-          if (valid) {
-            const email = inputEmail.value;
-            const password = inputPassword.value;
-
-            login({ email, password })
-              .then(() => {
-                window.location.href = '/main';
-              })
-              .catch(console.error);
-          }
-        }
+    const registrationLink = new CreateElement({
+      tag: 'a',
+      classNames: ['link-registration'],
+      textContent: 'Registration',
+      callback: (event: Event): void => {
+        event.preventDefault();
+        window.location.href = `/registration`;
       },
     });
 
-    form.addInnerElement(loginButton);
+    this.credentialElements = new CredentialElements();
 
-    this.wrapper.addInnerElement(form);
+    this.loginButton = new CreateButton({
+      classNames: ['form__button'],
+      textContent: 'login',
+      type: 'button',
+      disabled: true,
+    });
+
+    this.containerForm = this.containerForm = new Element<'form'>({
+      tag: 'form',
+      className: 'wrapper-form-login',
+      children: [
+        mainTitle.getElement(),
+        registrationLink.getElement(),
+        this.credentialElements.getElement(),
+        this.loginButton.getElement(),
+      ],
+    });
+
+    this.viewElementCreator.addInnerElement(this.containerForm.node);
   }
 
-  private createLoginPageContent(): void {
-    this.createHeader();
+  public renderDisabledLogin(isDisabled: boolean): void {
+    if (isDisabled) {
+      this.loginButton.getElement().setAttribute('disabled', 'true');
+    } else {
+      this.loginButton.getElement().removeAttribute('disabled');
+    }
+  }
 
-    this.createForm();
+  public renderErrorMassage(inputName: string, message?: string): void {
+    const elem = this.containerForm.node.querySelector(`.input-${inputName}`);
 
-    this.viewElementCreator.addInnerElement(this.wrapper.getElement());
+    const node = new CreateElement({
+      tag: 'div',
+      classNames: ['error-message'],
+      textContent: `${message}`,
+    });
+
+    if (elem) {
+      elem.append(node.getElement());
+    }
+  }
+
+  public deleteErrorMessage(): void {
+    const messages = this.containerForm.node.querySelectorAll(`.error-message`);
+
+    if (messages) {
+      messages.forEach((message) => message.remove());
+    }
   }
 }

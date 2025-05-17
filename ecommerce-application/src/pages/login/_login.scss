@@ -2,7 +2,7 @@
 @use '../../components/button/button.scss';
 @use '../../styles/scss/variables.scss' as *;
 
-.login {
+.login-page {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -13,59 +13,23 @@
   gap: $spacing-sm;
   justify-content: center;
 
-  max-width: 500px;
+  min-width: 350px;
   padding: 20px 40px;
 }
 
-.login__header {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-}
+.wrapper-form-login {
+  justify-items: center;
 
-.login__message {
-  font-size: $font-size-regular;
-  font-weight: normal;
-}
-
-.login__form {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  align-items: center;
-
-  .error-message {
-    position: fixed;
-    font-size: 0.85rem;
-    color: $warning-color;
+  .link-registration {
+    cursor: pointer;
   }
 
-  .form__inputbox--email {
-    position: relative;
-  }
+  .group {
+    flex-direction: column;
+    align-items: center;
 
-  .form__inputbox--password {
-    position: relative;
-
-    .eye {
-      cursor: pointer;
-
-      position: absolute;
-      top: 10px;
-      right: 10px;
-
-      width: 25px;
-      height: 18px;
-
-      background-size: cover;
-    }
-
-    .eye-close {
-      background-image: url('../../assets/images/eye_close.png');
-    }
-
-    .eye-open {
-      background-image: url('../../assets/images/eye_open.png');
+    .input {
+      width: 100%;
     }
   }
 }

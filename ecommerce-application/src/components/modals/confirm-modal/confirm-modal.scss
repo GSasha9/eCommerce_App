@@ -1,0 +1,9 @@
+.buttons-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+
+  .modal__button {
+    cursor: pointer;
+  }
+}
