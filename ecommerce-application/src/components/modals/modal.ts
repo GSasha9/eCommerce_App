@@ -3,29 +3,15 @@ import Element from '../element';
 import './modal.scss';
 
 export class Modal {
-  public message: Element<'p'>;
   protected modal: Element<'div'>;
   private wrapper: Element<'div'>;
-  private button: Element<'button'>;
   private root = document.body;
   private resolver?: () => void;
 
-  constructor(message: string) {
-    this.message = new Element<'p'>({
-      tag: 'p',
-      className: 'modal-message',
-      children: [],
-      textContent: message,
-    });
-    this.button = new Element<'button'>({
-      tag: 'button',
-      className: 'button-close',
-      textContent: 'close',
-    });
+  constructor() {
     this.modal = new Element<'div'>({
       tag: 'div',
       className: 'modal',
-      children: [this.message.node, this.button.node],
     });
     this.wrapper = new Element<'div'>({
       tag: 'div',

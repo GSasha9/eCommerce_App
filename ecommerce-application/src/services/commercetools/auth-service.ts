@@ -1,6 +1,6 @@
 import { ClientBuilder, type Client, type ClientResponse } from '@commercetools/ts-client';
 import { createApiBuilderFromCtpClient, type CustomerPagedQueryResponse } from '@commercetools/platform-sdk';
-import type { ByProjectKeyRequestBuilder, CustomerSignInResult } from '@commercetools/platform-sdk';
+import type { ByProjectKeyRequestBuilder, CustomerSignInResult, MyCustomerDraft } from '@commercetools/platform-sdk';
 import type { AuthState } from './models/types';
 import { tokenCache } from '../sdk/token';
 import { TOKEN } from './models/constants';
@@ -34,14 +34,13 @@ class AuthorizationService {
     return this.isAuthenticated;
   }
 
-  public registerCustomer = async (email: string, password: string, anonymousCartId?: string): Promise<void> => {
+  public registerCustomer = async (body: MyCustomerDraft, anonymousCartId?: string): Promise<void> => {
     if (!this.projectKey || !this.apiUrl) {
       throw new Error('Missing required config for Commercetools');
     }
 
     const bodySignUp = {
-      email,
-      password,
+      ...body,
       ...(anonymousCartId && {
         anonymousCart: {
           id: anonymousCartId,
@@ -167,7 +166,7 @@ class AuthorizationService {
           credentials: { clientId, clientSecret },
           scopes: ['view_published_products:plants', 'manage_my_profile:plants'],
           httpClient: fetch,
-          tokenCache: tokenCache('ct_anon_token'), //чтобы сохранять токен между перезагрузками страницы, не делать авторизацию каждый раз. Позволяет SDK автоматически обновлять токен
+          tokenCache: tokenCache('ct_anon_token'),
         })
         .withHttpMiddleware({ host: this.apiUrl, httpClient: fetch })
         .build();
