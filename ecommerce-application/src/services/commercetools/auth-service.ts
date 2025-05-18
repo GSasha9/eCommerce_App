@@ -1,14 +1,15 @@
+import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
 import { ClientBuilder, type Client, type ClientResponse } from '@commercetools/ts-client';
 import { createApiBuilderFromCtpClient, type CustomerPagedQueryResponse } from '@commercetools/platform-sdk';
 import type { ByProjectKeyRequestBuilder, CustomerSignInResult, MyCustomerDraft } from '@commercetools/platform-sdk';
 import type { AuthState } from './models/types';
-import { tokenCache } from '../sdk/token';
+import { getToken, tokenCache } from '../sdk/token';
 import { TOKEN } from './models/constants';
 
 class AuthorizationService {
   private static instance: AuthorizationService;
 
-  private api: ByProjectKeyRequestBuilder;
+  public api: ByProjectKeyRequestBuilder;
 
   private projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
   private authUrl = import.meta.env.VITE_CTP_AUTH_URL;
@@ -17,8 +18,12 @@ class AuthorizationService {
   private apiUrl = import.meta.env.VITE_CTP_API_URL;
   private scopes = import.meta.env.VITE_CTP_SCOPES;
   private isAuthenticated = false;
+  private token: string | null;
+
+  private options: ExistingTokenMiddlewareOptions = { force: true };
 
   private constructor() {
+    this.token = getToken();
     this.api = this.initializeAnonymousSession();
   }
 
@@ -49,11 +54,12 @@ class AuthorizationService {
       }),
     };
 
-    try {
-      await this.api.me().signup().post({ body: bodySignUp }).execute();
-    } catch (error) {
-      console.error('Registration failed:', error);
-    }
+    await this.api.me().signup().post({ body: bodySignUp }).execute();
+    const { email, password } = body;
+
+    this.api = this.apiDefinition({ type: 'authenticated', email, password });
+    this.isAuthenticated = true;
+    localStorage.removeItem('ct_anon_token');
   };
 
   public signInCustomer = async (
@@ -65,9 +71,6 @@ class AuthorizationService {
     if (!this.projectKey) {
       throw new Error('Missing required project key for Commercetools');
     }
-
-    this.api = this.apiDefinition({ type: 'authenticated', email, password });
-    this.isAuthenticated = true;
 
     try {
       const response = await this.api
@@ -86,6 +89,10 @@ class AuthorizationService {
           },
         })
         .execute();
+
+      this.api = this.apiDefinition({ type: 'authenticated', email, password });
+      this.isAuthenticated = true;
+      localStorage.removeItem('ct_anon_token');
 
       return response.body;
     } catch (error) {
@@ -137,9 +144,14 @@ class AuthorizationService {
 
     const builder = new ClientBuilder();
 
-    if (auth.type === 'authenticated') {
-      console.log('Scopes used for authenticated client:', this.scopes);
+    if (this.token) {
+      return builder
+        .withExistingTokenFlow(this.token, this.options)
+        .withHttpMiddleware({ host: this.apiUrl, httpClient: fetch })
+        .build();
+    }
 
+    if (auth.type === 'authenticated') {
       return builder
         .withPasswordFlow({
           host: this.authUrl,

@@ -19,3 +19,15 @@ export const tokenCache = (key: string): TokenCache => ({
     localStorage.setItem(key, JSON.stringify(token));
   },
 });
+
+export const getToken = (): string | null => {
+  const userToken = tokenCache('ct_user_token').get().token;
+
+  if (userToken) return `Bearer ${userToken}`;
+
+  const anonymToken = tokenCache('ct_anon_token').get().token;
+
+  if (userToken) return `Basic ${anonymToken}`;
+
+  return null;
+};
