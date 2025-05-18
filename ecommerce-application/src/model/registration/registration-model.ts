@@ -34,7 +34,9 @@ class RegistrationModel {
   }
 
   public setStringValue(value: string, inputName: keyof IFormValues): void {
-    if (isStringFormName(inputName)) this.currentFormValues[inputName] = value;
+    if (isStringFormName(inputName)) {
+      this.currentFormValues[inputName] = value;
+    }
   }
 
   public setBooleanValue(value: boolean, inputName: keyof IFormValues): void {
@@ -42,6 +44,7 @@ class RegistrationModel {
   }
 
   public validateForm(): void {
+    this.errors.length = 0;
     for (const key in this.currentFormValues) {
       if (!isStringFormName(key)) continue;
 
@@ -49,8 +52,6 @@ class RegistrationModel {
         this.isValidForm = false;
         continue;
       }
-
-      this.errors = [];
 
       const value = this.currentFormValues[key];
 
@@ -79,7 +80,9 @@ class RegistrationModel {
           break;
         case 'city':
         case 'city-billing':
-          if (!Validator.isCity(value)) this.errors.push(key);
+          if (!Validator.isCity(value)) {
+            this.errors.push(key);
+          }
 
           break;
         case 'postal-code':
@@ -104,6 +107,10 @@ class RegistrationModel {
     } else {
       this.isValidForm = false;
     }
+
+    if (Object.values(this.currentFormValues).some((value) => value === '')) {
+      this.isValidForm = false;
+    } else this.isValidForm = true;
   }
 }
 

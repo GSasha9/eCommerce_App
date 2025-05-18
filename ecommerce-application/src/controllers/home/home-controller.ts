@@ -1,4 +1,5 @@
 import { HomePage } from '../../pages/home/home.ts';
+import { authService } from '../../services/commercetools/auth-service.ts';
 
 export class HomeController {
   private homeView: HomePage;
@@ -8,8 +9,6 @@ export class HomeController {
       tag: 'section',
       classNames: ['home-page'],
     });
-
-    this.render();
   }
 
   public render(): void {
@@ -20,18 +19,14 @@ export class HomeController {
       container.appendChild(this.homeView.getHtmlElement());
     }
 
-    // void this.temporarily(); // временно
+    void (async function (): Promise<void> {
+      try {
+        const api = authService.api;
+
+        await api.me().carts().get().execute();
+      } catch (error) {
+        console.log('Failed to get user carts', error);
+      }
+    })(); // заготовка для запросов товаров, сейчас нужна чтобы в ls увидеть token авторизованного пользователя
   }
-
-  // private temporarily = async (): Promise<void> => {
-  //   try {
-  //     const api = authService.apiDefinition({ type: 'anonymous' });
-  //     const me = await api.me().carts().get().execute(); // запрос просто чтобы увидеть в LS token который сгенерил sdk
-
-  //     console.log('ME=', me);
-  //     console.log('заглушка', this.homeView);
-  //   } catch (error) {
-  //     console.log('1', error);
-  //   }
-  // };
 }

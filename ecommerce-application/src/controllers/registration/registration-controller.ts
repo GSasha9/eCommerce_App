@@ -11,7 +11,6 @@ import {
   isHTMLInputElement,
   isHTMLSelectElement,
 } from '../../shared/models/typeguards.ts';
-import { MESSAGE_CONTENT } from '../../shared/utils/validator-сonstants.ts';
 
 export class RegistrationController {
   private page: RegistrationPage;
@@ -25,7 +24,6 @@ export class RegistrationController {
   public render(): void {
     document.body.replaceChildren(this.page.getHtmlElement());
     this.page.containerForm.node.addEventListener('input', this.onChangeInputs);
-    this.page.containerForm.node.addEventListener('input', this.onFocusOut);
     this.page.credentialElements.visibilityIcon.node.addEventListener('click', this.onClickChangeVisibility);
     this.page.registrationButton.getElement().addEventListener('click', () => void this.onClickRegistration());
   }
@@ -64,7 +62,6 @@ export class RegistrationController {
 
     try {
       await authService.registerCustomer(data);
-      // await authService.registerCustomer(data.email, data.password)
       await new ModalGreeting('The account was created successfully').open();
       route.navigate('/main');
     } catch (error) {
@@ -96,19 +93,14 @@ export class RegistrationController {
     }
 
     this.page.updateBillingAddress(this.model);
+    this.checkAndShowErrors();
   };
 
-  private onFocusOut = (event: Event): void => {
-    if (!(isHTMLInputElement(event.target) || isHTMLSelectElement(event.target))) return;
-
-    this.renderErrors();
-  };
-
-  private renderErrors(): void {
-    this.model.validateForm();
-    this.model.determineValidForm();
+  private checkAndShowErrors(): void {
     this.page.deleteErrorMessage();
-    this.model.errors.forEach((name) => this.page.renderErrorMassage(name, MESSAGE_CONTENT[name]));
+    this.model.validateForm();
+    this.model.errors.forEach((name) => this.page.renderErrorMassage(name));
+    this.model.determineValidForm();
     this.page.renderDisabledRegister(this.model.isValidForm);
   }
 
