@@ -7,7 +7,7 @@ const projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
 const authUrl = import.meta.env.VITE_CTP_AUTH_URL;
 const clientId = import.meta.env.VITE_CTP_CLIENT_ID;
 const clientSecret = import.meta.env.VITE_CTP_CLIENT_SECRET;
-const scopes = import.meta.env.VITE_CTP_SCOPES.split(' ').map((item) => `${item}:${projectKey}`);
+const scopes = import.meta.env.VITE_CTP_SCOPES.split(' ');
 const apiUrl = import.meta.env.VITE_CTP_API_URL;
 
 export function createCustomerApi(email: string, password: string): ByProjectKeyRequestBuilder {
