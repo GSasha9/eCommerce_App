@@ -1,14 +1,16 @@
+import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import RegistrationModel from '../../model/registration/registration-model.ts';
 import RegistrationPage from '../../pages/registration';
+import { route } from '../../router/index.ts';
 import { authService } from '../../services/commercetools/auth-service.ts';
-//import { register } from '../../services/sdk';
+import { handleApiError } from '../../services/sdk/handle-api-error.ts';
 import {
+  isCommercetoolsApiError,
   isFormName,
   isHTMLCheckboxElement,
   isHTMLInputElement,
   isHTMLSelectElement,
 } from '../../shared/models/typeguards.ts';
-import { MESSAGE_CONTENT } from '../../shared/utils/validator-сonstants.ts';
 
 export class RegistrationController {
   private page: RegistrationPage;
@@ -22,7 +24,6 @@ export class RegistrationController {
   public render(): void {
     document.body.replaceChildren(this.page.getHtmlElement());
     this.page.containerForm.node.addEventListener('input', this.onChangeInputs);
-    this.page.containerForm.node.addEventListener('input', this.onFocusOut);
     this.page.credentialElements.visibilityIcon.node.addEventListener('click', this.onClickChangeVisibility);
     this.page.registrationButton.getElement().addEventListener('click', () => void this.onClickRegistration());
   }
@@ -60,14 +61,15 @@ export class RegistrationController {
     };
 
     try {
-      await authService.registerCustomer(data.email, data.password);
-      //await register(data);
-      // const api = getApi();
-      // const me = await api.me().get().execute();
-
-      // console.log(me);
+      await authService.registerCustomer(data);
+      await new ModalGreeting('The account was created successfully').open();
+      route.navigate('/main');
     } catch (error) {
-      console.log(1, error);
+      if (isCommercetoolsApiError(error)) {
+        handleApiError(error);
+      } else {
+        console.error('Unknown error', error);
+      }
     }
   };
 
@@ -91,17 +93,16 @@ export class RegistrationController {
     }
 
     this.page.updateBillingAddress(this.model);
+    this.checkAndShowErrors();
   };
 
-  private onFocusOut = (event: Event): void => {
-    if (!(isHTMLInputElement(event.target) || isHTMLSelectElement(event.target))) return;
-
-    const { errors, isValidForm } = this.model.validateForm();
-
+  private checkAndShowErrors(): void {
     this.page.deleteErrorMessage();
-    errors.forEach((name) => this.page.renderErrorMassage(name, MESSAGE_CONTENT[name]));
-    this.page.renderDisabledRegister(!isValidForm);
-  };
+    this.model.validateForm();
+    this.model.errors.forEach((name) => this.page.renderErrorMassage(name));
+    this.model.determineValidForm();
+    this.page.renderDisabledRegister(this.model.isValidForm);
+  }
 
   private onClickChangeVisibility = (): void => {
     const input = this.page.credentialElements.inputPassword.getElement();

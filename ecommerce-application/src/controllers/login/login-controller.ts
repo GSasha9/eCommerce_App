@@ -4,8 +4,10 @@ import { findUserByEmailResponse } from '../../shared/models/typeguards.ts';
 import { MESSAGE_CONTENT } from '../../shared/utils/validator-сonstants.ts';
 import { isHTMLInputElement, isHTMLSelectElement, isFormName } from '../../shared/models/typeguards.ts';
 import { authService } from '../../services/commercetools/auth-service.ts';
-import { Modal } from '../../components/modals/modal.ts';
 import ConfirmModal from '../../components/modals/confirm-modal/confirm-modal.ts';
+import { route } from '../../router/index.ts';
+import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
+import { ModalMessage } from '../../components/modals/modal-message.ts';
 
 export class LoginController {
   private loginPage: LoginPage;
@@ -14,7 +16,6 @@ export class LoginController {
   constructor() {
     this.loginPage = new LoginPage({}, this);
     this.loginModel = new LoginModel(this.loginPage);
-    //this.render();
   }
 
   public render(): void {
@@ -41,12 +42,10 @@ export class LoginController {
         console.log(response);
 
         if (response) {
-          const modal = new Modal(`Hello, ${response.customer.firstName}`);
+          const modal = new ModalGreeting(`Hello, ${response.customer.firstName}`);
 
-          modal.open();
-          setTimeout(() => {
-            window.location.replace('/main');
-          }, 3000);
+          await modal.open();
+          route.navigate('/main');
         }
       } catch {
         try {
@@ -60,11 +59,11 @@ export class LoginController {
               modal.setAction(() => {
                 window.location.href = '/registration';
               });
-              modal.open();
+              void modal.open();
             } else {
-              const modal = new Modal('Incorrect password');
+              const modal = new ModalMessage('Incorrect password');
 
-              modal.open();
+              void modal.open();
               console.log('incorrect password');
             }
           }

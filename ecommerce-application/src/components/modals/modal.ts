@@ -3,22 +3,15 @@ import Element from '../element';
 import './modal.scss';
 
 export class Modal {
-  public message: Element<'p'>;
   protected modal: Element<'div'>;
   private wrapper: Element<'div'>;
   private root = document.body;
+  private resolver?: () => void;
 
-  constructor(message: string) {
-    this.message = new Element<'p'>({
-      tag: 'p',
-      className: 'modal-message',
-      children: [],
-      textContent: message,
-    });
+  constructor() {
     this.modal = new Element<'div'>({
       tag: 'div',
       className: 'modal',
-      children: [this.message.node],
     });
     this.wrapper = new Element<'div'>({
       tag: 'div',
@@ -28,15 +21,24 @@ export class Modal {
     this.wrapper.node.addEventListener('click', this.closeOutsideClick);
   }
 
-  public open(): void {
+  public open(): Promise<void> {
     this.root.append(this.wrapper.node);
     globalThis.addEventListener('keydown', this.closeEscape);
+
+    return new Promise<void>((resolve) => {
+      this.resolver = resolve;
+    });
   }
 
   public close = (): void => {
     this.root.classList.toggle('.noScroll');
     this.wrapper.node.remove();
     globalThis.removeEventListener('keydown', this.closeEscape);
+
+    if (this.resolver) {
+      this.resolver();
+      this.resolver = undefined;
+    }
   };
 
   private closeOutsideClick = (event: MouseEvent): void => {

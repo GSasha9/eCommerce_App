@@ -1,2 +1,2 @@
-// export { getApi } from './auth';
-// export { login, register } from './api';
+export { getApi } from './auth';
+export { login, register } from './api';

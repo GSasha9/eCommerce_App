@@ -6,6 +6,8 @@ import { Validator } from '../../shared/utils/validator.ts';
 class RegistrationModel {
   public currentFormValues: IFormValues;
   public page: RegistrationPage;
+  public errors: (keyof IFormValues)[];
+  public isValidForm: boolean;
 
   constructor(page: RegistrationPage) {
     this.page = page;
@@ -27,25 +29,27 @@ class RegistrationModel {
       ['is-shipping-as-billing']: false,
       ['is-default-billing']: false,
     };
+    this.errors = [];
+    this.isValidForm = true;
   }
 
   public setStringValue(value: string, inputName: keyof IFormValues): void {
-    if (isStringFormName(inputName)) this.currentFormValues[inputName] = value;
+    if (isStringFormName(inputName)) {
+      this.currentFormValues[inputName] = value;
+    }
   }
 
   public setBooleanValue(value: boolean, inputName: keyof IFormValues): void {
     if (isBooleanFormName(inputName)) this.currentFormValues[inputName] = value;
   }
 
-  public validateForm(): { errors: (keyof IFormValues)[]; isValidForm: boolean } {
-    const errors: (keyof IFormValues)[] = [];
-    let isValidForm = true;
-
+  public validateForm(): void {
+    this.errors.length = 0;
     for (const key in this.currentFormValues) {
       if (!isStringFormName(key)) continue;
 
       if (!this.currentFormValues[key]) {
-        isValidForm = false;
+        this.isValidForm = false;
         continue;
       }
 
@@ -53,48 +57,60 @@ class RegistrationModel {
 
       switch (key) {
         case 'email':
-          if (!Validator.isEmail(value)) errors.push(key);
+          if (!Validator.isEmail(value)) this.errors.push(key);
 
           break;
         case 'password':
-          if (!Validator.isPassword(value)) errors.push(key);
+          if (!Validator.isPassword(value)) this.errors.push(key);
 
           break;
         case 'name':
         case 'surname':
-          if (!Validator.isName(value)) errors.push(key);
+          if (!Validator.isName(value)) this.errors.push(key);
 
           break;
         case 'birthday':
-          if (!Validator.isDateOfBirth(value)) errors.push(key);
+          if (!Validator.isDateOfBirth(value)) this.errors.push(key);
 
           break;
         case 'street':
         case 'street-billing':
-          if (!Validator.isStreet(value)) errors.push(key);
+          if (!Validator.isStreet(value)) this.errors.push(key);
 
           break;
         case 'city':
         case 'city-billing':
-          if (!Validator.isCity(value)) errors.push(key);
+          if (!Validator.isCity(value)) {
+            this.errors.push(key);
+          }
 
           break;
         case 'postal-code':
           if (!Validator.isPostalCode(value, this.currentFormValues.country)) {
-            errors.push(key);
+            this.errors.push(key);
           }
 
           break;
         case 'postal-code-billing':
           if (!Validator.isPostalCode(value, this.currentFormValues['country-billing'])) {
-            errors.push(key);
+            this.errors.push(key);
           }
 
           break;
       }
     }
+  }
 
-    return { errors, isValidForm: errors.length === 0 && isValidForm };
+  public determineValidForm(): void {
+    if (this.errors.length === 0) {
+      this.isValidForm = true;
+    } else {
+      this.isValidForm = false;
+    }
+
+    if (Object.values(this.currentFormValues).some((value) => value === '')) {
+      this.isValidForm = false;
+    } else this.isValidForm = true;
   }
 }
 
