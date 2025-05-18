@@ -15,7 +15,6 @@ export const handleApiError = (error: CommercetoolsApiError): void => {
           break;
         case 'InvalidJsonInput':
           void new ModalMessage('Invalid input data. Please check the form and try again.').open();
-          console.log(error.body.errors[0].message);
 
           break;
         case 'InvalidQueryParam':
@@ -27,7 +26,9 @@ export const handleApiError = (error: CommercetoolsApiError): void => {
 
           break;
         case 'DuplicateField':
-          void new ModalMessage('A user with this email already exists.').open();
+          void new ModalMessage(
+            'A user with this email already exists. You can either sign in or use a different email address.',
+          ).open();
 
           break;
         case 'FieldValueNotFound':
@@ -40,7 +41,6 @@ export const handleApiError = (error: CommercetoolsApiError): void => {
           break;
         default:
           void new ModalMessage(error.body.errors[0].message || 'Bad request. Please try again.').open();
-          console.log('error.body---', error.body);
       }
     }
 
@@ -53,6 +53,10 @@ export const handleApiError = (error: CommercetoolsApiError): void => {
         default:
           void new ModalMessage(error.body.errors[0].message || 'Unauthorized access.').open();
       }
+    }
+
+    if (statusCode >= 500 && statusCode <= 504) {
+      void new ModalMessage('Something went wrong during the registration process, please try again later.').open();
     }
   } else {
     void new ModalMessage('An unexpected error occurred. Please try again later.').open();
