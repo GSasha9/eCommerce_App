@@ -9,6 +9,8 @@ import { ShippingAddressElements } from './shipping-address-elements.ts';
 import { BillingAddressElements } from './billing-address-elements.ts';
 import Element from '../../components/element/element.ts';
 import type RegistrationModel from '../../model/registration/registration-model.ts';
+import { MESSAGE_CONTENT } from '../../shared/utils/validator-сonstants.ts';
+import { isFormName } from '../../shared/models/typeguards.ts/typeguards.ts';
 
 class RegistrationPage extends View {
   public homeButton: CreateButton;
@@ -104,8 +106,13 @@ class RegistrationPage extends View {
     }
   }
 
-  public renderErrorMassage(inputName: string, message?: string): void {
+  public renderErrorMassage(inputName: string): void {
     const elem = this.containerForm.node.querySelector(`.input-${inputName}`);
+    let message;
+
+    if (isFormName(inputName)) {
+      message = MESSAGE_CONTENT[inputName];
+    }
 
     const node = new CreateElement({
       tag: 'div',
