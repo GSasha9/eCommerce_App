@@ -6,4 +6,5 @@ export interface IRoutes {
   LOGIN: string;
   BASKET: string;
   MAIN: string;
+  ABOUT: string;
 }

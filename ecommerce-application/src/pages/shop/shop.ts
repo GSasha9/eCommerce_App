@@ -2,18 +2,13 @@ import { CreateElement } from '../../shared/utils/create-element.ts';
 import type { IParameters } from '../../shared/models/interfaces';
 import { View } from '../view.ts';
 import { CreateButton } from '../../components/button/create-button.ts';
-import './_home.scss';
+import '../home/_home.scss';
+import { HomePage } from '../home/home.ts';
 
-export class HomePage extends View {
+export class ShopPage extends View {
   constructor(parameters: Partial<IParameters> = {}) {
     super({ tag: 'div', classNames: ['home-page'], ...parameters });
     this.createHeader();
-  }
-
-  public static isAuth(): boolean {
-    const token = localStorage.getItem('ct_user_token');
-
-    return !!token;
   }
 
   private createHeader(): void {
@@ -55,7 +50,7 @@ export class HomePage extends View {
         callback: (): void => {},
       });
 
-      if (item === 'Home') {
+      if (item === 'Products') {
         li.getElement().classList.add('header__menu-item-active');
       }
 

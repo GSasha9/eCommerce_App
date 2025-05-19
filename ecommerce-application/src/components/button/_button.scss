@@ -2,22 +2,31 @@
 @use '../../styles/scss/fonts';
 
 .root-button {
+  cursor: pointer;
+  display: flex;
+  width: 100px;
+  height: 35px;
+  color: white;
+  justify-content: center;
+  font-family: 'Cera Pro', sans-serif;
   padding: $spacing-sm;
   border: none;
   border-radius: $border-radius-input;
 
-  color: $text-primary;
-
-  background-color: rgb(210 210 210);
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
+    width: 75px;
+    height: 25px;
+    padding: 3px;
+  }
 
   &:disabled {
     cursor: not-allowed;
-    color: rgb(96 96 96);
-    background-color: rgb(143 143 143);
+    color: rgb(96, 96, 96);
+    background-color: rgb(143, 143, 143);
   }
 
   &:not(:disabled):hover {
-    color: rgb(88 168 70);
-    background-color: rgb(224 229 211);
+    color: white;
+    background-color: lightgreen;
   }
 }

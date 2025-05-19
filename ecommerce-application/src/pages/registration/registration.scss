@@ -9,14 +9,14 @@
   align-items: center;
   justify-content: center;
 
-  width: 100vw;
+  width: fit-content;
   margin: 0;
   padding: $spacing-xxl 0;
 
-  background-color: $bg-page;
 }
 
 .wrapper-form {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -32,6 +32,16 @@
   background-color: $bg-primary;
 }
 
+.close-reg {
+  cursor: pointer;
+  position: absolute;
+  top: 1%;
+  left: 90%;
+  width: 25px;
+  height: 25px;
+  background-image: url("../../assets/images/close.svg");
+}
+
 .group {
   display: flex;
   flex-wrap: wrap;
@@ -42,22 +52,18 @@
 }
 
 .input {
-  position: relative;
-
   display: flex;
   flex-direction: column;
   gap: $spacing-xs;
-  justify-content: space-between;
+  justify-content: flex-start;
 
   width: 48%;
-  padding-bottom: 30px;
 }
 
 .error-message {
-  position: absolute;
-  top: 60px;
   font-size: $font-size-error-message;
   color: $warning-color;
+  margin-bottom: 4px;
 }
 
 .checkbox-wrapper {
@@ -83,12 +89,29 @@
   justify-content: start;
   width: 48%;
 }
-
-.title {
-  padding-top: 40px;
-  text-align: start;
+.title-registration, .link-registration, .title-login {
+  font-family: 'Cera Pro', sans-serif;
+  font-size: $font-size-h2;
+  font-weight: $font-weight-black;
+  color: #3d3d3d;
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-md) {
+    font-size: $font-size-h3;
+  }
 }
-
+.title {
+  font-family: 'Cera Pro', sans-serif;
+  font-size: $font-size-h3;
+  font-weight: $font-weight-black;
+  color: #3d3d3d;
+  padding-top: 10px;
+  text-align: start;
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-md) {
+    font-size: $font-size-h4;
+  }
+}
+.register {
+  background-color: $primary-button;
+}
 .label {
   flex-shrink: 0;
   color: $text-secondary;
@@ -131,7 +154,7 @@
 
 .root-input,
 .password {
-  padding-right: 8px 40px 8px 8px;
+  padding: 8px 40px 8px 8px;
 }
 
 .visibility-icon {
