@@ -1,17 +1,17 @@
 import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
-import { ClientBuilder, type Client, type ClientResponse } from '@commercetools/ts-client';
-import { createApiBuilderFromCtpClient, type CustomerPagedQueryResponse } from '@commercetools/platform-sdk';
+import { ClientBuilder, type Client } from '@commercetools/ts-client';
+import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import type { ByProjectKeyRequestBuilder, CustomerSignInResult, MyCustomerDraft } from '@commercetools/platform-sdk';
 import type { AuthState } from './models/types';
 import { getToken, tokenCache } from '../sdk/token';
 import { TOKEN } from './models/constants';
 
-class AuthorizationService {
+export class AuthorizationService {
   private static instance: AuthorizationService;
 
   public api: ByProjectKeyRequestBuilder;
 
-  private projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
+  protected projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
   private authUrl = import.meta.env.VITE_CTP_AUTH_URL;
   private clientId = import.meta.env.VITE_CTP_CLIENT_ID;
   private clientSecret = import.meta.env.VITE_CTP_CLIENT_SECRET;
@@ -106,16 +106,16 @@ class AuthorizationService {
     this.isAuthenticated = false;
   };
 
-  public getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
-    return this.api
-      .customers()
-      .get({
-        queryArgs: {
-          where: `email="${email}"`,
-        },
-      })
-      .execute();
-  }
+  // public getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
+  //   return this.api
+  //     .customers()
+  //     .get({
+  //       queryArgs: {
+  //         where: `email="${email}"`,
+  //       },
+  //     })
+  //     .execute();
+  // }
 
   private initializeAnonymousSession(): ByProjectKeyRequestBuilder {
     return this.apiDefinition({ type: 'anonymous' });
