@@ -53,6 +53,10 @@ export class CreateInput extends CreateElement {
     } else this.input.value = String(value || '');
   }
 
+  public getPlaceholder(): string {
+    return this.input.placeholder;
+  }
+
   public setPlaceholder(placeholder: string): void {
     this.input.placeholder = placeholder;
   }
