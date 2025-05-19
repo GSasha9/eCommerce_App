@@ -72,33 +72,28 @@ class AuthorizationService {
       throw new Error('Missing required project key for Commercetools');
     }
 
-    try {
-      const response = await this.api
-        .me()
-        .login()
-        .post({
-          body: {
-            email,
-            password,
-            ...(anonymousCartId && {
-              anonymousCart: {
-                id: anonymousCartId,
-                typeId: 'cart',
-              },
-            }),
-          },
-        })
-        .execute();
+    const response = await this.api
+      .me()
+      .login()
+      .post({
+        body: {
+          email,
+          password,
+          ...(anonymousCartId && {
+            anonymousCart: {
+              id: anonymousCartId,
+              typeId: 'cart',
+            },
+          }),
+        },
+      })
+      .execute();
 
-      this.api = this.apiDefinition({ type: 'authenticated', email, password });
-      this.isAuthenticated = true;
-      localStorage.removeItem('ct_anon_token');
+    this.api = this.apiDefinition({ type: 'authenticated', email, password });
+    this.isAuthenticated = true;
+    localStorage.removeItem('ct_anon_token');
 
-      return response.body;
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw new Error('Login failed');
-    }
+    return response.body;
   };
 
   public logOutCustomer = (): void => {
