@@ -25,7 +25,7 @@ export class HomeController {
 
         await api.me().carts().get().execute();
       } catch (error) {
-        console.log('Failed to get user carts', error);
+        console.error('Failed to get user carts', error);
       }
     })(); // заготовка для запросов товаров, сейчас нужна чтобы в ls увидеть token авторизованного пользователя
   }
