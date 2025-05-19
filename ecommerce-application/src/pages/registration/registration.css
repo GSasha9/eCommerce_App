@@ -1,0 +1,204 @@
+@font-face {
+  font-family: "Cera Pro";
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../assets/fonts/CeraPro-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Cera Pro";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../assets/fonts/CeraPro-Medium.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Cera Pro";
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../assets/fonts/CeraPro-Bold.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Cera Pro";
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+  src: url("../../assets/fonts/CeraPro-Black.woff2") format("woff2");
+}
+.registration-page {
+  scroll-behavior: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  margin: 0;
+  padding: 48px 0;
+}
+
+.wrapper-form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 800px;
+  margin: 0;
+  padding: 32px;
+  border-radius: 10px;
+  font-family: "Cera Pro", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, oxygen, ubuntu, cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background-color: #fff;
+}
+
+.close-reg {
+  cursor: pointer;
+  position: absolute;
+  top: 1%;
+  left: 90%;
+  width: 25px;
+  height: 25px;
+  background-image: url("../../assets/images/close.svg");
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  padding: 16px 0;
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: flex-start;
+  width: 48%;
+}
+
+.error-message {
+  font-size: 12px;
+  color: #ff3c00;
+  margin-bottom: 4px;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 14px;
+}
+
+.checkbox {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.checkbox-wrapper-billind {
+  padding-top: 14px;
+}
+
+.input-birth {
+  justify-content: start;
+  width: 48%;
+}
+
+.title-registration, .link-registration, .title-login {
+  font-family: "Cera Pro", sans-serif;
+  font-size: 30px;
+  font-weight: 900;
+  color: #3d3d3d;
+}
+@media screen and (min-width: 0) and (max-width: 768px) {
+  .title-registration, .link-registration, .title-login {
+    font-size: 20px;
+  }
+}
+
+.title {
+  font-family: "Cera Pro", sans-serif;
+  font-size: 20px;
+  font-weight: 900;
+  color: #3d3d3d;
+  padding-top: 10px;
+  text-align: start;
+}
+@media screen and (min-width: 0) and (max-width: 768px) {
+  .title {
+    font-size: 18px;
+  }
+}
+
+.register {
+  background-color: #46a358;
+}
+
+.label {
+  flex-shrink: 0;
+  color: #727272;
+}
+
+.wrapper-question {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-start;
+  width: 100%;
+  padding: 46px 0;
+  color: #727272;
+}
+
+.link-sign-in {
+  color: rgb(217, 162, 90);
+}
+.link-sign-in:hover {
+  color: rgb(88, 168, 70);
+}
+
+.default-shipping,
+.as-billing {
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.country-list {
+  padding: 8px;
+  border: 1px solid #a5a5a5;
+  border-radius: 5px;
+}
+
+.input-password {
+  position: relative;
+}
+
+.root-input,
+.password {
+  padding: 8px 40px 8px 8px;
+}
+
+.visibility-icon {
+  cursor: pointer;
+  position: absolute;
+  z-index: 100;
+  top: 28px;
+  right: 5px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background-color: transparent;
+  background-image: url("../../assets/images/svg/visibility-off.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+.visibility-icon:hover {
+  scale: 1.15;
+}
+.visibility-icon.hide {
+  background-image: url("../../assets/images/svg/visibility-on.svg");
+}
+
+/*# sourceMappingURL=registration.css.map */

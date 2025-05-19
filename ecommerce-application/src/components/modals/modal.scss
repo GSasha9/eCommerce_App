@@ -30,6 +30,7 @@
   font-size: medium;
 
   &.info {
+    align-self: center;
     color: green;
   }
 
@@ -39,13 +40,16 @@
 }
 
 .button-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: $spacing-sm;
   border: none;
   border-radius: $border-radius-input;
 
-  color: $text-primary;
+  color: white;
 
-  background-color: rgb(210 210 210);
+  background-color: $primary-button;
 
   &:disabled {
     cursor: not-allowed;
@@ -54,7 +58,8 @@
   }
 
   &:not(:disabled):hover {
-    color: rgb(88 168 70);
-    background-color: rgb(224 229 211);
+    cursor: pointer;
+    color: rgb(224 229 211);
+    background-color: rgb(88 168 70);
   }
 }

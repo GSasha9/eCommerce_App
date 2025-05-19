@@ -18,6 +18,16 @@ export class LoginPage extends View {
 
     this.loginController = controller;
 
+    const close = new CreateElement({
+      tag: 'a',
+      classNames: ['close'],
+      textContent: '',
+      callback: (event: Event): void => {
+        event.preventDefault();
+        window.location.href = `/home`;
+      },
+    });
+
     const mainTitle = new CreateElement({
       tag: 'h2',
       classNames: ['title-login'],
@@ -34,11 +44,30 @@ export class LoginPage extends View {
       },
     });
 
+    const span = new CreateElement({
+      tag: 'span',
+      classNames: ['login-span'],
+      textContent: '',
+      callback: ():void => {},
+    });
+    const spanElement  = span.getElement();
+
+    const containerLoginRegister = new CreateElement({
+      tag: 'div',
+      classNames: ['container-registration'],
+      textContent: '',
+      callback: ():void => {},
+    });
+    const container = containerLoginRegister.getElement();
+
+    container.appendChild(mainTitle.getElement());
+    container.appendChild(spanElement);
+    container.appendChild(registrationLink.getElement());
     this.credentialElements = new CredentialElements();
 
     this.loginButton = new CreateButton({
       classNames: ['form__button'],
-      textContent: 'login',
+      textContent: 'LOGIN',
       type: 'button',
       disabled: true,
     });
@@ -47,8 +76,8 @@ export class LoginPage extends View {
       tag: 'form',
       className: 'wrapper-form-login',
       children: [
-        mainTitle.getElement(),
-        registrationLink.getElement(),
+        close.getElement(),
+        container,
         this.credentialElements.getElement(),
         this.loginButton.getElement(),
       ],

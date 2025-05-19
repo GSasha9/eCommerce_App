@@ -36,6 +36,16 @@ class RegistrationPage extends View {
       textContent: 'Registration',
     });
 
+    const close = new CreateElement({
+      tag: 'a',
+      classNames: ['close-reg'],
+      textContent: '',
+      callback: (event: Event): void => {
+        event.preventDefault();
+        window.location.href = `/home`;
+      },
+    });
+
     this.homeButton = new CreateButton({ classNames: ['not-found__button'], textContent: 'Go to Home' });
     const personalInfoTitle = new CreateElement({
       tag: 'h3',
@@ -82,6 +92,7 @@ class RegistrationPage extends View {
       tag: 'form',
       className: 'wrapper-form',
       children: [
+        close.getElement(),
         mainTitle.getElement(),
         this.credentialElements.getElement(),
         personalInfoTitle.getElement(),

@@ -20,23 +20,29 @@ export class Router implements IRouter {
   }
 
   public addRoute(path: string, controller: () => void): void {
-    const normalizedPath: string = path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
+    const normalizedPath: string =
+      path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
 
     this.routes.set(normalizedPath, controller);
   }
 
   public navigate(path: string, pushState: boolean = true): void {
-    const normalizedPath: string = path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
+    let normalizedPath: string =
+      path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
+
+    const token = localStorage.getItem('ct_user_token');
+
+    if (token && (normalizedPath === '/login' || normalizedPath === '/registration')) {
+      normalizedPath = '/home';
+      window.history.replaceState({}, '', normalizedPath);
+    } else if (pushState) {
+      window.history.pushState({}, '', normalizedPath);
+    }
 
     const controller = this.routes.get(normalizedPath);
 
     if (controller) {
       this.currentPath = normalizedPath;
-
-      if (pushState) {
-        window.history.pushState({}, '', normalizedPath);
-      }
-
       controller();
     } else {
       this.currentPath = '/404';
@@ -56,7 +62,6 @@ export class Router implements IRouter {
     window.addEventListener('popstate', () => {
       this.handleRoute();
     });
-
     this.handleRoute();
   }
 

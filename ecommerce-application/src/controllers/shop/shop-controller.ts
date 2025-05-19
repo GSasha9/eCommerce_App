@@ -1,13 +1,13 @@
-import { HomePage } from '../../pages/home/home.ts';
+import { ShopPage } from '../../pages/shop/shop.ts';
 import { authService } from '../../services/commercetools/auth-service.ts';
 
-export class HomeController {
-  private homeView: HomePage;
+export class ShopController {
+  private homeView: ShopPage;
 
   constructor() {
-    this.homeView = new HomePage({
+    this.homeView = new ShopPage({
       tag: 'section',
-      classNames: ['home-page'],
+      classNames: ['shop-page'],
     });
   }
 

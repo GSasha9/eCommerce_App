@@ -10,12 +10,33 @@ import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import { ModalMessage } from '../../components/modals/modal-message.ts';
 
 export class LoginController {
-  private loginPage: LoginPage;
+  private readonly loginPage: LoginPage;
   private loginModel: LoginModel;
 
   constructor() {
     this.loginPage = new LoginPage({}, this);
     this.loginModel = new LoginModel(this.loginPage);
+  }
+
+  public static configureLogoutButton(): void {
+    const loginButton = document.querySelector('.header__button--login');
+
+    if (loginButton) {
+      loginButton.classList.add('logout');
+      loginButton.classList.remove('login');
+      loginButton.textContent = 'Logout';
+
+      loginButton.addEventListener('click', (evt: Event): void => {
+        evt.preventDefault();
+        authService.logOutCustomer();
+
+        loginButton.classList.remove('logout');
+        loginButton.classList.add('login');
+        loginButton.textContent = 'Login';
+
+        route.navigate('/login');
+      });
+    }
   }
 
   public render(): void {
@@ -45,7 +66,9 @@ export class LoginController {
           const modal = new ModalGreeting(`Hello, ${response.customer.firstName}`);
 
           await modal.open();
-          route.navigate('/main');
+          route.navigate('/home');
+
+          LoginController.configureLogoutButton();
         }
       } catch {
         try {

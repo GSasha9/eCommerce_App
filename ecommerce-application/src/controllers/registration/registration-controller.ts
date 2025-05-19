@@ -11,6 +11,7 @@ import {
   isHTMLInputElement,
   isHTMLSelectElement,
 } from '../../shared/models/typeguards.ts';
+import { LoginController } from '../login/login-controller.ts';
 
 export class RegistrationController {
   private page: RegistrationPage;
@@ -63,7 +64,8 @@ export class RegistrationController {
     try {
       await authService.registerCustomer(data);
       await new ModalGreeting('The account was created successfully').open();
-      route.navigate('/main');
+      route.navigate('/home');
+      LoginController.configureLogoutButton();
     } catch (error) {
       if (isCommercetoolsApiError(error)) {
         handleApiError(error);
