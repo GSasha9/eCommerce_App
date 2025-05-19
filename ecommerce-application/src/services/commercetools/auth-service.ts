@@ -1,17 +1,17 @@
 import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
-import { ClientBuilder, type Client, type ClientResponse } from '@commercetools/ts-client';
-import { createApiBuilderFromCtpClient, type CustomerPagedQueryResponse } from '@commercetools/platform-sdk';
+import { ClientBuilder, type Client } from '@commercetools/ts-client';
+import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import type { ByProjectKeyRequestBuilder, CustomerSignInResult, MyCustomerDraft } from '@commercetools/platform-sdk';
 import type { AuthState } from './models/types';
 import { getToken, tokenCache } from '../sdk/token';
 import { TOKEN } from './models/constants';
 
-class AuthorizationService {
+export class AuthorizationService {
   private static instance: AuthorizationService;
 
   public api: ByProjectKeyRequestBuilder;
 
-  private projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
+  protected projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
   private authUrl = import.meta.env.VITE_CTP_AUTH_URL;
   private clientId = import.meta.env.VITE_CTP_CLIENT_ID;
   private clientSecret = import.meta.env.VITE_CTP_CLIENT_SECRET;
@@ -72,33 +72,28 @@ class AuthorizationService {
       throw new Error('Missing required project key for Commercetools');
     }
 
-    try {
-      const response = await this.api
-        .me()
-        .login()
-        .post({
-          body: {
-            email,
-            password,
-            ...(anonymousCartId && {
-              anonymousCart: {
-                id: anonymousCartId,
-                typeId: 'cart',
-              },
-            }),
-          },
-        })
-        .execute();
+    const response = await this.api
+      .me()
+      .login()
+      .post({
+        body: {
+          email,
+          password,
+          ...(anonymousCartId && {
+            anonymousCart: {
+              id: anonymousCartId,
+              typeId: 'cart',
+            },
+          }),
+        },
+      })
+      .execute();
 
-      this.api = this.apiDefinition({ type: 'authenticated', email, password });
-      this.isAuthenticated = true;
-      localStorage.removeItem('ct_anon_token');
+    this.api = this.apiDefinition({ type: 'authenticated', email, password });
+    this.isAuthenticated = true;
+    localStorage.removeItem('ct_anon_token');
 
-      return response.body;
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw new Error('Login failed');
-    }
+    return response.body;
   };
 
   public logOutCustomer = (): void => {
@@ -111,16 +106,16 @@ class AuthorizationService {
     this.isAuthenticated = false;
   };
 
-  public getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
-    return this.api
-      .customers()
-      .get({
-        queryArgs: {
-          where: `email="${email}"`,
-        },
-      })
-      .execute();
-  }
+  // public getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
+  //   return this.api
+  //     .customers()
+  //     .get({
+  //       queryArgs: {
+  //         where: `email="${email}"`,
+  //       },
+  //     })
+  //     .execute();
+  // }
 
   private initializeAnonymousSession(): ByProjectKeyRequestBuilder {
     return this.apiDefinition({ type: 'anonymous' });

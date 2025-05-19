@@ -12,6 +12,10 @@
   background-color: #00000090;
 }
 
+.no-scroll {
+  overflow: hidden;
+}
+
 .modal {
   display: flex;
   flex-direction: column;

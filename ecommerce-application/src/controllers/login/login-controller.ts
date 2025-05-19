@@ -1,13 +1,11 @@
 import { LoginModel } from '../../model/login/login-model.ts';
 import { LoginPage } from '../../pages/login/login';
-import { findUserByEmailResponse } from '../../shared/models/typeguards.ts';
 import { MESSAGE_CONTENT } from '../../shared/utils/validator-сonstants.ts';
 import { isHTMLInputElement, isHTMLSelectElement, isFormName } from '../../shared/models/typeguards.ts';
 import { authService } from '../../services/commercetools/auth-service.ts';
 import ConfirmModal from '../../components/modals/confirm-modal/confirm-modal.ts';
 import { route } from '../../router/index.ts';
 import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
-import { ModalMessage } from '../../components/modals/modal-message.ts';
 
 export class LoginController {
   private readonly loginPage: LoginPage;
@@ -60,8 +58,6 @@ export class LoginController {
       try {
         const response = await authService.signInCustomer(data.email, data.password);
 
-        console.log(response);
-
         if (response) {
           const modal = new ModalGreeting(`Hello, ${response.customer.firstName}`);
 
@@ -71,28 +67,14 @@ export class LoginController {
           LoginController.configureLogoutButton();
         }
       } catch {
-        try {
-          const response = await authService.getCustomerByEmail(data.email);
+        const modal = new ConfirmModal(
+          'Account with these credentials was not found. Please check your login or password. Would you like to register?',
+        );
 
-          if (findUserByEmailResponse(response)) {
-            if (response.body?.results.length === 0) {
-              console.log('this email doesnt register');
-              const modal = new ConfirmModal('No account found with this email. Do you want to register?');
-
-              modal.setAction(() => {
-                window.location.href = '/registration';
-              });
-              void modal.open();
-            } else {
-              const modal = new ModalMessage('Incorrect password');
-
-              void modal.open();
-              console.log('incorrect password');
-            }
-          }
-        } catch {
-          console.error('error');
-        }
+        modal.setAction(() => {
+          window.location.href = '/registration';
+        });
+        await modal.open();
       }
   };
 

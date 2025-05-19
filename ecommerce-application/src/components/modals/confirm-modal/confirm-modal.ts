@@ -9,9 +9,7 @@ export default class ConfirmModal extends Modal {
   private message: string;
   private buttonsContainer: Element<'div'>;
   private content: Element<'p'>;
-  private action: () => void = () => {
-    console.log(this);
-  };
+  private action: (() => void) | null = null;
 
   constructor(message: string) {
     super();
@@ -50,7 +48,10 @@ export default class ConfirmModal extends Modal {
   }
 
   private confirm(): void {
-    this.action();
+    if (this.action) {
+      this.action();
+    }
+
     this.close();
   }
 

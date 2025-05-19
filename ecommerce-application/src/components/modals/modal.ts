@@ -24,6 +24,7 @@ export class Modal {
   public open(): Promise<void> {
     this.root.append(this.wrapper.node);
     globalThis.addEventListener('keydown', this.closeEscape);
+    this.root.classList.add('no-scroll');
 
     return new Promise<void>((resolve) => {
       this.resolver = resolve;
@@ -31,7 +32,7 @@ export class Modal {
   }
 
   public close = (): void => {
-    this.root.classList.toggle('.noScroll');
+    this.root.classList.remove('no-scroll');
     this.wrapper.node.remove();
     globalThis.removeEventListener('keydown', this.closeEscape);
 
