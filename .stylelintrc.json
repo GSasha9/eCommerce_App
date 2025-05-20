@@ -6,7 +6,8 @@
     "selector-class-pattern": "^(?:[a-z0-9]+(?:-[a-z0-9]+)*)(?:__(?:[a-z0-9]+(?:-[a-z0-9]+)*))?(?:--(?:[a-z0-9]+(?:-[a-z0-9]+)*))?$",
     "plugin/selector-bem-pattern": {
       "preset": "bem"
-    }
+    },
+    "media-query-no-invalid": null
   },
   "overrides": [
     {

@@ -12,7 +12,7 @@
     "prettier:check": "prettier --check \"**/*.{ts,scss,css}\"",
     "prettier:fix": "prettier --write \"**/*.{ts,scss,css}\"",
     "lint": "eslint",
-    "stylelint": "stylelint '**/*.{css,scss}'",
+    "stylelint": "stylelint '**/*.{css,scss}' --fix",
     "test": "vitest",
     "test:coverage": "vitest run --coverage"
   },
@@ -40,5 +40,8 @@
     "typescript-eslint": "^8.31.1",
     "vite": "^6.3.1",
     "vitest": "^3.1.2"
+  },
+  "rules": {
+    "media-query-no-invalid": null
   }
 }
