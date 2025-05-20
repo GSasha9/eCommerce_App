@@ -3,35 +3,44 @@
 .home__page {
   display: flex;
 }
+
 .wrapper {
   display: flex;
   width: 1380px;
+
   @include respond-xs {
     width: 320px;
   }
+
   @include respond-sm {
     width: 550px;
   }
+
   @include respond-md {
     width: 750px;
   }
+
   @include respond-lg {
     width: 970px;
   }
+
   @include respond-xl {
     width: 1180px;
   }
+
   @include respond-xxl {
     width: 1380px;
   }
 }
+
 .header {
+  gap: 10px;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid  rgb($primary-button, 0.5);
-  padding-bottom: 5px;
+
   margin-top: 5px;
-  gap: 10px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid  rgb($primary-button, 0.5);
 }
 
 .header__nav {
@@ -39,25 +48,30 @@
 }
 
 .header__menu {
-  width: 100%;
   display: flex;
-  justify-content: space-between;
   gap: 15px;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .header__menu-item, .title-login, .link-registration {
-  position: relative;
-  padding-bottom: 10px;
   cursor: pointer;
-  list-style: none;
+
+  position: relative;
+
+  padding-bottom: 10px;
+  border-bottom: 2px solid transparent;
+
   font-family: 'Cera Pro', sans-serif;
   font-size: $font-size-h4;
   font-weight: $font-weight-normal;
   color: $text-primary;
-  border-bottom: 2px solid transparent;
+  list-style: none;
+
  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
     font-size: 12px;
   }
+
   @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-md) {
     font-size: 14px;
   }
@@ -65,10 +79,14 @@
 
 .header__button--login, .button-close, .form__button, .found__button, .not-found__button {
   display: flex;
+
   width: 100px;
   height: 35px;
-  background-color: $primary-button;
+
   color: white;
+
+  background-color: $primary-button;
+
   @media screen and (min-width: $breakpoint-xs) and (max-width:$breakpoint-sm){
     width: 80px;
     height: 25px;
@@ -78,12 +96,15 @@
 
 .header__button--login::before {
   content: "";
+
   display: inline-block;
-  background: url('../../assets/images/Logout.svg') no-repeat center center;
-  background-size: contain;
+
   width: 20px;
   height: 20px;
   margin-right: 3px;
+
+  background: url('../../assets/images/Logout.svg') no-repeat center center;
+  background-size: contain;
 
 }
 
@@ -96,47 +117,57 @@
   @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
     font-size: $font-size-h4;
   }
+
   @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-md) {
     font-size: $font-size-h3;
   }
 }
+
 .logout {
   background-color: darkred;
 }
+
 .header__logo::before {
   content: "";
+
   display: inline-block;
-  background: url('../../assets/images/logo.svg') no-repeat center center;
-  background-size: contain;
+
   width: 50px;
   height: 50px;
   margin-right: 3px;
+
+  background: url('../../assets/images/logo.svg') no-repeat center center;
+  background-size: contain;
+
   @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-md) {
     width: 20px;
     height: 20px;
   }
+
   @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-md) {
     width: 30px;
     height: 30px;
   }
 }
+
 .header__menu-item-active {
   color: $primary-text-green;
 }
 
 @media screen and  (hover:hover) {
   .header__menu-item:hover, .title-login:hover, .link-registration:hover, .found__button:hover {
-    color: $text-secondary;
     border-bottom: 2px solid $primary-button;
+    color: $text-secondary;
   }
 
   .login:hover, {
     color: $text-secondary;
     background-color: #58a846;
   }
+
   .header__menu-item-active:hover {
-    background-color: transparent;
-    color: #46a358;
     border-bottom: none;
+    color: #46a358;
+    background-color: transparent;
   }
 }

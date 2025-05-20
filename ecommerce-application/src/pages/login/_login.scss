@@ -15,6 +15,7 @@
 
   width: 450px;
   padding: 20px 40px;
+
   @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
     width: 350px;
   }
@@ -22,16 +23,21 @@
 
 .close {
   cursor: pointer;
+
   position: fixed;
   top: 1%;
   left: 90%;
+
   width: 25px;
   height: 25px;
+
   background-image: url("../../assets/images/close.svg");
+
   @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
     left: 80%;
   }
 }
+
 .wrapper-form-login {
   justify-items: center;
 
@@ -47,6 +53,7 @@
       width: 100%;
     }
   }
+
   .container-registration {
     display: flex;
     gap: 10px;
@@ -59,6 +66,7 @@
       width: 1px;
       border-left: 1px solid $primary-button;
     }
+
     .title-login {
       color: $primary-button;
     }
