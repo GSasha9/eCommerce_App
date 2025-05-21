@@ -6,7 +6,6 @@ import { LoginController } from './login/login-controller.ts';
 import { RegistrationController } from './registration/registration-controller.ts';
 import { ShopController } from './shop/shop-controller.ts';
 import { AboutController } from './about/about-controller.ts';
-import { authService } from '../services/commercetools/auth-service.ts';
 
 export class Controller {
   private router: Router;
@@ -28,15 +27,6 @@ export class Controller {
     this.router = route;
     this.setupRoutes();
     this.router.init();
-    void (async function (): Promise<void> {
-      try {
-        const api = authService.api;
-
-        await api.me().carts().get().execute();
-      } catch (error) {
-        console.warn('Failed to get user carts', error);
-      }
-    })(); // заготовка для запросов товаров, сейчас нужна чтобы в ls увидеть token авторизованного пользователя
   }
 
   private setupRoutes(): void {

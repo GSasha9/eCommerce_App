@@ -3,7 +3,6 @@ import { LoginPage } from '../../pages/login/login';
 import { MESSAGE_CONTENT } from '../../shared/utils/validator-сonstants.ts';
 import { isHTMLInputElement, isHTMLSelectElement, isFormName } from '../../shared/models/typeguards.ts';
 import { authService } from '../../services/commercetools/auth-service.ts';
-import ConfirmModal from '../../components/modals/confirm-modal/confirm-modal.ts';
 import { route } from '../../router/index.ts';
 import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import { Layout } from '../../pages/layout.ts';
@@ -70,18 +69,16 @@ export class LoginController {
 
           await modal.open();
           route.navigate('/home');
-          localStorage.setItem('isLoggedPlants', 'true');
+          const auth = authService.getAuthenticatedStatus();
+
+          if (auth) {
+            localStorage.setItem('isLoggedPlants', 'true');
+          }
+
           LoginController.configureLogoutButton();
         }
-      } catch {
-        const modal = new ConfirmModal(
-          'Account with these credentials was not found. Please check your login or password. Would you like to register?',
-        );
-
-        modal.setAction(() => {
-          route.navigate('/registration');
-        });
-        await modal.open();
+      } catch (error) {
+        console.warn(error);
       }
   };
 

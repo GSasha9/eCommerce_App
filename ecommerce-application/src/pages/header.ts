@@ -22,7 +22,10 @@ export class Header {
       tag: 'h1',
       classNames: ['header__logo'],
       textContent: 'PLANTS',
-      callback: (): void => {},
+      callback: (evt): void => {
+        evt.preventDefault();
+        route.navigate('/home');
+      },
     });
 
     const navContainer: CreateElement = new CreateElement({

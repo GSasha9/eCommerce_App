@@ -1,6 +1,5 @@
 import './_footer.scss';
 import { CreateElement } from '../shared/utils/create-element.ts';
-import { route } from '../router';
 
 export class Footer {
   private readonly footerElement: HTMLElement;
@@ -33,11 +32,11 @@ export class Footer {
 
     const logoLink: CreateElement = new CreateElement({
       tag: 'a',
-      classNames: ['footer-logo_link'],
+      classNames: ['footer-logo__link'],
       textContent: 'RSSchool',
       callback: (event): void => {
         event.preventDefault();
-        route.navigate(`rs.school`);
+        window.location.href = 'https://rs.school';
       },
     });
 

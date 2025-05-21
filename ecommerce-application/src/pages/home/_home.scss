@@ -145,6 +145,8 @@ body {
 }
 
 .header__logo {
+  cursor: pointer;
+
   font-family: 'Cera Pro', sans-serif;
   font-size: $font-size-h1;
   font-weight: $font-weight-black;
