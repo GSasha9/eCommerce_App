@@ -4,11 +4,12 @@ import { isStringFormName, isBooleanFormName } from '../../shared/models/typegua
 import { Validator } from '../../shared/utils/validator';
 
 export class LoginModel {
+  private static instance: LoginModel;
   public currentFormValues: Partial<IFormValues>;
   public page: LoginPage;
   private isValidForm: boolean;
 
-  constructor(page: LoginPage) {
+  private constructor(page: LoginPage) {
     this.page = page;
     this.currentFormValues = {
       email: '',
@@ -17,19 +18,30 @@ export class LoginModel {
     this.isValidForm = false;
   }
 
+  public static getInstance(page: LoginPage): LoginModel {
+    if (!LoginModel.instance) {
+      LoginModel.instance = new LoginModel(page);
+    }
+
+    return LoginModel.instance;
+  }
+
   public setStringValue(value: string, inputName: keyof IFormValues): void {
-    if (isStringFormName(inputName)) this.currentFormValues[inputName] = value;
+    if (isStringFormName(inputName)) {
+      this.currentFormValues[inputName] = value;
+    }
   }
 
   public setBooleanValue(value: boolean, inputName: keyof IFormValues): void {
-    if (isBooleanFormName(inputName)) this.currentFormValues[inputName] = value;
+    if (isBooleanFormName(inputName)) {
+      this.currentFormValues[inputName] = value;
+    }
   }
 
   public validateForm(): { errors: (keyof IFormValues)[]; isValidForm: boolean } {
     const errors: (keyof IFormValues)[] = [];
 
     this.isValidForm = true;
-
     for (const key in this.currentFormValues) {
       if (!isStringFormName(key)) continue;
 

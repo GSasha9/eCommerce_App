@@ -12,21 +12,31 @@ import {
   isHTMLSelectElement,
 } from '../../shared/models/typeguards.ts';
 import { LoginController } from '../login/login-controller.ts';
+import { Layout } from '../../pages/layout.ts';
 
 export class RegistrationController {
-  private page: RegistrationPage;
-  private model: RegistrationModel;
+  private readonly page: RegistrationPage;
+  private readonly model: RegistrationModel;
 
   constructor() {
-    this.page = new RegistrationPage();
-    this.model = new RegistrationModel(this.page);
+    this.page = RegistrationPage.getInstance();
+    this.model = RegistrationModel.getInstance(this.page);
+    this.initListeners();
+  }
+
+  public initListeners(): void {
+    this.page.containerForm.node.addEventListener('input', this.onChangeInputs);
+    this.page.credentialElements.visibilityIcon.node.addEventListener('click', this.onClickChangeVisibility);
+    this.page.registrationButton.getElement().addEventListener('click', (event: Event) => {
+      event.preventDefault();
+      void this.onClickRegistration();
+    });
   }
 
   public render(): void {
-    document.body.replaceChildren(this.page.getHtmlElement());
-    this.page.containerForm.node.addEventListener('input', this.onChangeInputs);
-    this.page.credentialElements.visibilityIcon.node.addEventListener('click', this.onClickChangeVisibility);
-    this.page.registrationButton.getElement().addEventListener('click', () => void this.onClickRegistration());
+    const layout = Layout.getInstance();
+
+    layout.setMainContent(this.page.getHtmlElement());
   }
 
   private onClickRegistration = async (): Promise<void> => {
@@ -66,6 +76,7 @@ export class RegistrationController {
       await new ModalGreeting('The account was created successfully').open();
       route.navigate('/home');
       LoginController.configureLogoutButton();
+      localStorage.setItem('isLoggedPlants', 'true');
     } catch (error) {
       if (isCommercetoolsApiError(error)) {
         handleApiError(error);

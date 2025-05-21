@@ -6,14 +6,16 @@ import { authService } from '../../services/commercetools/auth-service.ts';
 import ConfirmModal from '../../components/modals/confirm-modal/confirm-modal.ts';
 import { route } from '../../router/index.ts';
 import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
+import { Layout } from '../../pages/layout.ts';
 
 export class LoginController {
   private readonly loginPage: LoginPage;
   private loginModel: LoginModel;
 
   constructor() {
-    this.loginPage = new LoginPage({}, this);
-    this.loginModel = new LoginModel(this.loginPage);
+    this.loginPage = LoginPage.getInstance({}, this);
+    this.loginModel = LoginModel.getInstance(this.loginPage);
+    this.initListeners();
   }
 
   public static configureLogoutButton(): void {
@@ -31,21 +33,26 @@ export class LoginController {
         loginButton.classList.remove('logout');
         loginButton.classList.add('login');
         loginButton.textContent = 'Login';
-
+        localStorage.clear();
         route.navigate('/login');
       });
     }
   }
 
-  public render(): void {
-    document.body.replaceChildren(this.loginPage.getHtmlElement());
+  public initListeners(): void {
     this.loginPage.containerForm.node.addEventListener('input', this.onChangeInputs);
     this.loginPage.containerForm.node.addEventListener('input', this.onFocusOut);
     this.loginPage.credentialElements.visibilityIcon.node.addEventListener('click', this.onClickChangeVisibility);
     this.loginPage.loginButton.getElement().addEventListener('click', (event) => {
-      event?.preventDefault();
+      event.preventDefault();
       void this.onClickLogin();
     });
+  }
+
+  public render(): void {
+    const layout = Layout.getInstance();
+
+    layout.setMainContent(this.loginPage.getHtmlElement());
   }
 
   private onClickLogin = async (): Promise<void> => {
@@ -63,7 +70,7 @@ export class LoginController {
 
           await modal.open();
           route.navigate('/home');
-
+          localStorage.setItem('isLoggedPlants', 'true');
           LoginController.configureLogoutButton();
         }
       } catch {
@@ -72,7 +79,7 @@ export class LoginController {
         );
 
         modal.setAction(() => {
-          window.location.href = '/registration';
+          route.navigate('/registration');
         });
         await modal.open();
       }

@@ -4,12 +4,13 @@ import { isBooleanFormName, isStringFormName } from '../../shared/models/typegua
 import { Validator } from '../../shared/utils/validator.ts';
 
 class RegistrationModel {
+  private static instance: RegistrationModel;
   public currentFormValues: IFormValues;
   public page: RegistrationPage;
   public errors: (keyof IFormValues)[];
   public isValidForm: boolean;
 
-  constructor(page: RegistrationPage) {
+  private constructor(page: RegistrationPage) {
     this.page = page;
     this.currentFormValues = {
       email: '',
@@ -31,6 +32,14 @@ class RegistrationModel {
     };
     this.errors = [];
     this.isValidForm = true;
+  }
+
+  public static getInstance(page: RegistrationPage): RegistrationModel {
+    if (!RegistrationModel.instance) {
+      RegistrationModel.instance = new RegistrationModel(page);
+    }
+
+    return RegistrationModel.instance;
   }
 
   public setStringValue(value: string, inputName: keyof IFormValues): void {
@@ -110,7 +119,9 @@ class RegistrationModel {
 
     if (Object.values(this.currentFormValues).some((value) => value === '')) {
       this.isValidForm = false;
-    } else this.isValidForm = true;
+    } else {
+      this.isValidForm = true;
+    }
   }
 }
 

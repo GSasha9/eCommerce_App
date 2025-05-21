@@ -1,4 +1,5 @@
 import { HomePage } from '../../pages/home/home.ts';
+import { Layout } from '../../pages/layout.ts';
 
 export class HomeController {
   private homeView: HomePage;
@@ -11,11 +12,8 @@ export class HomeController {
   }
 
   public render(): void {
-    const container: HTMLElement = document.body;
+    const layout = Layout.getInstance();
 
-    if (container) {
-      container.replaceChildren();
-      container.appendChild(this.homeView.getHtmlElement());
-    }
+    layout.setMainContent(this.homeView.getHtmlElement());
   }
 }
