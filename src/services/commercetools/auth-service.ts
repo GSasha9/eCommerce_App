@@ -3,9 +3,9 @@ import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
 import { type Client, ClientBuilder } from '@commercetools/ts-client';
 
-import { getToken, tokenCache } from '../sdk/token';
 import { TOKEN } from './models/constants';
 import type { AuthState } from './models/types';
+import { getToken, tokenCache } from './models/utils/token';
 
 export class AuthorizationService {
   private static instance: AuthorizationService;
@@ -107,17 +107,6 @@ export class AuthorizationService {
 
     this.isAuthenticated = false;
   };
-
-  // public getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
-  //   return this.api
-  //     .customers()
-  //     .get({
-  //       queryArgs: {
-  //         where: `email="${email}"`,
-  //       },
-  //     })
-  //     .execute();
-  // }
 
   private initializeAnonymousSession(): ByProjectKeyRequestBuilder {
     return this.apiDefinition({ type: 'anonymous' });

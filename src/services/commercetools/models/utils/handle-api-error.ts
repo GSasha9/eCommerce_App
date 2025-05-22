@@ -1,6 +1,6 @@
-import { ModalMessage } from '../../components/modals/modal-message.ts';
-import type { CommercetoolsApiError } from '../../shared/models/type/index.ts';
-import { isCommercetoolsApiError } from '../../shared/models/typeguards.ts/index.ts';
+import { ModalMessage } from '../../../../components/modals/modal-message.ts';
+import type { CommercetoolsApiError } from '../../../../shared/models/type/index.ts';
+import { isCommercetoolsApiError } from '../../../../shared/models/typeguards.ts/index.ts';
 
 export const handleApiError = (error: CommercetoolsApiError): void => {
   if (isCommercetoolsApiError(error)) {

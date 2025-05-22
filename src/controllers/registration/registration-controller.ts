@@ -4,7 +4,7 @@ import { Layout } from '../../pages/layout.ts';
 import RegistrationPage from '../../pages/registration/index.ts';
 import { route } from '../../router/index.ts';
 import { authService } from '../../services/commercetools/auth-service.ts';
-import { handleApiError } from '../../services/sdk/handle-api-error.ts';
+import { handleApiError } from '../../services/commercetools/models/utils/handle-api-error.ts';
 import {
   isCommercetoolsApiError,
   isFormName,
