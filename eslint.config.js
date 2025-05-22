@@ -61,6 +61,11 @@ export default defineConfig([
           prev: 'if',
           next: '*',
         },
+        {
+          blankLine: 'always',
+          prev: 'export',
+          next: 'export',
+        },
       ],
     },
   },

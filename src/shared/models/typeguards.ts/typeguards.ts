@@ -4,8 +4,11 @@ import type { IFormValues, IResponse } from '../interfaces';
 import type { CommercetoolsApiError } from '../type/commercetools-api-errors';
 
 export const isHTMLElement = (value: unknown): value is HTMLElement => value instanceof HTMLElement;
+
 export const isHTMLInputElement = (value: unknown): value is HTMLInputElement => value instanceof HTMLInputElement;
+
 export const isHTMLSelectElement = (value: unknown): value is HTMLSelectElement => value instanceof HTMLSelectElement;
+
 export const isHTMLCheckboxElement = (value: unknown): value is HTMLInputElement & { type: 'checkbox' } =>
   value instanceof HTMLInputElement && value.type === 'checkbox';
 
@@ -35,6 +38,7 @@ export const isTokenStore = (obj: unknown): obj is TokenStore => {
       typeof obj.expirationTime === 'number',
   );
 };
+
 export const isCommercetoolsApiError = (value: unknown): value is CommercetoolsApiError =>
   typeof value === 'object' &&
   value !== null &&
@@ -49,10 +53,12 @@ export const isCommercetoolsApiError = (value: unknown): value is CommercetoolsA
 
 export const isFormName = (value: unknown): value is keyof IFormValues =>
   isBooleanFormName(value) || isStringFormName(value);
+
 export const isBooleanFormName = (
   value: unknown,
 ): value is Extract<keyof IFormValues, 'isDefaultShipping' | 'isShippingAsBilling' | 'isDefaultBilling'> =>
   value === 'isDefaultShipping' || value === 'isShippingAsBilling' || value === 'isDefaultBilling';
+
 export const isStringFormName = (
   value: unknown,
 ): value is Exclude<keyof IFormValues, 'isDefaultShipping' | 'isShippingAsBilling' | 'isDefaultBilling'> =>

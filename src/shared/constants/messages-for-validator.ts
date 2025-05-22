@@ -1,6 +1,7 @@
 import type { IFormValues } from '../models/interfaces';
 
 export const MIN_AGE = 13;
+
 export const COUNTRIES = [
   ['Belarus', 'BY'],
   ['Germany', 'DE'],
