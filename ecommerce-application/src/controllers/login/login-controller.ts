@@ -6,6 +6,7 @@ import { authService } from '../../services/commercetools/auth-service.ts';
 import { route } from '../../router/index.ts';
 import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import { Layout } from '../../pages/layout.ts';
+import ConfirmModal from '../../components/modals/confirm-modal/confirm-modal.ts';
 
 export class LoginController {
   private readonly loginPage: LoginPage;
@@ -71,6 +72,8 @@ export class LoginController {
           route.navigate('/home');
           const auth = authService.getAuthenticatedStatus();
 
+          console.log(authService.api);
+
           if (auth) {
             localStorage.setItem('isLoggedPlants', 'true');
           }
@@ -79,6 +82,14 @@ export class LoginController {
         }
       } catch (error) {
         console.warn(error);
+        const modal = new ConfirmModal(
+          'Account with these credentials was not found. Please check your login or password. Would you like to register?',
+        );
+
+        modal.setAction(() => {
+          route.navigate('/registration');
+        });
+        await modal.open();
       }
   };
 

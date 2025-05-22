@@ -5,8 +5,6 @@ import type { ByProjectKeyRequestBuilder, CustomerSignInResult, MyCustomerDraft 
 import type { AuthState } from './models/types';
 import { getToken, tokenCache } from '../sdk/token';
 import { TOKEN } from './models/constants';
-import ConfirmModal from '../../components/modals/confirm-modal/confirm-modal.ts';
-import { route } from '../../router';
 
 export class AuthorizationService {
   private static instance: AuthorizationService;
@@ -46,27 +44,23 @@ export class AuthorizationService {
       throw new Error('Missing required config for Commercetools');
     }
 
-    try {
-      const bodySignUp = {
-        ...body,
-        ...(anonymousCartId && {
-          anonymousCart: {
-            id: anonymousCartId,
-            typeId: 'cart',
-          },
-        }),
-      };
+    const bodySignUp = {
+      ...body,
+      ...(anonymousCartId && {
+        anonymousCart: {
+          id: anonymousCartId,
+          typeId: 'cart',
+        },
+      }),
+    };
 
-      await this.api.me().signup().post({ body: bodySignUp }).execute();
+    await this.api.me().signup().post({ body: bodySignUp }).execute();
 
-      const { email, password } = body;
+    const { email, password } = body;
 
-      this.api = this.apiDefinition({ type: 'authenticated', email, password });
-      this.isAuthenticated = true;
-      localStorage.removeItem('ct_anon_token');
-    } catch (error) {
-      console.error(error);
-    }
+    this.api = this.apiDefinition({ type: 'authenticated', email, password });
+    this.isAuthenticated = true;
+    localStorage.removeItem('ct_anon_token');
   };
 
   public signInCustomer = async (
@@ -79,40 +73,28 @@ export class AuthorizationService {
       throw new Error('Missing required project key for Commercetools');
     }
 
-    try {
-      const response = await this.api
-        .me()
-        .login()
-        .post({
-          body: {
-            email,
-            password,
-            ...(anonymousCartId && {
-              anonymousCart: {
-                id: anonymousCartId,
-                typeId: 'cart',
-              },
-            }),
-          },
-        })
-        .execute();
+    const response = await this.api
+      .me()
+      .login()
+      .post({
+        body: {
+          email,
+          password,
+          ...(anonymousCartId && {
+            anonymousCart: {
+              id: anonymousCartId,
+              typeId: 'cart',
+            },
+          }),
+        },
+      })
+      .execute();
 
-      this.api = this.apiDefinition({ type: 'authenticated', email, password });
-      this.isAuthenticated = true;
-      localStorage.removeItem('ct_anon_token');
+    this.api = this.apiDefinition({ type: 'authenticated', email, password });
+    this.isAuthenticated = true;
+    localStorage.removeItem('ct_anon_token');
 
-      return response.body;
-    } catch (error) {
-      console.warn(error);
-      const modal = new ConfirmModal(
-        'Account with these credentials was not found. Please check your login or password. Would you like to register?',
-      );
-
-      modal.setAction(() => {
-        route.navigate('/registration');
-      });
-      await modal.open();
-    }
+    return response.body;
   };
 
   public logOutCustomer = (): void => {
