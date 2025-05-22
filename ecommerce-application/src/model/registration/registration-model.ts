@@ -20,15 +20,15 @@ class RegistrationModel {
       birthday: '',
       street: '',
       city: '',
-      ['postal-code']: '',
+      postalCode: '',
       country: '',
-      ['street-billing']: '',
-      ['city-billing']: '',
-      ['postal-code-billing']: '',
-      ['country-billing']: '',
-      ['is-default-shipping']: false,
-      ['is-shipping-as-billing']: false,
-      ['is-default-billing']: false,
+      streetBilling: '',
+      cityBilling: '',
+      postalCodeBilling: '',
+      countryBilling: '',
+      isDefaultShipping: false,
+      isShippingAsBilling: false,
+      isDefaultBilling: false,
     };
     this.errors = [];
     this.isValidForm = true;
@@ -83,25 +83,25 @@ class RegistrationModel {
 
           break;
         case 'street':
-        case 'street-billing':
+        case 'streetBilling':
           if (!Validator.isStreet(value)) this.errors.push(key);
 
           break;
         case 'city':
-        case 'city-billing':
+        case 'cityBilling':
           if (!Validator.isCity(value)) {
             this.errors.push(key);
           }
 
           break;
-        case 'postal-code':
+        case 'postalCode':
           if (!Validator.isPostalCode(value, this.currentFormValues.country)) {
             this.errors.push(key);
           }
 
           break;
-        case 'postal-code-billing':
-          if (!Validator.isPostalCode(value, this.currentFormValues['country-billing'])) {
+        case 'postalCodeBilling':
+          if (!Validator.isPostalCode(value, this.currentFormValues['countryBilling'])) {
             this.errors.push(key);
           }
 

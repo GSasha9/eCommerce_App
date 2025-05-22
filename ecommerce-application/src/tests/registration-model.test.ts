@@ -19,10 +19,10 @@ describe('RegistrationModel', () => {
     });
 
     it('should not set a boolean field', () => {
-      const prevValue = model.currentFormValues['is-default-billing'];
+      const prevValue = model.currentFormValues['isDefaultBilling'];
 
-      model.setStringValue('true', 'is-default-billing');
-      expect(model.currentFormValues['is-default-billing']).toBe(prevValue);
+      model.setStringValue('true', 'isDefaultBilling');
+      expect(model.currentFormValues['isDefaultBilling']).toBe(prevValue);
     });
   });
 

@@ -1,4 +1,4 @@
-export interface IResponce {
+export interface IResponse {
   access_token: string;
   expires_in: number;
   token_type: string;

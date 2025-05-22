@@ -9,7 +9,7 @@ import { ShippingAddressElements } from './shipping-address-elements.ts';
 import { BillingAddressElements } from './billing-address-elements.ts';
 import Element from '../../components/element/element.ts';
 import type RegistrationModel from '../../model/registration/registration-model.ts';
-import { MESSAGE_CONTENT } from '../../shared/utils/validator-сonstants.ts';
+import { MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
 import { isFormName } from '../../shared/models/typeguards.ts/typeguards.ts';
 import { route } from '../../router';
 
@@ -155,7 +155,7 @@ class RegistrationPage extends View {
   }
 
   public updateBillingAddress(model: RegistrationModel): void {
-    const isDisabled = model.currentFormValues['is-shipping-as-billing'];
+    const isDisabled = model.currentFormValues['isShippingAsBilling'];
     const street = this.billingAddressElements.inputStreet;
     const city = this.billingAddressElements.inputCity;
     const postal = this.billingAddressElements.inputPostalCode;
@@ -174,13 +174,13 @@ class RegistrationPage extends View {
 
       street.setValue(values.street);
       city.setValue(values.city);
-      postal.setValue(values['postal-code']);
+      postal.setValue(values['postalCode']);
       country.node.value = values.country;
-      isDefault.setValue(values['is-default-shipping']);
-      model.setStringValue(values.street, 'street-billing');
-      model.setStringValue(values.city, 'city-billing');
-      model.setStringValue(values['postal-code'], 'postal-code-billing');
-      model.setStringValue(values['country'], 'country-billing');
+      isDefault.setValue(values['isDefaultShipping']);
+      model.setStringValue(values.street, 'streetBilling');
+      model.setStringValue(values.city, 'cityBilling');
+      model.setStringValue(values['postalCode'], 'postalCodeBilling');
+      model.setStringValue(values['country'], 'countryBilling');
     }
   }
 }

@@ -1,5 +1,5 @@
 import type { TokenStore } from '@commercetools/ts-client';
-import type { IFormValues, IResponce } from '../interfaces';
+import type { IFormValues, IResponse } from '../interfaces';
 import type { CommercetoolsApiError } from '../type/commercetools-api-errors';
 
 export const isHTMLElement = (value: unknown): value is HTMLElement => value instanceof HTMLElement;
@@ -8,7 +8,7 @@ export const isHTMLSelectElement = (value: unknown): value is HTMLSelectElement 
 export const isHTMLCheckboxElement = (value: unknown): value is HTMLInputElement & { type: 'checkbox' } =>
   value instanceof HTMLInputElement && value.type === 'checkbox';
 
-export const isResponce = (value: unknown): value is IResponce =>
+export const isResponse = (value: unknown): value is IResponse =>
   Boolean(
     value &&
       typeof value === 'object' &&
@@ -50,11 +50,12 @@ export const isFormName = (value: unknown): value is keyof IFormValues =>
   isBooleanFormName(value) || isStringFormName(value);
 export const isBooleanFormName = (
   value: unknown,
-): value is Extract<keyof IFormValues, 'is-default-shipping' | 'is-shipping-as-billing' | 'is-default-billing'> =>
-  value === 'is-default-shipping' || value === 'is-shipping-as-billing' || value === 'is-default-billing';
+): value is Extract<keyof IFormValues, 'isDefaultShipping' | 'isShippingAsBilling' | 'isDefaultBilling'> =>
+  value === 'isDefaultShipping' || value === 'isShippingAsBilling' || value === 'isDefaultBilling';
+
 export const isStringFormName = (
   value: unknown,
-): value is Exclude<keyof IFormValues, 'is-default-shipping' | 'is-shipping-as-billing' | 'is-default-billing'> =>
+): value is Exclude<keyof IFormValues, 'isDefaultShipping' | 'isShippingAsBilling' | 'isDefaultBilling'> =>
   value === 'email' ||
   value === 'password' ||
   value === 'name' ||
@@ -62,9 +63,9 @@ export const isStringFormName = (
   value === 'birthday' ||
   value === 'street' ||
   value === 'city' ||
-  value === 'postal-code' ||
+  value === 'postalCode' ||
   value === 'country' ||
-  value === 'street-billing' ||
-  value === 'city-billing' ||
-  value === 'postal-code-billing' ||
-  value === 'country-billing';
+  value === 'streetBilling' ||
+  value === 'cityBilling' ||
+  value === 'postalCodeBilling' ||
+  value === 'countryBilling';

@@ -6,13 +6,13 @@ export interface IFormValues {
   birthday: string;
   street: string;
   city: string;
-  'postal-code': string;
+  postalCode: string;
   country: string;
-  'street-billing': string;
-  'city-billing': string;
-  'postal-code-billing': string;
-  'country-billing': string;
-  ['is-default-shipping']?: boolean;
-  ['is-shipping-as-billing']?: boolean;
-  ['is-default-billing']?: boolean;
+  streetBilling: string;
+  cityBilling: string;
+  postalCodeBilling: string;
+  countryBilling: string;
+  isDefaultShipping?: boolean;
+  isShippingAsBilling?: boolean;
+  isDefaultBilling?: boolean;
 }

@@ -13,6 +13,7 @@ import {
 } from '../../shared/models/typeguards.ts';
 import { LoginController } from '../login/login-controller.ts';
 import { Layout } from '../../pages/layout.ts';
+import { convertInputName } from '../../shared/utils/convert-input-name.ts';
 
 export class RegistrationController {
   private readonly page: RegistrationPage;
@@ -50,23 +51,23 @@ export class RegistrationController {
         {
           country: this.model.currentFormValues.country,
           streetName: this.model.currentFormValues.street,
-          postalCode: this.model.currentFormValues['postal-code'],
+          postalCode: this.model.currentFormValues['postalCode'],
           city: this.model.currentFormValues.city,
         },
         {
-          country: this.model.currentFormValues['country-billing'],
-          streetName: this.model.currentFormValues['street-billing'],
-          postalCode: this.model.currentFormValues['postal-code-billing'],
-          city: this.model.currentFormValues['city-billing'],
+          country: this.model.currentFormValues['countryBilling'],
+          streetName: this.model.currentFormValues['streetBilling'],
+          postalCode: this.model.currentFormValues['postalCodeBilling'],
+          city: this.model.currentFormValues['cityBilling'],
         },
       ],
       shippingAddresses: [0],
-      billingAddresses: this.model.currentFormValues['is-shipping-as-billing'] ? [0] : [1],
+      billingAddresses: this.model.currentFormValues['isShippingAsBilling'] ? [0] : [1],
 
-      ...(this.model.currentFormValues['is-default-shipping'] && {
+      ...(this.model.currentFormValues['isDefaultShipping'] && {
         defaultShippingAddress: 0,
       }),
-      ...(this.model.currentFormValues['is-default-billing'] && {
+      ...(this.model.currentFormValues['isDefaultBilling'] && {
         defaultBillingAddress: 1,
       }),
     };
@@ -93,7 +94,7 @@ export class RegistrationController {
   private onChangeInputs = (event: Event): void => {
     if (!(isHTMLInputElement(event.target) || isHTMLSelectElement(event.target))) return;
 
-    const inputName = event.target.name;
+    const inputName = convertInputName(event.target.name);
 
     if (isHTMLCheckboxElement(event.target)) {
       const value = event.target.checked;
@@ -137,7 +138,5 @@ export class RegistrationController {
       input.setAttribute('placeholder', 'your password');
       icon.classList.add('hide');
     }
-
-    return;
   };
 }

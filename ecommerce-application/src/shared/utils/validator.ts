@@ -1,4 +1,4 @@
-import { MIN_AGE } from './validator-сonstants';
+import { MIN_AGE } from '../constants/messages-for-validator';
 
 export class Validator {
   public static isEmail(value: string): boolean {

@@ -1,6 +1,6 @@
 import { LoginModel } from '../../model/login/login-model.ts';
 import { LoginPage } from '../../pages/login/login';
-import { MESSAGE_CONTENT } from '../../shared/utils/validator-сonstants.ts';
+import { MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
 import { isHTMLInputElement, isHTMLSelectElement, isFormName } from '../../shared/models/typeguards.ts';
 import { authService } from '../../services/commercetools/auth-service.ts';
 import { route } from '../../router/index.ts';

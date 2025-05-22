@@ -3,7 +3,7 @@ import { CreateElement } from '../../shared/utils/create-element.ts';
 import './registration.scss';
 import { CreateInput } from '../../components/input/create-input.ts';
 import { Label } from '../../components/label/label.ts';
-import { COUNTRIES } from '../../shared/utils/validator-сonstants.ts';
+import { COUNTRIES } from '../../shared/constants/messages-for-validator.ts';
 import Element from '../../components/element/element.ts';
 
 export class BillingAddressElements extends CreateElement {

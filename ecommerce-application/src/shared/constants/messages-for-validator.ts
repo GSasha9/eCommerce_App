@@ -17,12 +17,11 @@ export const MESSAGE_CONTENT: Partial<Record<keyof IFormValues, string>> = {
   birthday: 'You must be at least 13 years old.',
   street: 'Must contain at least one character',
   city: 'Must contain at least one character and no special characters or numbers',
-  ['postal-code']:
+  postalCode:
     'You need to select a country and must follow the format for the country(BY "211111", DE "11111", US "11111-1111", GB "AA1A 1AA")',
   country: 'Please select a country',
-  ['street-billing']: 'Must contain at least one character',
-  ['city-billing']: 'Must contain at least one character and no special characters or numbers',
-  ['postal-code-billing']:
-    'Must follow the format for the country(BY "211111", DE "11111", US "11111-1111", GB "AA1A 1AA")',
-  ['country-billing']: 'Please select a country',
+  streetBilling: 'Must contain at least one character',
+  cityBilling: 'Must contain at least one character and no special characters or numbers',
+  postalCodeBilling: 'Must follow the format for the country(BY "211111", DE "11111", US "11111-1111", GB "AA1A 1AA")',
+  countryBilling: 'Please select a country',
 };
