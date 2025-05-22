@@ -1,12 +1,13 @@
-import './_login.scss';
-import type { IParameters } from '../../shared/models/interfaces/index.ts';
-import { CreateElement } from '../../shared/utils/create-element.ts';
-import { View } from '../view.ts';
 import { CreateButton } from '../../components/button/create-button.ts';
 import Element from '../../components/element/element.ts';
-import { CredentialElements } from '../registration/credentials-elements.ts';
 import type { LoginController } from '../../controllers/login/login-controller.ts';
 import { route } from '../../router/index.ts';
+import type { IParameters } from '../../shared/models/interfaces/index.ts';
+import { CreateElement } from '../../shared/utils/create-element.ts';
+import { CredentialElements } from '../registration/credentials-elements.ts';
+import { View } from '../view.ts';
+
+import './_login.scss';
 
 export class LoginPage extends View {
   private static instance: LoginPage;

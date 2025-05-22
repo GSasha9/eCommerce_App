@@ -1,6 +1,6 @@
 import type { LoginPage } from '../../pages/login/login.ts';
 import type { IFormValues } from '../../shared/models/interfaces/index.ts';
-import { isStringFormName, isBooleanFormName } from '../../shared/models/typeguards.ts/index.ts';
+import { isBooleanFormName, isStringFormName } from '../../shared/models/typeguards.ts/index.ts';
 import { Validator } from '../../shared/utils/validator.ts';
 
 export class LoginModel {

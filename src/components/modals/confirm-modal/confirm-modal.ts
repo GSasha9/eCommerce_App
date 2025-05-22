@@ -1,6 +1,7 @@
-import { Modal } from '../modal';
-import Element from '../../element';
 import { CreateButton } from '../../button/create-button';
+import Element from '../../element';
+import { Modal } from '../modal';
+
 import './confirm-modal.scss';
 
 export default class ConfirmModal extends Modal {

@@ -1,5 +1,5 @@
-import type { ClientResponse } from '@commercetools/ts-client';
 import type { CustomerPagedQueryResponse } from '@commercetools/platform-sdk';
+import type { ClientResponse } from '@commercetools/ts-client';
 
 export const findUserByEmailResponse = (response: unknown): response is ClientResponse<CustomerPagedQueryResponse> => {
   if (typeof response !== 'object' || response === null || !('body' in response)) {

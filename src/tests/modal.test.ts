@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { waitFor } from '@testing-library/dom';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+
 import { Modal } from '../components/modals/modal';
 
 let modal: Modal;

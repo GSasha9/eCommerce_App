@@ -1,11 +1,11 @@
-import type { Router } from '../router/router.ts';
 import { route, ROUTES } from '../router/index.ts';
+import type { Router } from '../router/router.ts';
+import { AboutController } from './about/about-controller.ts';
 import { HomeController } from './home/home-controller.ts';
-import { NotFoundController } from './not-found/notfound-controller.ts';
 import { LoginController } from './login/login-controller.ts';
+import { NotFoundController } from './not-found/notfound-controller.ts';
 import { RegistrationController } from './registration/registration-controller.ts';
 import { ShopController } from './shop/shop-controller.ts';
-import { AboutController } from './about/about-controller.ts';
 
 export class Controller {
   private router: Router;

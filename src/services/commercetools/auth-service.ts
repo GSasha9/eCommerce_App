@@ -1,10 +1,11 @@
-import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
-import { ClientBuilder, type Client } from '@commercetools/ts-client';
-import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import type { ByProjectKeyRequestBuilder, CustomerSignInResult, MyCustomerDraft } from '@commercetools/platform-sdk';
-import type { AuthState } from './models/types';
+import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
+import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
+import { type Client, ClientBuilder } from '@commercetools/ts-client';
+
 import { getToken, tokenCache } from '../sdk/token';
 import { TOKEN } from './models/constants';
+import type { AuthState } from './models/types';
 
 export class AuthorizationService {
   private static instance: AuthorizationService;

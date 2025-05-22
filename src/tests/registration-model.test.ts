@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+
 import RegistrationModel from '../model/registration/registration-model.ts';
 import RegistrationPage from '../pages/registration/registration-page.ts';
 import { isFormName } from '../shared/models/typeguards.ts/typeguards.ts';

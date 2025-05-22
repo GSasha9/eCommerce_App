@@ -1,6 +1,7 @@
-import { describe, test, expect, vi } from 'vitest';
 import type { CustomerSignInResult } from '@commercetools/platform-sdk';
-import { authService, AuthorizationService } from '../services/commercetools/auth-service';
+import { describe, expect, test, vi } from 'vitest';
+
+import { AuthorizationService, authService } from '../services/commercetools/auth-service';
 
 describe('Check for singleton', () => {
   test('should return instance if this instance doesn`t exist', () => {

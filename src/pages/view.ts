@@ -1,5 +1,5 @@
+import type { IParameters, IViewMain } from '../shared/models/interfaces/index.ts';
 import { CreateElement } from '../shared/utils/create-element.ts';
-import type { IViewMain, IParameters } from '../shared/models/interfaces/index.ts';
 
 export class View implements IViewMain {
   protected viewElementCreator: CreateElement;

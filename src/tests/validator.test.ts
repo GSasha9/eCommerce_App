@@ -1,6 +1,7 @@
-import { describe, it, expect } from 'vitest';
-import { Validator } from '../shared/utils/validator';
+import { describe, expect, it } from 'vitest';
+
 import { MIN_AGE } from '../shared/constants/messages-for-validator';
+import { Validator } from '../shared/utils/validator';
 
 describe('Validator', () => {
   it('email address must be properly formatted (e.g., user@example.com)', () => {

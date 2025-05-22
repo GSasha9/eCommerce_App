@@ -1,7 +1,7 @@
 import { CreateButton } from '../components/button/create-button.ts';
-import { CreateElement } from '../shared/utils/create-element.ts';
 import { route } from '../router/index.ts';
 import { authService } from '../services/commercetools/auth-service.ts';
+import { CreateElement } from '../shared/utils/create-element.ts';
 
 export class Header {
   private readonly headerElement: HTMLElement;

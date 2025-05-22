@@ -1,4 +1,5 @@
 import type { TokenCache, TokenStore } from '@commercetools/ts-client';
+
 import { isTokenStore } from '../../shared/models/typeguards.ts/index.ts';
 
 export const tokenCache = (key: string): TokenCache => ({

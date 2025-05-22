@@ -1,7 +1,7 @@
+import { CreateButton } from '../../components/button/create-button.ts';
 import type { IParameters } from '../../shared/models/interfaces/index.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 import { View } from '../view.ts';
-import { CreateButton } from '../../components/button/create-button.ts';
 
 export class NotFoundPage extends View {
   constructor(parameters: Partial<IParameters> = {}) {

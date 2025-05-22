@@ -1,5 +1,5 @@
-import { NotFoundPage } from '../../pages/not-found/not-found.ts';
 import { Layout } from '../../pages/layout.ts';
+import { NotFoundPage } from '../../pages/not-found/not-found.ts';
 
 export class NotFoundController {
   private notFoundPage: NotFoundPage;

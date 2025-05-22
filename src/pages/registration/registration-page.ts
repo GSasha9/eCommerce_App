@@ -1,17 +1,18 @@
+import { CreateButton } from '../../components/button/create-button.ts';
+import Element from '../../components/element/element.ts';
+import type RegistrationModel from '../../model/registration/registration-model.ts';
+import { route } from '../../router/index.ts';
+import { MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
 import type { IParameters } from '../../shared/models/interfaces/index.ts';
+import { isFormName } from '../../shared/models/typeguards.ts/typeguards.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 import { View } from '../view.ts';
-import { CreateButton } from '../../components/button/create-button.ts';
-import './registration.scss';
+import { BillingAddressElements } from './billing-address-elements.ts';
 import { CredentialElements } from './credentials-elements.ts';
 import { PersonalInfoElements } from './personal-info-elements.ts';
 import { ShippingAddressElements } from './shipping-address-elements.ts';
-import { BillingAddressElements } from './billing-address-elements.ts';
-import Element from '../../components/element/element.ts';
-import type RegistrationModel from '../../model/registration/registration-model.ts';
-import { MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
-import { isFormName } from '../../shared/models/typeguards.ts/typeguards.ts';
-import { route } from '../../router/index.ts';
+
+import './registration.scss';
 
 class RegistrationPage extends View {
   private static instance: RegistrationPage;

@@ -1,6 +1,7 @@
 import { defineConfig } from 'eslint/config';
 import eslint from '@eslint/js';
-import tseslint, { plugin } from 'typescript-eslint';
+import tseslint from 'typescript-eslint';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default defineConfig([
   {
@@ -61,6 +62,12 @@ export default defineConfig([
           next: '*',
         },
       ],
+    },
+  },
+  {
+    plugins: { 'simple-import-sort': simpleImportSort },
+    rules: {
+      'simple-import-sort/imports': ['error', { groups: [['^@?\\w'], ['^\\.'], ['^.+\\.s?css$']] }],
     },
   },
 ]);

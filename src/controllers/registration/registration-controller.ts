@@ -1,5 +1,6 @@
 import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import RegistrationModel from '../../model/registration/registration-model.ts';
+import { Layout } from '../../pages/layout.ts';
 import RegistrationPage from '../../pages/registration/index.ts';
 import { route } from '../../router/index.ts';
 import { authService } from '../../services/commercetools/auth-service.ts';
@@ -11,9 +12,8 @@ import {
   isHTMLInputElement,
   isHTMLSelectElement,
 } from '../../shared/models/typeguards.ts/index.ts';
-import { LoginController } from '../login/login-controller.ts';
-import { Layout } from '../../pages/layout.ts';
 import { convertInputName } from '../../shared/utils/convert-input-name.ts';
+import { LoginController } from '../login/login-controller.ts';
 
 export class RegistrationController {
   private readonly page: RegistrationPage;

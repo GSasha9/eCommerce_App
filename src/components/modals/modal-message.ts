@@ -1,5 +1,6 @@
 import Element from '../element';
 import { Modal } from './modal';
+
 import './modal.scss';
 
 export class ModalMessage extends Modal {

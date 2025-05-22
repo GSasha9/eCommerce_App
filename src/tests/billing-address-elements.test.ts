@@ -1,4 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
+
 import { BillingAddressElements } from '../pages/registration/billing-address-elements.ts';
 import { COUNTRIES } from '../shared/constants/messages-for-validator.ts';
 

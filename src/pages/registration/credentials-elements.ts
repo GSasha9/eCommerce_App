@@ -1,9 +1,10 @@
-import type { IParameters } from '../../shared/models/interfaces/index.ts';
-import { CreateElement } from '../../shared/utils/create-element.ts';
-import './registration.scss';
+import Element from '../../components/element/element.ts';
 import { CreateInput } from '../../components/input/create-input.ts';
 import { Label } from '../../components/label/label.ts';
-import Element from '../../components/element/element.ts';
+import type { IParameters } from '../../shared/models/interfaces/index.ts';
+import { CreateElement } from '../../shared/utils/create-element.ts';
+
+import './registration.scss';
 
 export class CredentialElements extends CreateElement {
   public inputEmail: CreateInput;

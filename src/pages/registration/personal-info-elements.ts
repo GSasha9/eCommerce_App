@@ -1,8 +1,9 @@
-import type { IParameters } from '../../shared/models/interfaces/index.ts';
-import { CreateElement } from '../../shared/utils/create-element.ts';
-import './registration.scss';
 import { CreateInput } from '../../components/input/create-input.ts';
 import { Label } from '../../components/label/label.ts';
+import type { IParameters } from '../../shared/models/interfaces/index.ts';
+import { CreateElement } from '../../shared/utils/create-element.ts';
+
+import './registration.scss';
 
 export class PersonalInfoElements extends CreateElement {
   public inputName: CreateInput;

@@ -1,5 +1,5 @@
-import { Header } from './header.ts';
 import { Footer } from './footer.ts';
+import { Header } from './header.ts';
 
 export class Layout {
   private static instance: Layout;

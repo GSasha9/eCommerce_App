@@ -1,5 +1,5 @@
-import { ShopPage } from '../../pages/shop/shop.ts';
 import { Layout } from '../../pages/layout.ts';
+import { ShopPage } from '../../pages/shop/shop.ts';
 
 export class ShopController {
   private shopView: ShopPage;
