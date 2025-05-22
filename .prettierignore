@@ -1,3 +1,3 @@
 # Ignore artifacts:
-ecommerce-application/dist
+dist
 .github
