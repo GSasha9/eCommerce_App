@@ -55,6 +55,7 @@ export class AuthorizationService {
     };
 
     await this.api.me().signup().post({ body: bodySignUp }).execute();
+
     const { email, password } = body;
 
     this.api = this.apiDefinition({ type: 'authenticated', email, password });

@@ -3,13 +3,13 @@ import RegistrationModel from '../model/registration/registration-model';
 import RegistrationPage from '../pages/registration/registration-page.ts';
 import { isFormName } from '../shared/models/typeguards.ts/typeguards.ts';
 
-const mockPage = new RegistrationPage();
+const mockPage = RegistrationPage.getInstance();
 
 describe('RegistrationModel', () => {
   let model: RegistrationModel;
 
   beforeEach(() => {
-    model = new RegistrationModel(mockPage);
+    model = RegistrationModel.getInstance(mockPage);
   });
 
   describe('setStringValue', () => {

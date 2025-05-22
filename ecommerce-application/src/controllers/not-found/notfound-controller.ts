@@ -1,4 +1,5 @@
 import { NotFoundPage } from '../../pages/not-found/not-found.ts';
+import { Layout } from '../../pages/layout.ts';
 
 export class NotFoundController {
   private notFoundPage: NotFoundPage;
@@ -9,12 +10,8 @@ export class NotFoundController {
   }
 
   public render(): void {
-    const container: HTMLElement = document.body;
+    const layout = Layout.getInstance();
 
-    if (container) {
-      document.body.replaceChildren();
-
-      container.appendChild(this.notFoundPage.getHtmlElement());
-    }
+    layout.setMainContent(this.notFoundPage.getHtmlElement());
   }
 }

@@ -11,8 +11,10 @@ import Element from '../../components/element/element.ts';
 import type RegistrationModel from '../../model/registration/registration-model.ts';
 import { MESSAGE_CONTENT } from '../../shared/utils/validator-сonstants.ts';
 import { isFormName } from '../../shared/models/typeguards.ts/typeguards.ts';
+import { route } from '../../router';
 
 class RegistrationPage extends View {
+  private static instance: RegistrationPage;
   public homeButton: CreateButton;
   public credentialElements: CredentialElements;
   public personalInfoElements: PersonalInfoElements;
@@ -23,7 +25,7 @@ class RegistrationPage extends View {
   public wrapperQuestion: Element<'div'>;
   public registrationButton: CreateButton;
 
-  constructor(parameters: Partial<IParameters> = {}) {
+  private constructor(parameters: Partial<IParameters> = {}) {
     super({ tag: 'div', classNames: ['registration-page'], ...parameters });
     this.credentialElements = new CredentialElements();
     this.personalInfoElements = new PersonalInfoElements();
@@ -42,7 +44,7 @@ class RegistrationPage extends View {
       textContent: '',
       callback: (event: Event): void => {
         event.preventDefault();
-        window.location.href = `/home`;
+        route.navigate(`/home`);
       },
     });
 
@@ -109,6 +111,14 @@ class RegistrationPage extends View {
     this.viewElementCreator.addInnerElement(this.containerForm.node);
   }
 
+  public static getInstance(parameters: Partial<IParameters> = {}): RegistrationPage {
+    if (!RegistrationPage.instance) {
+      RegistrationPage.instance = new RegistrationPage(parameters);
+    }
+
+    return RegistrationPage.instance;
+  }
+
   public renderDisabledRegister(isValidForm: boolean): void {
     if (isValidForm) {
       this.registrationButton.getElement().removeAttribute('disabled');
@@ -146,7 +156,6 @@ class RegistrationPage extends View {
 
   public updateBillingAddress(model: RegistrationModel): void {
     const isDisabled = model.currentFormValues['is-shipping-as-billing'];
-
     const street = this.billingAddressElements.inputStreet;
     const city = this.billingAddressElements.inputCity;
     const postal = this.billingAddressElements.inputPostalCode;
@@ -168,7 +177,6 @@ class RegistrationPage extends View {
       postal.setValue(values['postal-code']);
       country.node.value = values.country;
       isDefault.setValue(values['is-default-shipping']);
-
       model.setStringValue(values.street, 'street-billing');
       model.setStringValue(values.city, 'city-billing');
       model.setStringValue(values['postal-code'], 'postal-code-billing');

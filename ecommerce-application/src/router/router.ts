@@ -20,19 +20,17 @@ export class Router implements IRouter {
   }
 
   public addRoute(path: string, controller: () => void): void {
-    const normalizedPath: string =
-      path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
+    const normalizedPath: string = path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
 
     this.routes.set(normalizedPath, controller);
   }
 
   public navigate(path: string, pushState: boolean = true): void {
-    let normalizedPath: string =
-      path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
+    let normalizedPath: string = path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
 
-    const token = localStorage.getItem('ct_user_token');
+    const token = localStorage.getItem('isLoggedPlants');
 
-    if (token && (normalizedPath === '/login' || normalizedPath === '/registration')) {
+    if (token === 'true' && (normalizedPath === '/login' || normalizedPath === '/registration')) {
       normalizedPath = '/home';
       window.history.replaceState({}, '', normalizedPath);
     } else if (pushState) {

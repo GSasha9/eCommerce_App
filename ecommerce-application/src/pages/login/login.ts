@@ -6,16 +6,17 @@ import { CreateButton } from '../../components/button/create-button';
 import Element from '../../components/element/element.ts';
 import { CredentialElements } from '../registration/credentials-elements.ts';
 import type { LoginController } from '../../controllers/login/login-controller.ts';
+import { route } from '../../router';
 
 export class LoginPage extends View {
+  private static instance: LoginPage;
   public credentialElements: CredentialElements;
   public loginButton: CreateButton;
   public containerForm: Element<'form'>;
   public loginController: LoginController;
 
-  constructor(parameters: Partial<IParameters> = {}, controller: LoginController) {
+  private constructor(parameters: Partial<IParameters> = {}, controller: LoginController) {
     super({ tag: 'div', classNames: ['login-page'], ...parameters });
-
     this.loginController = controller;
 
     const close = new CreateElement({
@@ -24,7 +25,7 @@ export class LoginPage extends View {
       textContent: '',
       callback: (event: Event): void => {
         event.preventDefault();
-        window.location.href = `/home`;
+        route.navigate(`/home`);
       },
     });
 
@@ -40,7 +41,7 @@ export class LoginPage extends View {
       textContent: 'Registration',
       callback: (event: Event): void => {
         event.preventDefault();
-        window.location.href = `/registration`;
+        route.navigate(`/registration`);
       },
     });
 
@@ -48,21 +49,22 @@ export class LoginPage extends View {
       tag: 'span',
       classNames: ['login-span'],
       textContent: '',
-      callback: ():void => {},
+      callback: (): void => {},
     });
-    const spanElement  = span.getElement();
+    const spanElement = span.getElement();
 
     const containerLoginRegister = new CreateElement({
       tag: 'div',
       classNames: ['container-registration'],
       textContent: '',
-      callback: ():void => {},
+      callback: (): void => {},
     });
     const container = containerLoginRegister.getElement();
 
     container.appendChild(mainTitle.getElement());
     container.appendChild(spanElement);
     container.appendChild(registrationLink.getElement());
+
     this.credentialElements = new CredentialElements();
 
     this.loginButton = new CreateButton({
@@ -72,18 +74,21 @@ export class LoginPage extends View {
       disabled: true,
     });
 
-    this.containerForm = this.containerForm = new Element<'form'>({
+    this.containerForm = new Element<'form'>({
       tag: 'form',
       className: 'wrapper-form-login',
-      children: [
-        close.getElement(),
-        container,
-        this.credentialElements.getElement(),
-        this.loginButton.getElement(),
-      ],
+      children: [close.getElement(), container, this.credentialElements.getElement(), this.loginButton.getElement()],
     });
 
     this.viewElementCreator.addInnerElement(this.containerForm.node);
+  }
+
+  public static getInstance(parameters: Partial<IParameters> = {}, controller: LoginController): LoginPage {
+    if (!LoginPage.instance) {
+      LoginPage.instance = new LoginPage(parameters, controller);
+    }
+
+    return LoginPage.instance;
   }
 
   public renderDisabledLogin(isDisabled: boolean): void {
@@ -96,7 +101,6 @@ export class LoginPage extends View {
 
   public renderErrorMassage(inputName: string, message?: string): void {
     const elem = this.containerForm.node.querySelector(`.input-${inputName}`);
-
     const node = new CreateElement({
       tag: 'div',
       classNames: ['error-message'],
