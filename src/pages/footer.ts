@@ -1,6 +1,6 @@
 import { CreateElement } from '../shared/utils/create-element.ts';
 
-import './_footer.scss';
+import './footer.scss';
 
 export class Footer {
   private readonly footerElement: HTMLElement;

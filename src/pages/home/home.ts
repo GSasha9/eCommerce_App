@@ -2,7 +2,7 @@ import type { IParameters } from '../../shared/models/interfaces/index.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 import { View } from '../view.ts';
 
-import './_home.scss';
+import './styles.scss';
 
 export class HomePage extends View {
   constructor(parameters: Partial<IParameters> = {}) {

@@ -5,7 +5,7 @@ import { COUNTRIES } from '../../shared/constants/messages-for-validator.ts';
 import type { IParameters } from '../../shared/models/interfaces/index.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 
-import './registration.scss';
+import './styles.scss';
 
 export class BillingAddressElements extends CreateElement {
   public streetLabel: Label;

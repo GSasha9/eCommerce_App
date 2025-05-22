@@ -1,7 +1,7 @@
 import { isHTMLElement } from '../../shared/models/typeguards.ts/index.ts';
 import Element from '../element/index.ts';
 
-import './modal.scss';
+import './styles.scss';
 
 export class Modal {
   protected modal: Element<'div'>;

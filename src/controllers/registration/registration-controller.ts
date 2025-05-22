@@ -1,10 +1,10 @@
+import { authService } from '../../commerce-tools/auth-service.ts';
+import { handleApiError } from '../../commerce-tools/models/utils/handle-api-error.ts';
 import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import RegistrationModel from '../../model/registration/registration-model.ts';
 import { Layout } from '../../pages/layout.ts';
 import RegistrationPage from '../../pages/registration/index.ts';
 import { route } from '../../router/index.ts';
-import { authService } from '../../services/commercetools/auth-service.ts';
-import { handleApiError } from '../../services/commercetools/models/utils/handle-api-error.ts';
 import {
   isCommercetoolsApiError,
   isFormName,

@@ -12,7 +12,7 @@ import { CredentialElements } from './credentials-elements.ts';
 import { PersonalInfoElements } from './personal-info-elements.ts';
 import { ShippingAddressElements } from './shipping-address-elements.ts';
 
-import './registration.scss';
+import './styles.scss';
 
 class RegistrationPage extends View {
   private static instance: RegistrationPage;

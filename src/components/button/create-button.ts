@@ -1,7 +1,7 @@
 import type { IButtonParameters, IParameters } from '../../shared/models/interfaces/index.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 
-import './_button.scss';
+import './styles.scss';
 
 export class CreateButton extends CreateElement {
   private button: HTMLButtonElement;

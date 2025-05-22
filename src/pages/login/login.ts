@@ -7,7 +7,7 @@ import { CreateElement } from '../../shared/utils/create-element.ts';
 import { CredentialElements } from '../registration/credentials-elements.ts';
 import { View } from '../view.ts';
 
-import './_login.scss';
+import './styles.scss';
 
 export class LoginPage extends View {
   private static instance: LoginPage;

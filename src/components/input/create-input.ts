@@ -1,8 +1,7 @@
 import type { IParameters, IParametersInput } from '../../shared/models/interfaces/index.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 
-import './_input.scss';
-import './_input.scss';
+import './styles.scss';
 
 export class CreateInput extends CreateElement {
   private input: HTMLInputElement;

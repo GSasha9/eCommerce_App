@@ -1,6 +1,5 @@
 import type { IParametersLabel } from '../../shared/models/interfaces/index.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
-
 export class Label extends CreateElement {
   constructor(parameters: IParametersLabel) {
     super({ tag: 'label', classNames: parameters.classNames || [] });

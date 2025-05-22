@@ -4,7 +4,7 @@ import { Label } from '../../components/label/label.ts';
 import type { IParameters } from '../../shared/models/interfaces/index.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 
-import './registration.scss';
+import './styles.scss';
 
 export class CredentialElements extends CreateElement {
   public inputEmail: CreateInput;

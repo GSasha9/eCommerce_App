@@ -1,7 +1,7 @@
 import Element from '../element';
 import { Modal } from './modal';
 
-import './modal.scss';
+import './styles.scss';
 
 export class ModalMessage extends Modal {
   private content: Element<'div'>;

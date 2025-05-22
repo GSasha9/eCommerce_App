@@ -1,5 +1,5 @@
-@use '../../components/input/input.scss';
-@use '../../components/button/button.scss';
+@use '../../components/button/styles.scss' as buttonStyles;
+@use '../../components/input/styles.scss' as inputStyles;
 @use '../../styles/scss/variables.scss' as *;
 
 .login-page {

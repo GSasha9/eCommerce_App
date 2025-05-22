@@ -1,10 +1,10 @@
+import { authService } from '../../commerce-tools/auth-service.ts';
 import ConfirmModal from '../../components/modals/confirm-modal/confirm-modal.ts';
 import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import { LoginModel } from '../../model/login/login-model.ts';
 import { Layout } from '../../pages/layout.ts';
 import { LoginPage } from '../../pages/login/login.ts';
 import { route } from '../../router/index.ts';
-import { authService } from '../../services/commercetools/auth-service.ts';
 import { MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
 import { isFormName, isHTMLInputElement, isHTMLSelectElement } from '../../shared/models/typeguards.ts/index.ts';
 
