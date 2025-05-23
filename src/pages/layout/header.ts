@@ -1,7 +1,7 @@
-import { authService } from '../commerce-tools/auth-service.ts';
-import { CreateButton } from '../components/button/create-button.ts';
-import { route } from '../router/index.ts';
-import { CreateElement } from '../shared/utils/create-element.ts';
+import { authService } from '../../commerce-tools/auth-service.ts';
+import { CreateButton } from '../../components/button/create-button.ts';
+import { route } from '../../router';
+import { CreateElement } from '../../shared/utils/create-element.ts';
 
 export class Header {
   private readonly headerElement: HTMLElement;

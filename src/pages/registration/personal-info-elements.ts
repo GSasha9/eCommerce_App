@@ -1,6 +1,6 @@
 import { CreateInput } from '../../components/input/create-input.ts';
 import { Label } from '../../components/label/label.ts';
-import type { IParameters } from '../../shared/models/interfaces/index.ts';
+import type { IParameters } from '../../shared/models/interfaces';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 
 import './styles.scss';

@@ -7,7 +7,7 @@ import './styles.scss';
 export default class ConfirmModal extends Modal {
   private confirmButton: CreateButton;
   private cancelButton: CreateButton;
-  private message: string;
+  private readonly message: string;
   private buttonsContainer: Element<'div'>;
   private content: Element<'p'>;
   private action: (() => void) | null = null;

@@ -1,4 +1,4 @@
-import { Layout } from '../../pages/layout.ts';
+import { Layout } from '../../pages/layout/layout.ts';
 import { NotFoundPage } from '../../pages/not-found/not-found.ts';
 
 export class NotFoundController {

@@ -2,15 +2,16 @@ import { authService } from '../../commerce-tools/auth-service.ts';
 import ConfirmModal from '../../components/modals/confirm-modal/confirm-modal.ts';
 import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import { LoginModel } from '../../model/login/login-model.ts';
-import { Layout } from '../../pages/layout.ts';
+import { Layout } from '../../pages/layout/layout.ts';
 import { LoginPage } from '../../pages/login/login.ts';
-import { route } from '../../router/index.ts';
+import { route } from '../../router';
 import { MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
-import { isFormName, isHTMLInputElement, isHTMLSelectElement } from '../../shared/models/typeguards.ts/index.ts';
+import { isFormName, isHTMLInputElement, isHTMLSelectElement } from '../../shared/models/typeguards.ts';
 
 export class LoginController {
   private readonly loginPage: LoginPage;
   private loginModel: LoginModel;
+  private isActive: boolean = true;
 
   constructor() {
     this.loginPage = LoginPage.getInstance({}, this);
@@ -56,41 +57,46 @@ export class LoginController {
   }
 
   private onClickLogin = async (): Promise<void> => {
-    const data = {
-      email: this.loginModel.currentFormValues.email,
-      password: this.loginModel.currentFormValues.password,
-    };
+    if (this.isActive) {
+      this.isActive = false;
+      const data = {
+        email: this.loginModel.currentFormValues.email,
+        password: this.loginModel.currentFormValues.password,
+      };
 
-    if (data.email && data.password)
-      try {
-        const response = await authService.signInCustomer(data.email, data.password);
+      if (data.email && data.password)
+        try {
+          const response = await authService.signInCustomer(data.email, data.password);
 
-        if (response) {
-          const modal = new ModalGreeting(`Hello, ${response.customer.firstName}`);
+          if (response) {
+            const modal = new ModalGreeting(`Hello, ${response.customer.firstName}`);
 
-          await modal.open();
-          route.navigate('/home');
-          const auth = authService.getAuthenticatedStatus();
+            await modal.open();
+            route.navigate('/home');
+            const auth = authService.getAuthenticatedStatus();
 
-          console.log(authService.api);
+            console.log(authService.api);
 
-          if (auth) {
-            localStorage.setItem('isLoggedPlants', 'true');
+            if (auth) {
+              localStorage.setItem('isLoggedPlants', 'true');
+            }
+
+            LoginController.configureLogoutButton();
           }
+        } catch (error) {
+          console.warn(error);
+          const modal = new ConfirmModal(
+            'Account with these credentials was not found. Please check your login or password. Would you like to register?',
+          );
 
-          LoginController.configureLogoutButton();
+          modal.setAction(() => {
+            route.navigate('/registration');
+          });
+          await modal.open();
+        } finally {
+          this.isActive = true;
         }
-      } catch (error) {
-        console.warn(error);
-        const modal = new ConfirmModal(
-          'Account with these credentials was not found. Please check your login or password. Would you like to register?',
-        );
-
-        modal.setAction(() => {
-          route.navigate('/registration');
-        });
-        await modal.open();
-      }
+    }
   };
 
   private onChangeInputs = (event: Event): void => {

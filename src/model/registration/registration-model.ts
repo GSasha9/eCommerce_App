@@ -1,6 +1,6 @@
 import type RegistrationPage from '../../pages/registration/index.ts';
-import type { IFormValues } from '../../shared/models/interfaces/form-values.ts';
-import { isBooleanFormName, isStringFormName } from '../../shared/models/typeguards.ts/typeguards.ts';
+import type { IFormValues } from '../../shared/models/interfaces';
+import { isBooleanFormName, isStringFormName } from '../../shared/models/typeguards.ts';
 import { Validator } from '../../shared/utils/validator.ts';
 
 class RegistrationModel {

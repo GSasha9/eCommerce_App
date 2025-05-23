@@ -140,7 +140,7 @@ body {
   height: 20px;
   margin-right: 3px;
 
-  background: url('../../assets/images/Logout.svg') no-repeat center center;
+  background: url('/images/Logout.svg') no-repeat center center;
   background-size: contain;
 }
 
@@ -174,7 +174,7 @@ body {
   height: 50px;
   margin-right: 3px;
 
-  background: url('../../assets/images/logo.svg') no-repeat center center;
+  background: url('/images/logo.svg') no-repeat center center;
   background-size: contain;
 
   @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-md) {

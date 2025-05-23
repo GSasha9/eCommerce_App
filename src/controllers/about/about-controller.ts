@@ -1,5 +1,5 @@
 import { AboutPage } from '../../pages/about/about.ts';
-import { Layout } from '../../pages/layout.ts';
+import { Layout } from '../../pages/layout/layout.ts';
 
 export class AboutController {
   private aboutView: AboutPage;

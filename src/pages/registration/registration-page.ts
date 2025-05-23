@@ -1,10 +1,10 @@
 import { CreateButton } from '../../components/button/create-button.ts';
 import Element from '../../components/element/element.ts';
 import type RegistrationModel from '../../model/registration/registration-model.ts';
-import { route } from '../../router/index.ts';
+import { route } from '../../router';
 import { MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
-import type { IParameters } from '../../shared/models/interfaces/index.ts';
-import { isFormName } from '../../shared/models/typeguards.ts/typeguards.ts';
+import type { IParameters } from '../../shared/models/interfaces';
+import { isFormName } from '../../shared/models/typeguards.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 import { View } from '../view.ts';
 import { BillingAddressElements } from './billing-address-elements.ts';
@@ -142,7 +142,7 @@ class RegistrationPage extends View {
       textContent: `${message}`,
     });
 
-    if (elem) {
+    if (elem && elem instanceof HTMLElement) {
       elem.append(node.getElement());
     }
   }
@@ -151,7 +151,11 @@ class RegistrationPage extends View {
     const messages = this.containerForm.node.querySelectorAll(`.error-message`);
 
     if (messages) {
-      messages.forEach((message) => message.remove());
+      messages.forEach((message): void => {
+        if (message instanceof HTMLElement) {
+          message.remove();
+        }
+      });
     }
   }
 

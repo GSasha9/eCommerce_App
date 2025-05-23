@@ -1,8 +1,8 @@
 import { CreateButton } from '../../components/button/create-button.ts';
 import Element from '../../components/element/element.ts';
 import type { LoginController } from '../../controllers/login/login-controller.ts';
-import { route } from '../../router/index.ts';
-import type { IParameters } from '../../shared/models/interfaces/index.ts';
+import { route } from '../../router';
+import type { IParameters } from '../../shared/models/interfaces';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 import { CredentialElements } from '../registration/credentials-elements.ts';
 import { View } from '../view.ts';
@@ -108,7 +108,7 @@ export class LoginPage extends View {
       textContent: `${message}`,
     });
 
-    if (elem) {
+    if (elem && elem instanceof HTMLElement) {
       elem.append(node.getElement());
     }
   }
@@ -117,7 +117,11 @@ export class LoginPage extends View {
     const messages = this.containerForm.node.querySelectorAll(`.error-message`);
 
     if (messages) {
-      messages.forEach((message) => message.remove());
+      messages.forEach((message): void => {
+        if (message instanceof HTMLElement) {
+          message.remove();
+        }
+      });
     }
   }
 }
