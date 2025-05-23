@@ -1,10 +1,11 @@
 import { defineConfig } from 'eslint/config';
 import eslint from '@eslint/js';
-import tseslint, { plugin } from 'typescript-eslint';
+import tseslint from 'typescript-eslint';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default defineConfig([
   {
-    ignores: ['eslint.config.js', 'vite.config.js', 'ecommerce-application/coverage'],
+    ignores: ['eslint.config.js', 'vite.config.js', 'coverage', 'dist'],
   },
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
@@ -60,7 +61,18 @@ export default defineConfig([
           prev: 'if',
           next: '*',
         },
+        {
+          blankLine: 'always',
+          prev: 'export',
+          next: 'export',
+        },
       ],
+    },
+  },
+  {
+    plugins: { 'simple-import-sort': simpleImportSort },
+    rules: {
+      'simple-import-sort/imports': ['error', { groups: [['^@?\\w'], ['^\\.'], ['^.+\\.s?css$']] }],
     },
   },
 ]);

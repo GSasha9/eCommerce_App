@@ -1,0 +1,197 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/fonts';
+
+.registration-page {
+  scroll-behavior: auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: fit-content;
+  margin: 0;
+  padding: $spacing-xxl 0;
+}
+
+.wrapper-form {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  max-width: 800px;
+  margin: 0;
+  padding: $spacing-xl;
+  border-radius: 10px;
+
+  font-family: $font-family-base;
+
+  background-color: $bg-primary;
+}
+
+.close-reg {
+  cursor: pointer;
+
+  position: absolute;
+  top: 1%;
+  left: 90%;
+
+  width: 25px;
+  height: 25px;
+
+  background-image: url('../../assets/images/close.svg');
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  width: 100%;
+  padding: $spacing-md 0;
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  justify-content: flex-start;
+
+  width: 48%;
+}
+
+.error-message {
+  margin-bottom: 4px;
+  font-size: $font-size-error-message;
+  color: $warning-color;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding-top: 14px;
+}
+
+.checkbox {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: $spacing-md;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.checkbox-wrapper-billind {
+  padding-top: 14px;
+}
+
+.input-birth {
+  justify-content: start;
+  width: 48%;
+}
+
+.title-registration,
+.link-registration,
+.title-login {
+  font-family: 'Cera Pro', sans-serif;
+  font-size: $font-size-h2;
+  font-weight: $font-weight-black;
+  color: #3d3d3d;
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-md) {
+    font-size: $font-size-h3;
+  }
+}
+
+.title {
+  padding-top: 10px;
+
+  font-family: 'Cera Pro', sans-serif;
+  font-size: $font-size-h3;
+  font-weight: $font-weight-black;
+  color: #3d3d3d;
+  text-align: start;
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-md) {
+    font-size: $font-size-h4;
+  }
+}
+
+.register {
+  background-color: $primary-button;
+}
+
+.label {
+  flex-shrink: 0;
+  color: $text-secondary;
+}
+
+.wrapper-question {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: flex-start;
+
+  width: 100%;
+  padding: 46px 0;
+
+  color: $text-secondary;
+}
+
+.link-sign-in {
+  color: rgb(217 162 90);
+
+  &:hover {
+    color: rgb(88 168 70);
+  }
+}
+
+.default-shipping,
+.as-billing {
+  flex-grow: 0;
+  flex-shrink: 1;
+}
+
+.country-list {
+  padding: $spacing-sm;
+  border: 1px solid $input-border;
+  border-radius: $border-radius-input;
+}
+
+.input-password {
+  position: relative;
+}
+
+.root-input,
+.password {
+  padding: 8px 40px 8px 8px;
+}
+
+.visibility-icon {
+  cursor: pointer;
+
+  position: absolute;
+  z-index: 100;
+  top: 28px;
+  right: 5px;
+
+  width: 24px;
+  height: 24px;
+  border: none;
+
+  background-color: transparent;
+  background-image: $visibility-icon-off;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  &:hover {
+    scale: 1.15;
+  }
+
+  &.hide {
+    background-image: $visibility-icon-on;
+  }
+}
