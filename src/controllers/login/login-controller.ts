@@ -75,8 +75,6 @@ export class LoginController {
             route.navigate('/home');
             const auth = authService.getAuthenticatedStatus();
 
-            console.log(authService.api);
-
             if (auth) {
               localStorage.setItem('isLoggedPlants', 'true');
             }

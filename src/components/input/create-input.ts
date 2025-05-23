@@ -1,3 +1,4 @@
+import { ErrorMessage } from '../../shared/constants/error-message.ts';
 import type { IParameters, IParametersInput } from '../../shared/models/interfaces/index.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 
@@ -18,7 +19,7 @@ export class CreateInput extends CreateElement {
     const element = this.getElement();
 
     if (!(element instanceof HTMLInputElement)) {
-      throw new Error('InputCreator must create an HTMLInputElement');
+      throw new Error(ErrorMessage.INPUT_CREATOR_INVALID);
     }
 
     this.input = element;
