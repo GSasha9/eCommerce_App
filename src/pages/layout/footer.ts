@@ -1,4 +1,4 @@
-import { CreateElement } from '../shared/utils/create-element.ts';
+import { CreateElement } from '../../shared/utils/create-element.ts';
 
 import './footer.scss';
 

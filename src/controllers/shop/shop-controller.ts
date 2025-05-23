@@ -1,4 +1,4 @@
-import { Layout } from '../../pages/layout.ts';
+import { Layout } from '../../pages/layout/layout.ts';
 import { ShopPage } from '../../pages/shop/shop.ts';
 
 export class ShopController {

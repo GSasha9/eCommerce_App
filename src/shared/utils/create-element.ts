@@ -36,6 +36,8 @@ export class CreateElement implements ICreateElement {
   }
 
   public setDataAttrsClasses(dataAttrs?: Record<string, string>): void {
+    if (!dataAttrs) return;
+
     for (const attr in dataAttrs) {
       this.element.dataset[attr] = dataAttrs[attr];
     }

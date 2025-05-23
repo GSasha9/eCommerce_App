@@ -1,5 +1,5 @@
 import { HomePage } from '../../pages/home/home.ts';
-import { Layout } from '../../pages/layout.ts';
+import { Layout } from '../../pages/layout/layout.ts';
 
 export class HomeController {
   private homeView: HomePage;

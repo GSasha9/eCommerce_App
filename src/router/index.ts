@@ -1,6 +1,6 @@
 import { Router } from './router';
-import { ROUTES } from './routes';
+import { ROUTES_URL } from './routes.constant.ts';
 
-const route: Router = new Router(ROUTES.MAIN);
+const route: Router = new Router(ROUTES_URL.MAIN);
 
-export { route, ROUTES };
+export { route, ROUTES_URL };

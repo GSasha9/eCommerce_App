@@ -1,4 +1,4 @@
-import { route, ROUTES } from '../router/index.ts';
+import { route, ROUTES_URL } from '../router';
 import type { Router } from '../router/router.ts';
 import { AboutController } from './about/about-controller.ts';
 import { HomeController } from './home/home-controller.ts';
@@ -13,7 +13,6 @@ export class Controller {
   private notFoundController: NotFoundController;
   private loginPageController: LoginController;
   private registrationController: RegistrationController;
-  //private authorizationService = authService;
   private shopController: ShopController;
   private aboutController: AboutController;
 
@@ -30,30 +29,30 @@ export class Controller {
   }
 
   private setupRoutes(): void {
-    this.router.addRoute(ROUTES.MAIN, () => {
+    this.router.addRoute(ROUTES_URL.MAIN, () => {
       this.homeController.render();
     });
 
-    this.router.addRoute(ROUTES.MAIN_ALT, () => {
+    this.router.addRoute(ROUTES_URL.MAIN_ALT, () => {
       this.homeController.render();
     });
 
-    this.router.addRoute(ROUTES.LOGIN, () => {
+    this.router.addRoute(ROUTES_URL.LOGIN, () => {
       this.loginPageController.render();
     });
 
-    this.router.addRoute(ROUTES.REGISTRATION, () => {
+    this.router.addRoute(ROUTES_URL.REGISTRATION, () => {
       this.registrationController.render();
     });
 
-    this.router.addRoute(ROUTES.NOT_FOUND, () => {
+    this.router.addRoute(ROUTES_URL.NOT_FOUND, () => {
       this.notFoundController.render();
     });
 
-    this.router.addRoute(ROUTES.PRODUCTS, () => {
+    this.router.addRoute(ROUTES_URL.PRODUCTS, () => {
       this.shopController.render();
     });
-    this.router.addRoute(ROUTES.ABOUT, () => {
+    this.router.addRoute(ROUTES_URL.ABOUT, () => {
       this.aboutController.render();
     });
   }

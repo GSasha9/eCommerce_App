@@ -1,5 +1,5 @@
 import { App } from './app/main.ts';
 
-import './styles/style.css';
+import './styles/style.scss';
 
 new App();

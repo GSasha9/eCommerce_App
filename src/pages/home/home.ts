@@ -1,4 +1,4 @@
-import type { IParameters } from '../../shared/models/interfaces/index.ts';
+import type { IParameters } from '../../shared/models/interfaces';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 import { View } from '../view.ts';
 
