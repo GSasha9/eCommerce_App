@@ -1,3 +1,4 @@
+import { ErrorMessage } from '../../shared/constants/error-message.ts';
 import type { IButtonParameters, IParameters } from '../../shared/models/interfaces/index.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
 
@@ -19,7 +20,7 @@ export class CreateButton extends CreateElement {
     const element: HTMLElement = this.getElement();
 
     if (!(element instanceof HTMLButtonElement)) {
-      throw new Error('ButtonCreator must create an HTMLButtonElement');
+      throw new Error(ErrorMessage.BUTTON_CREATOR_INVALID);
     }
 
     this.button = element;

@@ -3,6 +3,7 @@ import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
 import { type Client, ClientBuilder } from '@commercetools/ts-client';
 
+import { ErrorMessage } from '../shared/constants';
 import { TOKEN } from './models/constants';
 import type { AuthState } from './models/types';
 import { getToken, tokenCache } from './models/utils/token';
@@ -42,7 +43,7 @@ export class AuthorizationService {
 
   public registerCustomer = async (body: MyCustomerDraft, anonymousCartId?: string): Promise<void> => {
     if (!this.projectKey || !this.apiUrl) {
-      throw new Error('Missing required config for Commercetools');
+      throw new Error(ErrorMessage.MISSING_CONFIG);
     }
 
     const bodySignUp = {
@@ -71,7 +72,7 @@ export class AuthorizationService {
     anonymousCartId?: string,
   ): Promise<CustomerSignInResult | undefined> => {
     if (!this.projectKey) {
-      throw new Error('Missing required project key for Commercetools');
+      throw new Error(ErrorMessage.MISSING_PROJECT_KEY);
     }
 
     const response = await this.api
@@ -125,7 +126,7 @@ export class AuthorizationService {
     clientSecret = this.clientSecret,
   ): Client => {
     if (!this.projectKey || !this.authUrl || !this.apiUrl || !this.clientId || !this.clientSecret) {
-      throw new Error('Missing required env variables for Commercetools client');
+      throw new Error(ErrorMessage.MISSING_ENV_VARS);
     }
 
     const builder = new ClientBuilder();

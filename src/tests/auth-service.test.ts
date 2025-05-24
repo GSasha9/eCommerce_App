@@ -2,6 +2,7 @@ import type { CustomerSignInResult } from '@commercetools/platform-sdk';
 import { describe, expect, test, vi } from 'vitest';
 
 import { AuthorizationService, authService } from '../commerce-tools/auth-service';
+import { ErrorMessage } from '../shared/constants';
 
 describe('Check for singleton', () => {
   test('should return instance if this instance doesn`t exist', () => {
@@ -30,7 +31,7 @@ describe('Login error because of absents of project key', () => {
     authService.projectKey = '';
 
     await expect(authService.signInCustomer('email@test.com', 'password')).rejects.toThrow(
-      'Missing required project key for Commercetools',
+      ErrorMessage.MISSING_PROJECT_KEY,
     );
   });
 });
