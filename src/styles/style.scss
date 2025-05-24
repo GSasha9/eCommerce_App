@@ -1,0 +1,32 @@
+@use './scss/_fonts.scss' as *;
+@use './scss/_variables.scss' as *;
+@use 'normalize.css';
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  display: flex;
+  place-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.not-found__message {
+  font-family: 'Cera Pro', sans-serif;
+  font-size: 20px;
+  font-weight: $font-weight-black;
+}

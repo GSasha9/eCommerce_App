@@ -1,0 +1,35 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/fonts';
+
+.root-button {
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+
+  width: 100px;
+  height: 35px;
+  padding: $spacing-sm;
+  border: none;
+  border-radius: $border-radius-input;
+
+  font-family: 'Cera Pro', sans-serif;
+  color: white;
+
+  &:disabled {
+    cursor: not-allowed;
+    color: rgb(96 96 96);
+    background-color: rgb(143 143 143);
+  }
+
+  &:not(:disabled):hover {
+    color: white;
+    background-color: lightgreen;
+  }
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
+    width: 75px;
+    height: 25px;
+    padding: 3px;
+  }
+}

@@ -1,8 +1,7 @@
-import { defineConfig } from 'vite';
+import { build, defineConfig } from 'vite';
 
 export default defineConfig({
   base: '',
-  root: 'ecommerce-application',
   test: {
     globals: true,
     environment: 'jsdom',

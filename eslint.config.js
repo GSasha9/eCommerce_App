@@ -1,10 +1,11 @@
 import { defineConfig } from 'eslint/config';
 import eslint from '@eslint/js';
-import tseslint, { plugin } from 'typescript-eslint';
+import tseslint from 'typescript-eslint';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default defineConfig([
   {
-    ignores: ['eslint.config.js', 'vite.config.js', 'stylelint.config.js', 'commitlint.config.js', 'async-race/dist/'],
+    ignores: ['eslint.config.js', 'vite.config.js', 'coverage', 'dist'],
   },
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
@@ -29,7 +30,7 @@ export default defineConfig([
         'error',
         { accessibility: 'explicit', overrides: { constructors: 'off' } },
       ],
-      '@typescript-eslint/member-ordering': 'error',
+      //'@typescript-eslint/member-ordering': 'error',
       'class-methods-use-this': 'error',
       'lines-between-class-members': [2, 'always', { exceptAfterSingleLine: true }],
       'no-multiple-empty-lines': [2, { max: 1, maxEOF: 0 }],
@@ -60,7 +61,18 @@ export default defineConfig([
           prev: 'if',
           next: '*',
         },
+        {
+          blankLine: 'always',
+          prev: 'export',
+          next: 'export',
+        },
       ],
+    },
+  },
+  {
+    plugins: { 'simple-import-sort': simpleImportSort },
+    rules: {
+      'simple-import-sort/imports': ['error', { groups: [['^@?\\w'], ['^\\.'], ['^.+\\.s?css$']] }],
     },
   },
 ]);

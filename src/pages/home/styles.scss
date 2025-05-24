@@ -1,0 +1,233 @@
+@use '../../styles/scss/_variables' as *;
+
+.home__page {
+  display: flex;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.wrapper {
+  display: flex;
+  width: 1380px;
+
+  @include respond-xs {
+    width: 320px;
+  }
+
+  @include respond-sm {
+    width: 550px;
+  }
+
+  @include respond-md {
+    width: 750px;
+  }
+
+  @include respond-lg {
+    width: 970px;
+  }
+
+  @include respond-xl {
+    width: 1180px;
+  }
+
+  @include respond-xxl {
+    width: 1380px;
+  }
+}
+
+.header {
+  gap: 10px;
+  align-items: center;
+  align-self: center;
+  justify-content: space-between;
+
+  margin-top: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgb($primary-button, 0.5);
+}
+
+.header__nav {
+  display: flex;
+}
+
+.header__menu {
+  display: flex;
+  gap: 15px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.home__wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header__menu-item,
+.title-login,
+.link-registration {
+  cursor: pointer;
+
+  position: relative;
+
+  padding-bottom: 10px;
+  border-bottom: 2px solid transparent;
+
+  font-family: 'Cera Pro', sans-serif;
+  font-size: $font-size-h4;
+  font-weight: $font-weight-normal;
+  color: $text-primary;
+  list-style: none;
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
+    font-size: 12px;
+  }
+
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-md) {
+    font-size: 14px;
+  }
+}
+
+.header__auth {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.header__button--login,
+.header__button--reg,
+.button-close,
+.form__button,
+.found__button,
+.not-found__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100px;
+  height: 35px;
+  border-radius: 5px;
+
+  font-family: 'Cera Pro', sans-serif;
+  color: white;
+
+  background-color: $primary-button;
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
+    width: 80px;
+    height: 25px;
+    padding: 1px;
+  }
+}
+
+.header__button--login::before {
+  content: '';
+
+  display: inline-block;
+
+  width: 20px;
+  height: 20px;
+  margin-right: 3px;
+
+  background: url('/images/Logout.svg') no-repeat center center;
+  background-size: contain;
+}
+
+.header__logo {
+  cursor: pointer;
+
+  font-family: 'Cera Pro', sans-serif;
+  font-size: $font-size-h1;
+  font-weight: $font-weight-black;
+  color: $primary-text-green;
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
+    font-size: $font-size-h4;
+  }
+
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-md) {
+    font-size: $font-size-h3;
+  }
+}
+
+.logout {
+  background-color: darkred;
+}
+
+.header__logo::before {
+  content: '';
+
+  display: inline-block;
+
+  width: 50px;
+  height: 50px;
+  margin-right: 3px;
+
+  background: url('/images/logo.svg') no-repeat center center;
+  background-size: contain;
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-md) {
+    width: 20px;
+    height: 20px;
+  }
+
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-md) {
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.header__menu-item-active {
+  color: $primary-text-green;
+}
+
+.main-content {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+}
+
+@media screen and (hover: hover) {
+  .header__menu-item:hover,
+  .title-login:hover,
+  .link-registration:hover,
+  .found__button:hover {
+    border-bottom: 2px solid $primary-button;
+    color: $text-secondary;
+  }
+
+  .login:hover {
+    color: $text-secondary;
+    background-color: #58a846;
+  }
+
+  .header__menu-item-active:hover {
+    border-bottom: none;
+    color: #46a358;
+    background-color: transparent;
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+}
+
+.footer-logo__container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
