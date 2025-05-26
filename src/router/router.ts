@@ -28,6 +28,10 @@ export class Router implements IRouter {
   public navigate(path: string, pushState: boolean = true): void {
     let normalizedPath: string = path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
 
+    if (normalizedPath.split('/').length > 2) {
+      normalizedPath = `/${normalizedPath.split('/')[1]}`;
+    }
+
     const token = localStorage.getItem('isLoggedPlants');
 
     if (token === 'true' && (normalizedPath === '/login' || normalizedPath === '/registration')) {
