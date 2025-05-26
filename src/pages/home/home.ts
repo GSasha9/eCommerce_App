@@ -25,7 +25,7 @@ export class HomePage extends View {
   // temporarily ⬇
   public openDetailedProduct = (key: string): string => {
     if (key) {
-      route.navigate(`/product/${key}`);
+      route.navigate(`/detailed-product/${key}`);
     }
 
     return this.temporarily;

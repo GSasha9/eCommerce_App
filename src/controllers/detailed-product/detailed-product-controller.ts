@@ -16,19 +16,11 @@ export class DetailedProductController {
   // }
 
   public async render(): Promise<void> {
-    console.log('key', this.model.key);
-    console.log('response', this.model.response);
-    console.log('isSuccess', this.model.isSuccess);
-
     this.model.clearQueryResults();
     this.model.getProductKeyByUrl();
     await this.model.getDetailedInformation();
     const layout = Layout.getInstance();
 
     layout.setMainContent(this.page.renderPage());
-
-    console.log('key2', this.model.key);
-    console.log('response2', this.model.response);
-    console.log('isSuccess2', this.model.isSuccess);
   }
 }
