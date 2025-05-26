@@ -1,3 +1,4 @@
+import { authService } from '../commerce-tools/auth-service.ts';
 import { route, ROUTES_URL } from '../router';
 import type { Router } from '../router/router.ts';
 import { AboutController } from './about/about-controller.ts';
@@ -26,6 +27,7 @@ export class Controller {
     this.router = route;
     this.setupRoutes();
     this.router.init();
+    void authService.fetchProduct();
   }
 
   private setupRoutes(): void {
