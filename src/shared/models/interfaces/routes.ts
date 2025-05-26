@@ -7,4 +7,5 @@ export interface IRoutes {
   BASKET: string;
   MAIN: string;
   ABOUT: string;
+  CATALOG: string;
 }

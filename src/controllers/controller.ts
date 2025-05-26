@@ -1,7 +1,7 @@
-import { authService } from '../commerce-tools/auth-service.ts';
 import { route, ROUTES_URL } from '../router';
 import type { Router } from '../router/router.ts';
 import { AboutController } from './about/about-controller.ts';
+import CatalogController from './catalog/catalog-controller.ts';
 import { HomeController } from './home/home-controller.ts';
 import { LoginController } from './login/login-controller.ts';
 import { NotFoundController } from './not-found/notfound-controller.ts';
@@ -16,6 +16,7 @@ export class Controller {
   private registrationController: RegistrationController;
   private shopController: ShopController;
   private aboutController: AboutController;
+  private catalogController: CatalogController;
 
   constructor() {
     this.homeController = new HomeController();
@@ -24,10 +25,10 @@ export class Controller {
     this.registrationController = new RegistrationController();
     this.shopController = new ShopController();
     this.aboutController = new AboutController();
+    this.catalogController = new CatalogController();
     this.router = route;
     this.setupRoutes();
     this.router.init();
-    void authService.fetchProduct();
   }
 
   private setupRoutes(): void {
@@ -56,6 +57,10 @@ export class Controller {
     });
     this.router.addRoute(ROUTES_URL.ABOUT, () => {
       this.aboutController.render();
+    });
+
+    this.router.addRoute(ROUTES_URL.CATALOG, () => {
+      this.catalogController.render();
     });
   }
 }
