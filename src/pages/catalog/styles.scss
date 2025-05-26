@@ -1,0 +1,88 @@
+@use '../../styles/scss/variables.scss' as *;
+
+.catalog-page {
+  display: flex;
+  gap: $spacing-lg;
+  justify-content: space-between;
+
+  max-width: 1380px;
+  padding: 20px 0;
+
+  .container-filters {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+  }
+
+  .container-products-catalog {
+    flex-grow: 1;
+
+    .catalog-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 0 50px;
+
+      .catalog-header__list {
+        display: flex;
+        gap: $spacing-xxl;
+
+        .catalog-header__list-item {
+          list-style: none;
+        }
+      }
+
+      .catalog-header__sort {
+        max-width: 250px;
+
+        .catalog-header__select {
+          max-width: 100px;
+          border: none;
+        }
+      }
+    }
+
+    .product-cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: $spacing-xxl;
+
+      padding: 0 50px;
+      padding-top: $spacing-lg;
+
+      .card {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-sm;
+
+        width: 260px;
+        height: 300px;
+
+        .card-img {
+          width: 100%;
+          height: 40%;
+          background-repeat: no-repeat;
+          background-size: cover;
+        }
+
+        .card-description {
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2; /* Число строк */
+
+          text-overflow: ellipsis;
+        }
+
+        .card-footer {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          .card-button {
+            background-color: $primary-button;
+          }
+        }
+      }
+    }
+  }
+}

@@ -9,4 +9,5 @@ export const ROUTES_URL: IRoutes = {
   BASKET: '/basket',
   NOT_FOUND: '/404',
   ABOUT: '/about',
+  CATALOG: '/catalog',
 };

@@ -137,7 +137,9 @@ export class AuthorizationService {
 
     console.log(response.body.results);
 
-    const category = response.body.results.filter((result) => result.key === 'house-plants');
+    const category = response.body.results.filter(
+      (result) => result.key === 'house-plants' || result.key === 'gardening',
+    );
 
     console.log(category);
 
@@ -151,8 +153,8 @@ export class AuthorizationService {
         .productProjections()
         .get({
           queryArgs: {
-            where: `categories(id="${category[0].id}") and published=true`,
-            limit: 20,
+            where: `(categories(id="${category[0].id}") or categories(id="${category[1].id}")) and published= true`,
+            limit: 100,
           },
         })
         .execute();
