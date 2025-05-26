@@ -2,6 +2,7 @@ import { route, ROUTES_URL } from '../router';
 import type { Router } from '../router/router.ts';
 import { AboutController } from './about/about-controller.ts';
 import CatalogController from './catalog/catalog-controller.ts';
+import { DetailedProductController } from './detailed-product/detailed-product-controller.ts';
 import { HomeController } from './home/home-controller.ts';
 import { LoginController } from './login/login-controller.ts';
 import { NotFoundController } from './not-found/notfound-controller.ts';
@@ -17,6 +18,7 @@ export class Controller {
   private shopController: ShopController;
   private aboutController: AboutController;
   private catalogController: CatalogController;
+  private detailedProductController: DetailedProductController;
 
   constructor() {
     this.homeController = new HomeController();
@@ -26,6 +28,7 @@ export class Controller {
     this.shopController = new ShopController();
     this.aboutController = new AboutController();
     this.catalogController = new CatalogController();
+    this.detailedProductController = new DetailedProductController();
     this.router = route;
     this.setupRoutes();
     this.router.init();
@@ -55,6 +58,11 @@ export class Controller {
     this.router.addRoute(ROUTES_URL.PRODUCTS, () => {
       this.shopController.render();
     });
+
+    this.router.addRoute(ROUTES_URL.PRODUCT, () => {
+      void this.detailedProductController.render();
+    });
+
     this.router.addRoute(ROUTES_URL.ABOUT, () => {
       this.aboutController.render();
     });

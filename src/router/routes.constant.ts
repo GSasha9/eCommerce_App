@@ -6,6 +6,7 @@ export const ROUTES_URL: IRoutes = {
   LOGIN: '/login',
   REGISTRATION: '/registration',
   PRODUCTS: '/products',
+  PRODUCT: '/detailed-product',
   BASKET: '/basket',
   NOT_FOUND: '/404',
   ABOUT: '/about',

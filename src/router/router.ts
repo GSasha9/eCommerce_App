@@ -27,6 +27,11 @@ export class Router implements IRouter {
 
   public navigate(path: string, pushState: boolean = true): void {
     let normalizedPath: string = path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
+    let dynamicPath;
+
+    if (normalizedPath.split('/').length > 2) {
+      dynamicPath = `/${normalizedPath.split('/')[1]}`;
+    }
 
     const token = localStorage.getItem('isLoggedPlants');
 
@@ -37,10 +42,10 @@ export class Router implements IRouter {
       window.history.pushState({}, '', normalizedPath);
     }
 
-    const controller = this.routes.get(normalizedPath);
+    const controller = dynamicPath ? this.routes.get(dynamicPath) : this.routes.get(normalizedPath);
 
     if (controller) {
-      this.currentPath = normalizedPath;
+      this.currentPath = dynamicPath ? dynamicPath : normalizedPath;
       controller();
     } else {
       this.currentPath = '/404';

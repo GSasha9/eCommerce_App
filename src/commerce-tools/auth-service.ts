@@ -4,6 +4,7 @@ import type {
   ClientResponse,
   CustomerSignInResult,
   MyCustomerDraft,
+  ProductProjection,
   ProductProjectionPagedQueryResponse,
 } from '@commercetools/platform-sdk';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
@@ -102,6 +103,17 @@ export class AuthorizationService {
     localStorage.removeItem('ct_anon_token');
 
     return response.body;
+  };
+
+  public getProductByKey = async (productKey: string): Promise<ClientResponse<ProductProjection>> => {
+    try {
+      const res = await this.api.productProjections().withKey({ key: productKey }).get().execute();
+
+      return res;
+    } catch (error) {
+      console.error('Unable to retrieve detailed information about the product:', error);
+      throw error;
+    }
   };
 
   public logOutCustomer = (): void => {
