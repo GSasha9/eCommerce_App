@@ -1,9 +1,15 @@
-import type { ByProjectKeyRequestBuilder, CustomerSignInResult, MyCustomerDraft } from '@commercetools/platform-sdk';
+import type {
+  ByProjectKeyRequestBuilder,
+  Category,
+  ClientResponse,
+  CustomerSignInResult,
+  MyCustomerDraft,
+  ProductProjectionPagedQueryResponse,
+} from '@commercetools/platform-sdk';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
 import { type Client, ClientBuilder } from '@commercetools/ts-client';
 
-import { ErrorMessage } from '../shared/constants';
 import { TOKEN } from './models/constants';
 import type { AuthState } from './models/types';
 import { getToken, tokenCache } from './models/utils/token';
@@ -43,7 +49,7 @@ export class AuthorizationService {
 
   public registerCustomer = async (body: MyCustomerDraft, anonymousCartId?: string): Promise<void> => {
     if (!this.projectKey || !this.apiUrl) {
-      throw new Error(ErrorMessage.MISSING_CONFIG);
+      throw new Error('Missing required config for Commercetools');
     }
 
     const bodySignUp = {
@@ -57,7 +63,6 @@ export class AuthorizationService {
     };
 
     await this.api.me().signup().post({ body: bodySignUp }).execute();
-
     const { email, password } = body;
 
     this.api = this.apiDefinition({ type: 'authenticated', email, password });
@@ -72,7 +77,7 @@ export class AuthorizationService {
     anonymousCartId?: string,
   ): Promise<CustomerSignInResult | undefined> => {
     if (!this.projectKey) {
-      throw new Error(ErrorMessage.MISSING_PROJECT_KEY);
+      throw new Error('Missing required project key for Commercetools');
     }
 
     const response = await this.api
@@ -109,6 +114,57 @@ export class AuthorizationService {
     this.isAuthenticated = false;
   };
 
+  // public getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
+  //   return this.api
+  //     .customers()
+  //     .get({
+  //       queryArgs: {
+  //         where: `email="${email}"`,
+  //       },
+  //     })
+  //     .execute();
+  // }
+
+  public getPlantCategories = async (): Promise<Category[]> => {
+    const response = await this.api
+      .categories()
+      .get({
+        queryArgs: {
+          limit: 50,
+        },
+      })
+      .execute();
+
+    console.log(response.body.results);
+
+    const category = response.body.results.filter((result) => result.key === 'house-plants');
+
+    console.log(category);
+
+    return category;
+  };
+
+  public fetchProduct = async (): Promise<ClientResponse<ProductProjectionPagedQueryResponse> | undefined> => {
+    try {
+      const category = await this.getPlantCategories();
+      const response = await this.api
+        .productProjections()
+        .get({
+          queryArgs: {
+            where: `categories(id="${category[0].id}") and published=true`,
+            limit: 20,
+          },
+        })
+        .execute();
+
+      console.log(response);
+
+      return response;
+    } catch (error) {
+      console.warn(error);
+    }
+  };
+
   private initializeAnonymousSession(): ByProjectKeyRequestBuilder {
     return this.apiDefinition({ type: 'anonymous' });
   }
@@ -126,7 +182,7 @@ export class AuthorizationService {
     clientSecret = this.clientSecret,
   ): Client => {
     if (!this.projectKey || !this.authUrl || !this.apiUrl || !this.clientId || !this.clientSecret) {
-      throw new Error(ErrorMessage.MISSING_ENV_VARS);
+      throw new Error('Missing required env variables for Commercetools client');
     }
 
     const builder = new ClientBuilder();
@@ -163,7 +219,7 @@ export class AuthorizationService {
           host: this.authUrl,
           projectKey,
           credentials: { clientId, clientSecret },
-          scopes: ['view_published_products:plants', 'manage_my_profile:plants'],
+          scopes: ['view_published_products:plants', 'view_categories:plants', 'create_anonymous_token:plants'],
           httpClient: fetch,
           tokenCache: tokenCache('ct_anon_token'),
         })
