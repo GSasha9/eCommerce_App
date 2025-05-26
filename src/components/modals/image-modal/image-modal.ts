@@ -44,14 +44,12 @@ export class ImageModal extends Modal {
   }
 
   public async getProductInformation(id: string): Promise<void> {
-    const response = await authService.getProductById(id);
+    const response = await authService.getProductByKey(id);
     const alt = response.body.name.en;
     const src = response.body.masterVariant.images?.[0].url;
 
     if (src) {
       this.fillElements(alt, src);
     }
-
-    console.log('response----', response);
   }
 }
