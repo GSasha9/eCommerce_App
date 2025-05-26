@@ -1,0 +1,11 @@
+@use '../../styles/scss/fonts';
+@use '../../styles/scss/variables' as *;
+
+.error {
+  font-family: $font-family-base;
+  color: red;
+}
+
+.content {
+  font-family: $font-family-base;
+}

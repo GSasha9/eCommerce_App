@@ -105,7 +105,7 @@ export class AuthorizationService {
     return response.body;
   };
 
-  public getProductById = async (productKey: string): Promise<ClientResponse<ProductProjection>> => {
+  public getProductByKey = async (productKey: string): Promise<ClientResponse<ProductProjection>> => {
     try {
       const res = await this.api.productProjections().withKey({ key: productKey }).get().execute();
 
