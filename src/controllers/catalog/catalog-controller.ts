@@ -7,17 +7,28 @@ import { Layout } from '../../pages/layout/layout';
 export default class CatalogController {
   private readonly catalogPage: CatalogPage;
   //private catalogModel: CatalogModel;
+  private likes: NodeListOf<Element> | [];
 
   constructor() {
     this.catalogPage = CatalogPage.getInstance({}, this);
     //this.catalogModel = CatalogModel.getInstance(this.catalogPage);
     void this.fetchAllProducts();
+
+    this.likes = [];
   }
 
   public render(): void {
     const layout = Layout.getInstance();
 
     layout.setMainContent(this.catalogPage.getHtmlElement());
+  }
+
+  public initListeners(): void {
+    this.likes.forEach((like) => {
+      like.addEventListener('click', (event) => {
+        this.onClickAddToFavourite(event);
+      });
+    });
   }
 
   public async fetchAllProducts(): Promise<void> {
@@ -36,7 +47,6 @@ export default class CatalogController {
 
           const img = el.masterVariant.images?.[0]?.url ?? '';
 
-          console.log(el);
           const parameters: IParametersCard = {
             name: el.name.en,
             description: description,
@@ -46,9 +56,27 @@ export default class CatalogController {
 
           this.catalogPage.addCard(parameters);
         });
+
+        this.likes = document.querySelectorAll('.card-like');
+
+        this.initListeners();
       }
     } catch (error) {
       console.warn(error);
     }
+  }
+
+  public onClickAddToFavourite(event: Event): void {
+    const like = event.target;
+
+    if (like instanceof HTMLElement) {
+      if (like.classList.contains('card-like-filled')) {
+        like.classList.remove('card-like-filled');
+      } else {
+        like.classList.add('card-like-filled');
+      }
+    }
+
+    console.log(this.likes);
   }
 }

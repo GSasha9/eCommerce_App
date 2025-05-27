@@ -49,13 +49,6 @@ export class CatalogPage extends View {
   }
 
   public addCard(parameters: IParametersCard): void {
-    const like = new CreateElement({
-      tag: 'div',
-      classNames: ['card-like'],
-      textContent: '',
-      callback: (): void => {},
-    });
-
     const img = new CreateElement({
       tag: 'div',
       classNames: ['card-img'],
@@ -93,6 +86,13 @@ export class CatalogPage extends View {
     //   callback: (): void => {},
     // });
 
+    const like = new CreateElement({
+      tag: 'div',
+      classNames: ['card-like'],
+      textContent: '',
+      callback: (): void => {},
+    });
+
     const button = new CreateButton({
       type: 'button',
       disabled: false,
@@ -100,12 +100,20 @@ export class CatalogPage extends View {
       classNames: ['card-button'],
     });
 
+    const buttonsContainer = new CreateElement({
+      tag: 'div',
+      classNames: ['buttons-container'],
+      textContent: '',
+      callback: (): void => {},
+      children: [like, button],
+    });
+
     const cardsFooter = new CreateElement({
       tag: 'div',
       classNames: ['card-footer'],
       textContent: '',
       callback: (): void => {},
-      children: [price, button],
+      children: [price, buttonsContainer],
     });
 
     const card = new CreateElement({
@@ -113,7 +121,7 @@ export class CatalogPage extends View {
       classNames: ['card'],
       textContent: '',
       callback: (): void => {},
-      children: [like, img, title, description, cardsFooter],
+      children: [img, title, description, cardsFooter],
     });
 
     this.productsContainer.addInnerElement(card);

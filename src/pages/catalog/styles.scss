@@ -56,11 +56,14 @@
 
         width: 260px;
         height: 300px;
+        border: 1px solid transparent;
 
         .card-img {
           width: 100%;
-          height: 40%;
+          height: 60%;
+
           background-repeat: no-repeat;
+          background-position: center;
           background-size: cover;
         }
 
@@ -78,8 +81,44 @@
           align-items: center;
           justify-content: space-between;
 
-          .card-button {
-            background-color: $primary-button;
+          .buttons-container {
+            position: relative;
+            display: flex;
+            margin-top: 0;
+
+            .card-like {
+              cursor: pointer;
+
+              position: absolute;
+              top: 19%;
+              right: 114%;
+
+              width: 25px;
+              height: 25px;
+
+              visibility: hidden;
+              background-image: url('../../../public/images/heart_stroke.svg');
+              background-repeat: no-repeat;
+              background-size: contain;
+            }
+
+            .card-like-filled {
+              visibility: visible;
+              background-image: url('../../../public/images/heart_filled.svg');
+            }
+
+            .card-button {
+              background-color: $primary-button;
+            }
+          }
+        }
+
+        &:hover {
+          cursor: pointer;
+          border: 1px solid $border-color;
+
+          .card-footer > .buttons-container > .card-like {
+            visibility: visible;
           }
         }
       }
