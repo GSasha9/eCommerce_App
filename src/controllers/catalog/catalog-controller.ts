@@ -113,6 +113,7 @@ export default class CatalogController {
         description: el.description?.['en'] ?? el.description?.['en-US'] ?? 'No description available',
         img: el.masterVariant.images?.[0]?.url ?? '',
         price: `${el.masterVariant.prices?.[0].value.centAmount !== undefined ? el.masterVariant.prices?.[0].value.centAmount / 100 : 0}$`,
+        discount: `${el.masterVariant.prices?.[0].discounted?.value.centAmount !== undefined ? el.masterVariant.prices?.[0].discounted?.value.centAmount / 100 : ''}$`,
       };
 
       this.catalogPage.addCard(parameters);

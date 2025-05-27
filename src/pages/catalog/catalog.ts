@@ -113,12 +113,30 @@ export class CatalogPage extends View {
       callback: (): void => {},
     });
 
-    // const priceOld = new CreateElement({
-    //   tag: 'p',
-    //   classNames: ['card-old-price'],
-    //   textContent: parameters.price,
-    //   callback: (): void => {},
-    // });
+    const prices = new CreateElement({
+      tag: 'div',
+      classNames: ['price-container'],
+      textContent: '',
+      callback: (): void => {},
+      children: [price],
+    });
+
+    if (parameters.discount !== '$') {
+      const discountPrice = new CreateElement({
+        tag: 'p',
+        classNames: ['card-discount-price'],
+        textContent: parameters.discount,
+        callback: (): void => {},
+      });
+
+      price.setCssClasses(['old-price']);
+
+      if (price.getElement().classList.contains('card-price')) {
+        price.getElement().classList.remove('card-price');
+      }
+
+      prices.addInnerElement(discountPrice);
+    }
 
     const like = new CreateElement({
       tag: 'div',
@@ -147,7 +165,7 @@ export class CatalogPage extends View {
       classNames: ['card-footer'],
       textContent: '',
       callback: (): void => {},
-      children: [price, buttonsContainer],
+      children: [prices, buttonsContainer],
     });
 
     const card = new CreateElement({
@@ -157,6 +175,24 @@ export class CatalogPage extends View {
       callback: (): void => {},
       children: [img, title, description, cardsFooter],
     });
+
+    if (parameters.discount && parameters.discount !== '$') {
+      const currentPrice = parseFloat(parameters.discount);
+      const oldPrice = parseFloat(parameters.price);
+
+      if (oldPrice > currentPrice) {
+        const discountPercent = ((oldPrice - currentPrice) / oldPrice) * 100;
+
+        const discountLabel = new CreateElement({
+          tag: 'div',
+          classNames: ['discount'],
+          textContent: `${Math.round(discountPercent)}%`,
+          callback: (): void => {},
+        });
+
+        card.addInnerElement(discountLabel);
+      }
+    }
 
     this.productsContainer.addInnerElement(card);
   }

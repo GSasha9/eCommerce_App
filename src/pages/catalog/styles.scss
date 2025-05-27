@@ -7,6 +7,13 @@
   text-decoration: underline;
 }
 
+.old-price {
+  order: 2;
+  font-size: $font-size-button-cards;
+  color: $text-secondary;
+  text-decoration: line-through;
+}
+
 .catalog-page {
   display: flex;
   gap: $spacing-lg;
@@ -111,6 +118,8 @@
   padding-top: $spacing-lg;
 
   .card {
+    position: relative;
+
     display: flex;
     flex-direction: column;
     gap: $spacing-sm;
@@ -118,6 +127,18 @@
     width: 300px;
     height: 360px;
     border: 1px solid transparent;
+
+    .discount {
+      position: absolute;
+
+      width: 25%;
+      padding: $spacing-xs 10px;
+
+      color: white;
+      text-align: center;
+
+      background-color: $primary-button;
+    }
 
     .card-img {
       width: 100%;
@@ -141,6 +162,19 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+
+      .price-container {
+        display: flex;
+        gap: $spacing-sm;
+
+        .card-price,
+        .card-discount-price {
+          order: 1;
+          font-size: $font-size-h3;
+          font-weight: $font-weight-medium;
+          color: $primary-text-green;
+        }
+      }
 
       .buttons-container {
         position: relative;
