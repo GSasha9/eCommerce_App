@@ -1,4 +1,11 @@
 @use '../../styles/scss/variables.scss' as *;
+@use '../../styles/scss/fonts';
+
+.selected {
+  font-weight: $font-weight-bold;
+  color: $primary-text-green;
+  text-decoration: underline;
+}
 
 .catalog-page {
   display: flex;
@@ -6,121 +13,173 @@
   justify-content: space-between;
 
   max-width: 1380px;
-  padding: 20px 0;
+  padding: 30px 10px;
 
-  .container-filters {
-    display: flex;
-    flex-direction: column;
-    width: 25%;
+  font-family: $font-family-base;
+
+  background-color: $bg-primary;
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
+    width: 350px;
+  }
+}
+
+.container-filters {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+  width: 59%;
+
+  .category__list-title {
+    color: $primary-text-green;
   }
 
-  .container-products-catalog {
-    flex-grow: 1;
+  .range-filter {
+    font-size: $font-size-h4;
+    font-weight: $font-weight-bold;
+    color: $primary-text-green;
+  }
+}
 
-    .catalog-header {
+.category__list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  padding-top: $spacing-md;
+
+  list-style: none;
+
+  .category__list-item {
+    display: flex;
+    justify-content: space-between;
+
+    &:hover {
+      cursor: pointer;
+      color: $primary-text-green;
+    }
+  }
+}
+
+.container-products-catalog {
+  flex-grow: 1;
+
+  .catalog-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 50px;
+
+    .catalog-header__list {
       display: flex;
-      justify-content: space-between;
-      padding: 0 50px;
+      gap: $spacing-xxl;
 
-      .catalog-header__list {
-        display: flex;
-        gap: $spacing-xxl;
-
-        .catalog-header__list-item {
-          list-style: none;
-        }
+      .catalog-header__list-item {
+        list-style: none;
       }
+    }
 
-      .catalog-header__sort {
-        max-width: 250px;
+    .catalog-header__sort {
+      max-width: 250px;
 
-        .catalog-header__select {
-          max-width: 100px;
-          border: none;
+      .catalog-header__select {
+        max-width: 100px;
+        border: none;
+      }
+    }
+  }
+
+  .catalog-footer {
+    display: flex;
+    gap: $spacing-sm;
+    justify-content: center;
+
+    .footer__page-number {
+      &:hover {
+        cursor: pointer;
+        color: $primary-text-green;
+      }
+    }
+  }
+}
+
+.product-cards__container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xxl;
+
+  padding: 0 50px;
+  padding-top: $spacing-lg;
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+
+    width: 300px;
+    height: 360px;
+    border: 1px solid transparent;
+
+    .card-img {
+      width: 100%;
+      height: 60%;
+
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+    }
+
+    .card-description {
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2; /* Число строк */
+
+      text-overflow: ellipsis;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .buttons-container {
+        position: relative;
+        display: flex;
+        margin-top: 0;
+
+        .card-like {
+          cursor: pointer;
+
+          position: absolute;
+          top: 19%;
+          right: 114%;
+
+          width: 25px;
+          height: 25px;
+
+          visibility: hidden;
+          background-image: url('../../../public/images/heart_stroke.svg');
+          background-repeat: no-repeat;
+          background-size: contain;
+        }
+
+        .card-like-filled {
+          visibility: visible;
+          background-image: url('../../../public/images/heart_filled.svg');
+        }
+
+        .card-button {
+          background-color: $primary-button;
         }
       }
     }
 
-    .product-cards-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: $spacing-xxl;
+    &:hover {
+      cursor: pointer;
+      border: 1px solid $border-color;
 
-      padding: 0 50px;
-      padding-top: $spacing-lg;
-
-      .card {
-        display: flex;
-        flex-direction: column;
-        gap: $spacing-sm;
-
-        width: 260px;
-        height: 300px;
-        border: 1px solid transparent;
-
-        .card-img {
-          width: 100%;
-          height: 60%;
-
-          background-repeat: no-repeat;
-          background-position: center;
-          background-size: cover;
-        }
-
-        .card-description {
-          overflow: hidden;
-          display: -webkit-box;
-          -webkit-box-orient: vertical;
-          -webkit-line-clamp: 2; /* Число строк */
-
-          text-overflow: ellipsis;
-        }
-
-        .card-footer {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-
-          .buttons-container {
-            position: relative;
-            display: flex;
-            margin-top: 0;
-
-            .card-like {
-              cursor: pointer;
-
-              position: absolute;
-              top: 19%;
-              right: 114%;
-
-              width: 25px;
-              height: 25px;
-
-              visibility: hidden;
-              background-image: url('../../../public/images/heart_stroke.svg');
-              background-repeat: no-repeat;
-              background-size: contain;
-            }
-
-            .card-like-filled {
-              visibility: visible;
-              background-image: url('../../../public/images/heart_filled.svg');
-            }
-
-            .card-button {
-              background-color: $primary-button;
-            }
-          }
-        }
-
-        &:hover {
-          cursor: pointer;
-          border: 1px solid $border-color;
-
-          .card-footer > .buttons-container > .card-like {
-            visibility: visible;
-          }
-        }
+      .card-footer > .buttons-container > .card-like {
+        visibility: visible;
       }
     }
   }
