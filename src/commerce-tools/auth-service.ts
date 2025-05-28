@@ -186,13 +186,15 @@ export class AuthorizationService {
     }
   };
 
-  public fetchProductsByCategory = async (categoryId: string): Promise<ProductProjection[] | undefined> => {
+  public fetchProductsByCategory = async (key: string): Promise<ProductProjection[] | undefined> => {
     try {
+      const category = await this.api.categories().withKey({ key }).get().execute();
+
       const response = await this.api
         .productProjections()
         .get({
           queryArgs: {
-            where: `(categories(id="${categoryId}") and published= true)`,
+            where: `(categories(id="${category.body.id}") and published= true)`,
             limit: 100,
           },
         })

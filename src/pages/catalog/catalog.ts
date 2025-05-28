@@ -214,6 +214,10 @@ export class CatalogPage extends View {
     this.productsContainer.getElement().replaceChildren();
   }
 
+  public clearPagination(): void {
+    this.catalogFooter.getElement().replaceChildren();
+  }
+
   private createContainerFilters(): CreateElement {
     const title = new CreateElement({
       tag: 'h3',
