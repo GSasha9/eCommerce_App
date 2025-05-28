@@ -10,7 +10,6 @@ import { PRODUCTS_PER_PAGE } from '../../shared/constants';
 export default class CatalogController {
   private readonly catalogPage: CatalogPage;
   //private catalogModel: CatalogModel;
-  private likes: NodeListOf<Element> | [];
   public allProducts: ProductProjection[];
 
   constructor() {
@@ -21,7 +20,7 @@ export default class CatalogController {
 
     void this.fetchAllProducts();
 
-    this.likes = [];
+    this.initListeners();
   }
 
   public render(): void {
@@ -31,10 +30,14 @@ export default class CatalogController {
   }
 
   public initListeners(): void {
-    this.likes.forEach((like) => {
-      like.addEventListener('click', (event) => {
+    const productContainer = this.catalogPage.productsContainer.getElement();
+
+    productContainer.addEventListener('click', (event) => {
+      console.log(event.target);
+
+      if (event.target instanceof HTMLElement && event.target.classList.contains('card-like')) {
         this.onClickAddToFavourite(event);
-      });
+      }
     });
   }
 
@@ -118,9 +121,6 @@ export default class CatalogController {
 
       this.catalogPage.addCard(parameters);
     });
-
-    this.likes = document.querySelectorAll('.card-like');
-    this.initListeners();
   }
 
   public onClickAddToFavourite(event: Event): void {
@@ -134,6 +134,6 @@ export default class CatalogController {
       }
     }
 
-    console.log(this.likes);
+    console.log(this.allProducts);
   }
 }

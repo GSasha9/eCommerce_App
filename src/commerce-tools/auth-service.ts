@@ -11,7 +11,7 @@ import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
 import { type Client, ClientBuilder } from '@commercetools/ts-client';
 
-import { PRODUCTS_PER_PAGE } from '../shared/constants';
+import { ErrorMessage, PRODUCTS_PER_PAGE } from '../shared/constants';
 import type { ProductPerPageResponse } from '../shared/models/type';
 import { TOKEN } from './models/constants';
 import type { AuthState } from './models/types';
@@ -52,7 +52,7 @@ export class AuthorizationService {
 
   public registerCustomer = async (body: MyCustomerDraft, anonymousCartId?: string): Promise<void> => {
     if (!this.projectKey || !this.apiUrl) {
-      throw new Error('Missing required config for Commercetools');
+      throw new Error(ErrorMessage.MISSING_CONFIG);
     }
 
     const bodySignUp = {
@@ -80,7 +80,7 @@ export class AuthorizationService {
     anonymousCartId?: string,
   ): Promise<CustomerSignInResult | undefined> => {
     if (!this.projectKey) {
-      throw new Error('Missing required project key for Commercetools');
+      throw new Error(ErrorMessage.MISSING_PROJECT_KEY);
     }
 
     const response = await this.api
@@ -113,7 +113,7 @@ export class AuthorizationService {
 
       return res;
     } catch (error) {
-      console.error('Unable to retrieve detailed information about the product:', error);
+      console.error(ErrorMessage.UNABLE_TO_GET_INFO_PRODUCT, error);
       throw error;
     }
   };
@@ -181,7 +181,7 @@ export class AuthorizationService {
         totalPages: Math.ceil(response.body.total ?? 0 / limit) | 1,
       };
     } catch (error) {
-      console.error('Unable to retrieve information about all products:', error);
+      console.error(ErrorMessage.UNABLE_TO_GET_INFO_PRODUCT, error);
       throw error;
     }
   };
@@ -200,7 +200,7 @@ export class AuthorizationService {
 
       return response.body.results;
     } catch (error) {
-      console.error('Failed to fetch products by category:', error);
+      console.error(ErrorMessage.UNABLE_TO_GET_PRODUCT_BY_CATEGORY, error);
       throw error;
     }
   };
@@ -222,7 +222,7 @@ export class AuthorizationService {
     clientSecret = this.clientSecret,
   ): Client => {
     if (!this.projectKey || !this.authUrl || !this.apiUrl || !this.clientId || !this.clientSecret) {
-      throw new Error('Missing required env variables for Commercetools client');
+      throw new Error(ErrorMessage.MISSING_ENV_VARS);
     }
 
     const builder = new ClientBuilder();
