@@ -7,6 +7,13 @@
   text-decoration: underline;
 }
 
+.selected-category {
+  font-weight: $font-weight-bold;
+  color: $primary-text-green;
+  text-decoration: underline;
+  background-color: rgb(224 241 224);
+}
+
 .old-price {
   order: 2;
   font-size: $font-size-button-cards;
@@ -60,6 +67,7 @@
   .category__list-item {
     display: flex;
     justify-content: space-between;
+    padding: $spacing-sm;
 
     &:hover {
       cursor: pointer;

@@ -9,7 +9,7 @@ import { PRODUCTS_PER_PAGE } from '../../shared/constants';
 export default class CatalogController {
   private readonly catalogPage: CatalogPage;
   private catalogModel: CatalogModel;
-  public filteredProducts: ProductProjection[];
+  public filteredProducts: Map<string, ProductProjection[]>;
   public isFiltered: boolean;
 
   constructor() {
@@ -17,7 +17,7 @@ export default class CatalogController {
     this.catalogModel = CatalogModel.getInstance(this);
 
     this.isFiltered = false;
-    this.filteredProducts = [];
+    this.filteredProducts = new Map();
     void this.showAllProductCards();
 
     void this.catalogModel.fetchCategories();
@@ -41,6 +41,18 @@ export default class CatalogController {
     });
 
     this.catalogPage.categoryList.getElement().addEventListener('click', (event) => {
+      const category = event.target;
+
+      if (category && category instanceof HTMLElement) {
+        const li = category.closest('li');
+
+        if (li && li.classList.contains('selected-category')) {
+          li.classList.remove('selected-category');
+        } else {
+          li?.classList.add('selected-category');
+        }
+      }
+
       void this.showFilteredProducts(event);
     });
 
@@ -64,7 +76,13 @@ export default class CatalogController {
         pageNumber.classList.add('selected');
 
         if (this.isFiltered) {
-          this.renderPage(Number(pageNumber.textContent), this.filteredProducts);
+          let products: ProductProjection[] = [];
+
+          this.filteredProducts.forEach((key) => {
+            products = products.concat(key);
+          });
+
+          this.renderPage(Number(pageNumber.textContent), products);
         } else {
           this.renderPage(Number(pageNumber.textContent), this.catalogModel.allProducts);
         }
@@ -102,12 +120,38 @@ export default class CatalogController {
   public async showFilteredProducts(event: Event): Promise<void> {
     const response = await this.catalogModel.filterProductByCategory(event);
 
-    if (response) this.filteredProducts = this.filteredProducts.concat(response);
+    if (event.target instanceof HTMLElement) {
+      const key = event.target.textContent?.trim();
+
+      if (response && key) {
+        if (this.filteredProducts.has(key)) {
+          this.filteredProducts.delete(key);
+        } else {
+          this.filteredProducts.set(key, response);
+        }
+      }
+    }
+
+    if (this.filteredProducts.size === 0) {
+      this.isFiltered = false;
+      this.addPagination(this.catalogModel.allProducts.length);
+      this.renderPage(1, this.catalogModel.allProducts);
+
+      return;
+    }
 
     this.isFiltered = true;
 
-    this.addPagination(this.filteredProducts.length);
-    this.renderPage(1, this.filteredProducts);
+    let totalProductsAmount = 0;
+    let products: ProductProjection[] = [];
+
+    this.filteredProducts.forEach((key) => {
+      totalProductsAmount += key.length;
+      products = products.concat(key);
+    });
+
+    this.addPagination(totalProductsAmount);
+    this.renderPage(1, products);
   }
 
   public renderPage(pageNumber: number, products: ProductProjection[]): void {
