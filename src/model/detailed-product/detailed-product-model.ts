@@ -1,5 +1,10 @@
+import Swiper from 'swiper/bundle';
+import type { SwiperOptions } from 'swiper/types';
+
 import { authService } from '../../commerce-tools/auth-service';
-import { isCommercetoolsApiError } from '../../shared/models/typeguards.ts';
+import { isCommercetoolsApiError, isHTMLElement } from '../../shared/models/typeguards.ts';
+
+import 'swiper/css/bundle';
 
 export interface IResponseDetailedProduct {
   name: string;
@@ -48,8 +53,8 @@ class DetailedProductModel {
         if (name && img && description) {
           this.response = { name, img, description };
 
-          // console.log('response', response.body);
-          // console.log('this.response', this.response);
+          console.log('response', response.body);
+          console.log('this.response', this.response);
         }
       }
     } catch (error) {
@@ -68,6 +73,42 @@ class DetailedProductModel {
     this.key = '';
     this.response = null;
     this.isSuccess = undefined;
+  }
+
+  public initSlider(): void {
+    const swiperEl = document.querySelector('.swiper');
+
+    const images = this.response?.img ?? [];
+    const hasMultipleImages = images.length > 1;
+
+    const swiperParams: SwiperOptions = {
+      loop: true,
+      slidesPerView: 1,
+      centeredSlides: true,
+      direction: 'horizontal',
+      ...(hasMultipleImages && {
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+          el: '.swiper-pagination',
+          clickable: true,
+        },
+      }),
+      // breakpoints: {
+      //   640: {
+      //     slidesPerView: 2,
+      //   },
+      //   1024: {
+      //     slidesPerView: 3,
+      //   },
+      // },
+    };
+
+    if (isHTMLElement(swiperEl) && hasMultipleImages) {
+      new Swiper(swiperEl, swiperParams);
+    }
   }
 }
 

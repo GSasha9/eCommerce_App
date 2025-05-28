@@ -28,7 +28,7 @@ class DetailedProductPage {
     this.content.innerHTML = '';
 
     if (this.model.key && this.model.isSuccess) {
-      this.content.append(this.genDescription());
+      this.content.append(this.genSlider(), this.genDescription());
 
       return this.content;
     } else {
@@ -46,9 +46,34 @@ class DetailedProductPage {
     return wrapperDescription;
   }
 
-  // private genSlider(): HTMLDivElement{
-  //   return
-  // }
+  public genSlider(): HTMLDivElement {
+    const images = this.model.response?.img ?? [];
+
+    return genElement('div', { className: 'swiper' }, [
+      genElement(
+        'div',
+        { className: 'swiper-wrapper' },
+        images.map((img) => {
+          return genElement('div', { className: 'swiper-slide' }, [
+            genElement('img', {
+              className: 'image',
+              src: img,
+              alt: `${this.model.response?.name}`,
+              width: 200,
+              height: 200,
+            }),
+          ]);
+        }),
+      ),
+      genElement('div', { className: 'swiper-pagination' }),
+      ...(images.length > 1
+        ? [
+            genElement('div', { className: 'swiper-button-next' }),
+            genElement('div', { className: 'swiper-button-prev' }),
+          ]
+        : []),
+    ]);
+  }
 }
 
 export default DetailedProductPage;
