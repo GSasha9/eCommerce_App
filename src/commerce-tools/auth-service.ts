@@ -5,12 +5,14 @@ import type {
   CustomerSignInResult,
   MyCustomerDraft,
   ProductProjection,
-  ProductProjectionPagedQueryResponse,
+  //ProductProjectionPagedQueryResponse,
 } from '@commercetools/platform-sdk';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
 import { type Client, ClientBuilder } from '@commercetools/ts-client';
 
+import { ErrorMessage, PRODUCTS_PER_PAGE } from '../shared/constants';
+import type { ProductPerPageResponse } from '../shared/models/type';
 import { TOKEN } from './models/constants';
 import type { AuthState } from './models/types';
 import { getToken, tokenCache } from './models/utils/token';
@@ -50,7 +52,7 @@ export class AuthorizationService {
 
   public registerCustomer = async (body: MyCustomerDraft, anonymousCartId?: string): Promise<void> => {
     if (!this.projectKey || !this.apiUrl) {
-      throw new Error('Missing required config for Commercetools');
+      throw new Error(ErrorMessage.MISSING_CONFIG);
     }
 
     const bodySignUp = {
@@ -78,7 +80,7 @@ export class AuthorizationService {
     anonymousCartId?: string,
   ): Promise<CustomerSignInResult | undefined> => {
     if (!this.projectKey) {
-      throw new Error('Missing required project key for Commercetools');
+      throw new Error(ErrorMessage.MISSING_PROJECT_KEY);
     }
 
     const response = await this.api
@@ -111,7 +113,7 @@ export class AuthorizationService {
 
       return res;
     } catch (error) {
-      console.error('Unable to retrieve detailed information about the product:', error);
+      console.error(ErrorMessage.UNABLE_TO_GET_INFO_PRODUCT, error);
       throw error;
     }
   };
@@ -147,35 +149,59 @@ export class AuthorizationService {
       })
       .execute();
 
-    console.log(response.body.results);
-
     const category = response.body.results.filter(
       (result) => result.key === 'house-plants' || result.key === 'gardening',
     );
 
-    console.log(category);
-
     return category;
   };
 
-  public fetchProduct = async (): Promise<ClientResponse<ProductProjectionPagedQueryResponse> | undefined> => {
+  public fetchProducts = async (
+    page: number = 1,
+    limit: number = PRODUCTS_PER_PAGE,
+  ): Promise<ProductPerPageResponse | undefined> => {
     try {
       const category = await this.getPlantCategories();
+      const offset = (page - 1) * limit;
       const response = await this.api
         .productProjections()
         .get({
           queryArgs: {
             where: `(categories(id="${category[0].id}") or categories(id="${category[1].id}")) and published= true`,
             limit: 100,
+            offset,
           },
         })
         .execute();
 
-      console.log(response);
-
-      return response;
+      return {
+        products: response.body.results,
+        total: response.body.total,
+        currentPage: page,
+        totalPages: Math.ceil(response.body.total ?? 0 / limit) | 1,
+      };
     } catch (error) {
-      console.warn(error);
+      console.error(ErrorMessage.UNABLE_TO_GET_INFO_PRODUCT, error);
+      throw error;
+    }
+  };
+
+  public fetchProductsByCategory = async (categoryId: string): Promise<ProductProjection[] | undefined> => {
+    try {
+      const response = await this.api
+        .productProjections()
+        .get({
+          queryArgs: {
+            where: `(categories(id="${categoryId}") and published= true)`,
+            limit: 100,
+          },
+        })
+        .execute();
+
+      return response.body.results;
+    } catch (error) {
+      console.error(ErrorMessage.UNABLE_TO_GET_PRODUCT_BY_CATEGORY, error);
+      throw error;
     }
   };
 
@@ -196,7 +222,7 @@ export class AuthorizationService {
     clientSecret = this.clientSecret,
   ): Client => {
     if (!this.projectKey || !this.authUrl || !this.apiUrl || !this.clientId || !this.clientSecret) {
-      throw new Error('Missing required env variables for Commercetools client');
+      throw new Error(ErrorMessage.MISSING_ENV_VARS);
     }
 
     const builder = new ClientBuilder();

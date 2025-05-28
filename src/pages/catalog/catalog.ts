@@ -14,20 +14,28 @@ export class CatalogPage extends View {
   public catalogController: CatalogController;
   public categoryList: CreateElement;
   public productsContainer: CreateElement;
+  public catalogFooter: CreateElement;
 
   private constructor(parameters: Partial<IParameters> = {}, controller: CatalogController) {
     super({ tag: 'div', classNames: ['catalog-page'], ...parameters });
     this.catalogController = controller;
     this.categoryList = new CreateElement({
       tag: 'ul',
-      classNames: ['category-list'],
+      classNames: ['category__list'],
       textContent: '',
       callback: (): void => {},
     });
 
     this.productsContainer = new CreateElement({
       tag: 'div',
-      classNames: ['product-cards-container'],
+      classNames: ['product-cards__container'],
+      textContent: '',
+      callback: (): void => {},
+    });
+
+    this.catalogFooter = new CreateElement({
+      tag: 'div',
+      classNames: ['catalog-footer'],
       textContent: '',
       callback: (): void => {},
     });
@@ -48,14 +56,33 @@ export class CatalogPage extends View {
     return CatalogPage.instance;
   }
 
-  public addCard(parameters: IParametersCard): void {
-    const like = new CreateElement({
-      tag: 'div',
-      classNames: ['card-like'],
-      textContent: '',
+  public addCategory(name: string, amount: number): void {
+    const categoryName = new CreateElement({
+      tag: 'p',
+      classNames: ['category__list_item-name'],
+      textContent: name,
       callback: (): void => {},
     });
 
+    const input = new CreateElement({
+      tag: 'p',
+      classNames: ['category__list_item-amount'],
+      textContent: `(${amount})`,
+      callback: (): void => {},
+    });
+
+    const li = new CreateElement({
+      tag: 'li',
+      classNames: ['category__list-item'],
+      textContent: '',
+      callback: (): void => {},
+      children: [categoryName, input],
+    });
+
+    this.categoryList.addInnerElement(li);
+  }
+
+  public addCard(parameters: IParametersCard): void {
     const img = new CreateElement({
       tag: 'div',
       classNames: ['card-img'],
@@ -86,12 +113,37 @@ export class CatalogPage extends View {
       callback: (): void => {},
     });
 
-    // const priceOld = new CreateElement({
-    //   tag: 'p',
-    //   classNames: ['card-old-price'],
-    //   textContent: parameters.price,
-    //   callback: (): void => {},
-    // });
+    const prices = new CreateElement({
+      tag: 'div',
+      classNames: ['price-container'],
+      textContent: '',
+      callback: (): void => {},
+      children: [price],
+    });
+
+    if (parameters.discount !== '$') {
+      const discountPrice = new CreateElement({
+        tag: 'p',
+        classNames: ['card-discount-price'],
+        textContent: parameters.discount,
+        callback: (): void => {},
+      });
+
+      price.setCssClasses(['old-price']);
+
+      if (price.getElement().classList.contains('card-price')) {
+        price.getElement().classList.remove('card-price');
+      }
+
+      prices.addInnerElement(discountPrice);
+    }
+
+    const like = new CreateElement({
+      tag: 'div',
+      classNames: ['card-like'],
+      textContent: '',
+      callback: (): void => {},
+    });
 
     const button = new CreateButton({
       type: 'button',
@@ -100,12 +152,20 @@ export class CatalogPage extends View {
       classNames: ['card-button'],
     });
 
+    const buttonsContainer = new CreateElement({
+      tag: 'div',
+      classNames: ['buttons-container'],
+      textContent: '',
+      callback: (): void => {},
+      children: [like, button],
+    });
+
     const cardsFooter = new CreateElement({
       tag: 'div',
       classNames: ['card-footer'],
       textContent: '',
       callback: (): void => {},
-      children: [price, button],
+      children: [prices, buttonsContainer],
     });
 
     const card = new CreateElement({
@@ -113,23 +173,58 @@ export class CatalogPage extends View {
       classNames: ['card'],
       textContent: '',
       callback: (): void => {},
-      children: [like, img, title, description, cardsFooter],
+      children: [img, title, description, cardsFooter],
     });
+
+    if (parameters.discount && parameters.discount !== '$') {
+      const currentPrice = parseFloat(parameters.discount);
+      const oldPrice = parseFloat(parameters.price);
+
+      if (oldPrice > currentPrice) {
+        const discountPercent = ((oldPrice - currentPrice) / oldPrice) * 100;
+
+        const discountLabel = new CreateElement({
+          tag: 'div',
+          classNames: ['discount'],
+          textContent: `${Math.round(discountPercent)}%`,
+          callback: (): void => {},
+        });
+
+        card.addInnerElement(discountLabel);
+      }
+    }
 
     this.productsContainer.addInnerElement(card);
   }
 
+  public addPage(number: number): CreateElement {
+    const page = new CreateElement({
+      tag: 'p',
+      classNames: ['footer__page-number'],
+      textContent: `${number}`,
+      callback: (): void => {},
+    });
+
+    this.catalogFooter.addInnerElement(page);
+
+    return page;
+  }
+
+  public clearCards(): void {
+    this.productsContainer.getElement().replaceChildren();
+  }
+
   private createContainerFilters(): CreateElement {
     const title = new CreateElement({
-      tag: 'h4',
-      classNames: ['category-list-title'],
+      tag: 'h3',
+      classNames: ['category__list-title'],
       textContent: 'Category',
       callback: (): void => {},
     });
 
     const categoryListContainer = new CreateElement({
       tag: 'div',
-      classNames: ['category-list-container'],
+      classNames: ['category__list-container'],
       textContent: '',
       callback: (): void => {},
       children: [title, this.categoryList],
@@ -230,7 +325,7 @@ export class CatalogPage extends View {
       classNames: ['container-products-catalog'],
       textContent: '',
       callback: (): void => {},
-      children: [catalogHeader, this.productsContainer],
+      children: [catalogHeader, this.productsContainer, this.catalogFooter],
     });
   }
 }

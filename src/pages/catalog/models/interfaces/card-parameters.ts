@@ -5,5 +5,5 @@ export type IParametersCard = {
   description: string;
   img: string | Image;
   price: string;
-  sale?: string;
+  discount?: string;
 };

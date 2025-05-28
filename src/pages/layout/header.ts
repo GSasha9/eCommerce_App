@@ -42,7 +42,7 @@ export class Header {
       callback: (): void => {},
     });
 
-    const menuItems: string[] = ['Home', 'Products', 'About'];
+    const menuItems: string[] = ['Home', 'Catalog', 'About'];
 
     menuItems.forEach((item: string): void => {
       const li: CreateElement = new CreateElement({
