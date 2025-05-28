@@ -27,7 +27,7 @@
   padding: $spacing-xl;
   border-radius: 10px;
 
-  font-family: $font-family-base;
+  font-family: 'Cera Pro', sans-serif;
 
   background-color: $bg-primary;
 }
@@ -173,7 +173,7 @@
   cursor: pointer;
 
   position: absolute;
-  z-index: 100;
+  z-index: 10;
   top: 28px;
   right: 5px;
 

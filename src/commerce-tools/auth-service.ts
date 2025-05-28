@@ -259,7 +259,12 @@ export class AuthorizationService {
           host: this.authUrl,
           projectKey,
           credentials: { clientId, clientSecret },
-          scopes: ['view_published_products:plants', 'view_categories:plants', 'create_anonymous_token:plants'],
+          scopes: [
+            'manage_my_profile:plants',
+            'view_published_products:plants',
+            'view_categories:plants',
+            'create_anonymous_token:plants',
+          ],
           httpClient: fetch,
           tokenCache: tokenCache('ct_anon_token'),
         })

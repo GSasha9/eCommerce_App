@@ -12,9 +12,13 @@ export class Footer {
   private static createFooter(): HTMLElement {
     const footer: CreateElement = new CreateElement({
       tag: 'footer',
-      classNames: ['footer', 'wrapper'],
+      classNames: ['footer'],
       textContent: '',
       callback: (): void => {},
+    });
+    const footerWrapper: CreateElement = new CreateElement({
+      tag: 'div',
+      classNames: ['wrapper', 'wrapper-footer'],
     });
 
     const logoContainer: CreateElement = new CreateElement({
@@ -44,7 +48,8 @@ export class Footer {
     logoContainer.addInnerElement(logoImg.getElement());
     logoContainer.addInnerElement(logoLink.getElement());
 
-    footer.addInnerElement(logoContainer.getElement());
+    footer.addInnerElement(footerWrapper.getElement());
+    footerWrapper.addInnerElement(logoContainer.getElement());
 
     return footer.getElement();
   }
