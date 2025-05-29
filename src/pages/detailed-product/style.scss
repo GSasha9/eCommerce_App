@@ -2,10 +2,105 @@
 @use '../../styles/scss/variables' as *;
 
 .error {
-  font-family: $font-family-base;
+  font-family: 'Cera Pro', sans-serif;
   color: red;
 }
 
-.content {
-  font-family: $font-family-base;
+.detailed-product-page {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+  padding: 30px 0;
+
+  font-family: 'Cera Pro', sans-serif;
+}
+
+.wrapper-information {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.name-detailed-product {
+  font-size: 20px;
+  font-weight: 500;
+  color: $primary-text-green;
+}
+
+.value {
+  color: $primary-button-hover;
+}
+
+.name-value,
+.description-value {
+  color: $text-secondary;
+}
+
+.wrapper-content {
+  display: flex;
+
+  width: 100%;
+  height: 100%;
+  padding: 16px;
+
+  background-color: $light-background;
+}
+
+.swiper {
+  flex-shrink: 0;
+  width: 400px;
+  height: 300px;
+  margin: 0;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+}
+
+.image {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: $primary-button;
+}
+
+.swiper-pagination-bullet-active {
+  background-color: $primary-button;
+}
+
+.wrapper {
+  display: flex;
+  width: 1380px;
+
+  @include respond-xs {
+    width: 320px;
+  }
+
+  @include respond-sm {
+    width: 550px;
+  }
+
+  @include respond-md {
+    width: 750px;
+  }
+
+  @include respond-lg {
+    width: 970px;
+  }
+
+  @include respond-xl {
+    width: 1180px;
+  }
+
+  @include respond-xxl {
+    width: 1380px;
+  }
 }

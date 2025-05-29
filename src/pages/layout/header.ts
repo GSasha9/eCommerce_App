@@ -13,9 +13,13 @@ export class Header {
   private static createHeader(): HTMLElement {
     const header: CreateElement = new CreateElement({
       tag: 'header',
-      classNames: ['header', 'wrapper'],
+      classNames: ['header'],
       textContent: '',
       callback: (): void => {},
+    });
+    const headerWrapper: CreateElement = new CreateElement({
+      tag: 'div',
+      classNames: ['header-wrapper', 'wrapper'],
     });
 
     const logo: CreateElement = new CreateElement({
@@ -116,9 +120,10 @@ export class Header {
     authContainer.addInnerElement(regButton.getElement());
     authContainer.addInnerElement(loginButton.getElement());
 
-    header.addInnerElement(logo.getElement());
-    header.addInnerElement(navContainer.getElement());
-    header.addInnerElement(authContainer.getElement());
+    header.addInnerElement(headerWrapper.getElement());
+    headerWrapper.addInnerElement(logo.getElement());
+    headerWrapper.addInnerElement(navContainer.getElement());
+    headerWrapper.addInnerElement(authContainer.getElement());
 
     return header.getElement();
   }

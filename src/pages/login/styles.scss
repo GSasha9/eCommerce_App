@@ -11,6 +11,8 @@
   width: 450px;
   padding: 20px 40px;
 
+  font-family: 'Cera Pro', sans-serif;
+
   @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
     width: 350px;
   }
