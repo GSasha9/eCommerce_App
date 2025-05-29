@@ -331,7 +331,7 @@ export class CatalogPage extends View {
       callback: (): void => {},
     });
 
-    const options = ['name', 'price'];
+    const options = ['default', 'name', 'price'];
 
     options.forEach((el, i) => {
       const optionElement = document.createElement('option');

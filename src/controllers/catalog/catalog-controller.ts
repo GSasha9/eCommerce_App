@@ -11,18 +11,12 @@ import type { ProductPerPageResponse } from '../../shared/models/type';
 export default class CatalogController {
   private readonly catalogPage: CatalogPage;
   private catalogModel: CatalogModel;
-  public filteredProductsMap: Map<string, ProductProjection[]>;
-  public filteredProducts: ProductProjection[];
-  public isFiltered: boolean;
   public allProductsResponse: ProductPerPageResponse | undefined;
 
   constructor() {
     this.catalogPage = CatalogPage.getInstance({}, this);
     this.catalogModel = CatalogModel.getInstance(this);
 
-    this.isFiltered = false;
-    this.filteredProductsMap = new Map();
-    this.filteredProducts = [];
     this.allProductsResponse = undefined;
 
     void this.showAllProductCards();
@@ -54,6 +48,8 @@ export default class CatalogController {
     this.catalogPage.categoryList.getElement().addEventListener('click', (event) => {
       const category = event.target;
 
+      console.log(category);
+
       if (category && category instanceof HTMLElement) {
         const li = category.closest('li');
 
@@ -64,7 +60,7 @@ export default class CatalogController {
         }
       }
 
-      this.showFilteredProducts(event);
+      this.showFilteredProducts();
     });
 
     const productContainerFooter = this.catalogPage.catalogFooter.getElement();
@@ -85,23 +81,6 @@ export default class CatalogController {
         });
 
         pageNumber.classList.add('selected');
-
-        console.log(this.isFiltered);
-
-        if (this.isFiltered) {
-          this.filteredProducts = [];
-
-          this.catalogModel.filteredProducts.forEach((key) => {
-            this.filteredProducts = this.filteredProducts.concat(key);
-          });
-
-          console.log(this.filteredProducts);
-          this.renderPage(Number(pageNumber.textContent), this.filteredProducts);
-        } else {
-          if (this.allProductsResponse) {
-            this.renderPage(Number(pageNumber.textContent), this.allProductsResponse.products);
-          }
-        }
       }
     });
   }
@@ -112,13 +91,13 @@ export default class CatalogController {
 
   public async showAllProductCards(): Promise<void> {
     await this.catalogModel.fetchCategories();
-    this.allProductsResponse = await this.catalogModel.fetchAllProducts();
+    const response = await CatalogModel.fetchAllProducts();
 
-    if (!this.allProductsResponse || this.catalogModel.allProducts.size === 0) return;
+    if (!response) return;
 
-    this.addPagination(this.allProductsResponse.totalPages);
+    this.addPagination(response.totalPages);
 
-    this.renderPage(1, this.allProductsResponse.products);
+    this.renderPage(1, response.products);
   }
 
   public addPagination(productsAmount: number): void {
@@ -134,37 +113,9 @@ export default class CatalogController {
     }
   }
 
-  public showFilteredProducts(event: Event): void {
-    this.catalogModel.applyCategoryFilters(event);
-
-    if (this.catalogModel.filteredProducts.size === 0) {
-      this.isFiltered = false;
-
-      if (this.allProductsResponse?.total) {
-        this.addPagination(this.allProductsResponse.total);
-        this.renderPage(1, this.allProductsResponse.products);
-      }
-
-      return;
-    }
-
-    this.isFiltered = true;
-
-    let totalProductsAmount = 0;
-
-    this.filteredProducts = [];
-
-    this.catalogModel.filteredProducts.forEach((key) => {
-      totalProductsAmount += key.length;
-      this.filteredProducts = this.filteredProducts.concat(key);
-    });
-
-    console.log(this.isFiltered);
-
-    // this.applyPriceFilter();
-
-    this.addPagination(totalProductsAmount);
-    this.renderPage(1, this.filteredProducts);
+  public showFilteredProducts(): void {
+    void this.catalogModel.applyFilters();
+    console.log(this);
   }
 
   public renderPage(pageNumber: number, products: ProductProjection[]): void {
@@ -199,6 +150,6 @@ export default class CatalogController {
       }
     }
 
-    console.log(this.catalogModel.allProducts);
+    console.log(this.catalogModel);
   }
 }

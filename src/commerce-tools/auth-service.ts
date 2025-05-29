@@ -5,6 +5,7 @@ import type {
   CustomerSignInResult,
   MyCustomerDraft,
   ProductProjection,
+  ProductProjectionPagedSearchResponse,
   //ProductProjectionPagedQueryResponse,
 } from '@commercetools/platform-sdk';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
@@ -203,6 +204,36 @@ export class AuthorizationService {
       return response.body.results;
     } catch (error) {
       console.error(ErrorMessage.UNABLE_TO_GET_PRODUCT_BY_CATEGORY, error);
+      throw error;
+    }
+  };
+
+  public searchProducts = async (): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
+    try {
+      const body = new URLSearchParams();
+
+      body.append(
+        'filter.query',
+        '(categories.id:"cbf6814c-b9f2-43e9-b8af-f71b61ccebd5" or categories.id:"bb4d64dd-a398-468a-8aeb-cbce298b310e") and variants.price.centAmount:<2000',
+      );
+      body.append('limit', '5');
+
+      console.log('Request body:', body.toString());
+
+      const response = await this.api
+        .productProjections()
+        .search()
+        .post({
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: body.toString(),
+        })
+        .execute();
+
+      console.log('Filtered products by category and price:', response.body.results);
+
+      return response;
+    } catch (error) {
+      console.error('Unable to get products by category and price', error);
       throw error;
     }
   };
