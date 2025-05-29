@@ -1,4 +1,5 @@
 import { CreateButton } from '../../components/button/create-button';
+import { CreateInput } from '../../components/input/create-input';
 import type CatalogController from '../../controllers/catalog/catalog-controller';
 import type { IParameters } from '../../shared/models/interfaces';
 import { CreateElement } from '../../shared/utils/create-element';
@@ -15,6 +16,9 @@ export class CatalogPage extends View {
   public categoryList: CreateElement;
   public productsContainer: CreateElement;
   public catalogFooter: CreateElement;
+  public priceInputs: HTMLElement[];
+  public filterPriceFrom: CreateInput | null;
+  public filterPriceTo: CreateInput | null;
 
   private constructor(parameters: Partial<IParameters> = {}, controller: CatalogController) {
     super({ tag: 'div', classNames: ['catalog-page'], ...parameters });
@@ -40,6 +44,11 @@ export class CatalogPage extends View {
       callback: (): void => {},
     });
 
+    this.priceInputs = [];
+
+    this.filterPriceFrom = null;
+    this.filterPriceTo = null;
+
     this.containerFilters = this.createContainerFilters();
 
     this.containerProductsCatalog = this.createcontainerProductsCatalog();
@@ -64,7 +73,7 @@ export class CatalogPage extends View {
       callback: (): void => {},
     });
 
-    const input = new CreateElement({
+    const amountOfProducts = new CreateElement({
       tag: 'p',
       classNames: ['category__list_item-amount'],
       textContent: `(${amount})`,
@@ -76,7 +85,7 @@ export class CatalogPage extends View {
       classNames: ['category__list-item'],
       textContent: '',
       callback: (): void => {},
-      children: [categoryName, input],
+      children: [categoryName, amountOfProducts],
     });
 
     this.categoryList.addInnerElement(li);
@@ -234,11 +243,39 @@ export class CatalogPage extends View {
       children: [title, this.categoryList],
     });
 
-    const rangeFilter = new CreateElement({
-      tag: 'div',
-      classNames: ['range-filter'],
-      textContent: 'Range filter',
+    const priceTitle = new CreateElement({
+      tag: 'h3',
+      classNames: ['price-filter-title'],
+      textContent: 'Price',
       callback: (): void => {},
+    });
+
+    const priceFilter = new CreateElement({
+      tag: 'div',
+      classNames: ['price-filter'],
+      textContent: '',
+      callback: (): void => {},
+      children: [priceTitle],
+    });
+
+    const inputs = ['from', 'to'];
+
+    inputs.forEach((el) => {
+      const input = new CreateInput({
+        type: 'text',
+        placeholder: el,
+        classNames: ['price-filter-input'],
+      });
+
+      if (el === 'from') {
+        this.filterPriceFrom = input;
+      } else {
+        this.filterPriceTo = input;
+      }
+
+      this.priceInputs.push(input.getElement());
+
+      priceFilter.addInnerElement(input);
     });
 
     const promotion = new CreateElement({
@@ -253,7 +290,7 @@ export class CatalogPage extends View {
       classNames: ['container-filters'],
       textContent: '',
       callback: (): void => {},
-      children: [categoryListContainer, rangeFilter, promotion],
+      children: [categoryListContainer, priceFilter, promotion],
     });
   }
 

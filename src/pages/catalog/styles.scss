@@ -48,10 +48,22 @@
     color: $primary-text-green;
   }
 
-  .range-filter {
+  .price-filter {
+    display: flex;
+    flex-wrap: wrap;
+
     font-size: $font-size-h4;
     font-weight: $font-weight-bold;
     color: $primary-text-green;
+
+    .price-filter-title {
+      width: 100%;
+      padding-bottom: $spacing-md;
+    }
+
+    .price-filter-input {
+      max-width: 100px;
+    }
   }
 }
 

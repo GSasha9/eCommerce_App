@@ -1,26 +1,31 @@
 import type { ProductProjection } from '@commercetools/platform-sdk';
 
+// import { CreateInput } from '../../components/input/create-input';
 import { CatalogModel } from '../../model/catalog/catalog-model';
 import { CatalogPage } from '../../pages/catalog/catalog';
 import type { IParametersCard } from '../../pages/catalog/models/interfaces';
 import { Layout } from '../../pages/layout/layout';
 import { PRODUCTS_PER_PAGE } from '../../shared/constants';
+import type { ProductPerPageResponse } from '../../shared/models/type';
 
 export default class CatalogController {
   private readonly catalogPage: CatalogPage;
   private catalogModel: CatalogModel;
-  public filteredProducts: Map<string, ProductProjection[]>;
+  public filteredProductsMap: Map<string, ProductProjection[]>;
+  public filteredProducts: ProductProjection[];
   public isFiltered: boolean;
+  public allProductsResponse: ProductPerPageResponse | undefined;
 
   constructor() {
     this.catalogPage = CatalogPage.getInstance({}, this);
     this.catalogModel = CatalogModel.getInstance(this);
 
     this.isFiltered = false;
-    this.filteredProducts = new Map();
-    void this.showAllProductCards();
+    this.filteredProductsMap = new Map();
+    this.filteredProducts = [];
+    this.allProductsResponse = undefined;
 
-    void this.catalogModel.fetchCategories();
+    void this.showAllProductCards();
 
     this.initListeners();
   }
@@ -32,6 +37,12 @@ export default class CatalogController {
   }
 
   public initListeners(): void {
+    this.catalogPage.priceInputs.forEach((el) => {
+      el.addEventListener('blur', () => {
+        // this.applyPriceFilter();
+      });
+    });
+
     const productContainer = this.catalogPage.productsContainer.getElement();
 
     productContainer.addEventListener('click', (event) => {
@@ -53,7 +64,7 @@ export default class CatalogController {
         }
       }
 
-      void this.showFilteredProducts(event);
+      this.showFilteredProducts(event);
     });
 
     const productContainerFooter = this.catalogPage.catalogFooter.getElement();
@@ -75,16 +86,21 @@ export default class CatalogController {
 
         pageNumber.classList.add('selected');
 
-        if (this.isFiltered) {
-          let products: ProductProjection[] = [];
+        console.log(this.isFiltered);
 
-          this.filteredProducts.forEach((key) => {
-            products = products.concat(key);
+        if (this.isFiltered) {
+          this.filteredProducts = [];
+
+          this.catalogModel.filteredProducts.forEach((key) => {
+            this.filteredProducts = this.filteredProducts.concat(key);
           });
 
-          this.renderPage(Number(pageNumber.textContent), products);
+          console.log(this.filteredProducts);
+          this.renderPage(Number(pageNumber.textContent), this.filteredProducts);
         } else {
-          this.renderPage(Number(pageNumber.textContent), this.catalogModel.allProducts);
+          if (this.allProductsResponse) {
+            this.renderPage(Number(pageNumber.textContent), this.allProductsResponse.products);
+          }
         }
       }
     });
@@ -95,13 +111,14 @@ export default class CatalogController {
   }
 
   public async showAllProductCards(): Promise<void> {
-    const response = await this.catalogModel.fetchAllProducts();
+    await this.catalogModel.fetchCategories();
+    this.allProductsResponse = await this.catalogModel.fetchAllProducts();
 
-    if (!response) return;
+    if (!this.allProductsResponse || this.catalogModel.allProducts.size === 0) return;
 
-    this.addPagination(response.totalPages);
+    this.addPagination(this.allProductsResponse.totalPages);
 
-    this.renderPage(1, this.catalogModel.allProducts);
+    this.renderPage(1, this.allProductsResponse.products);
   }
 
   public addPagination(productsAmount: number): void {
@@ -117,25 +134,16 @@ export default class CatalogController {
     }
   }
 
-  public async showFilteredProducts(event: Event): Promise<void> {
-    const response = await this.catalogModel.filterProductByCategory(event);
+  public showFilteredProducts(event: Event): void {
+    this.catalogModel.applyCategoryFilters(event);
 
-    if (event.target instanceof HTMLElement) {
-      const key = event.target.textContent?.trim();
-
-      if (response && key) {
-        if (this.filteredProducts.has(key)) {
-          this.filteredProducts.delete(key);
-        } else {
-          this.filteredProducts.set(key, response);
-        }
-      }
-    }
-
-    if (this.filteredProducts.size === 0) {
+    if (this.catalogModel.filteredProducts.size === 0) {
       this.isFiltered = false;
-      this.addPagination(this.catalogModel.allProducts.length);
-      this.renderPage(1, this.catalogModel.allProducts);
+
+      if (this.allProductsResponse?.total) {
+        this.addPagination(this.allProductsResponse.total);
+        this.renderPage(1, this.allProductsResponse.products);
+      }
 
       return;
     }
@@ -143,15 +151,20 @@ export default class CatalogController {
     this.isFiltered = true;
 
     let totalProductsAmount = 0;
-    let products: ProductProjection[] = [];
 
-    this.filteredProducts.forEach((key) => {
+    this.filteredProducts = [];
+
+    this.catalogModel.filteredProducts.forEach((key) => {
       totalProductsAmount += key.length;
-      products = products.concat(key);
+      this.filteredProducts = this.filteredProducts.concat(key);
     });
 
+    console.log(this.isFiltered);
+
+    // this.applyPriceFilter();
+
     this.addPagination(totalProductsAmount);
-    this.renderPage(1, products);
+    this.renderPage(1, this.filteredProducts);
   }
 
   public renderPage(pageNumber: number, products: ProductProjection[]): void {
@@ -188,4 +201,34 @@ export default class CatalogController {
 
     console.log(this.catalogModel.allProducts);
   }
+
+  // private applyPriceFilter(): void {
+
+  //   if (!(this.catalogPage.filterPriceFrom instanceof CreateInput) || !(this.catalogPage.filterPriceTo instanceof CreateInput)) return;
+
+  //   const priceFrom = Number(this.catalogPage.filterPriceFrom.getValue()) || 0;
+  //   const priceTo = Number(this.catalogPage.filterPriceTo.getValue()) || 0;
+
+  //   const getPrice = (el: ProductProjection): number => (el.masterVariant?.prices?.[0]?.value?.centAmount ?? 0) / 100;
+
+  //   const baseProducts = this.isFiltered ? this.filteredProducts : this.catalogModel.allProducts;
+
+  //   this.filteredProducts = baseProducts.filter((el) => {
+  //     const price = getPrice(el);
+
+  //     return price >= priceFrom && (priceTo === 0 || price <= priceTo);
+  //   });
+
+  //   if (priceFrom === 0 && priceTo === 0) {
+  //     this.isFiltered = false;
+  //     this.addPagination(this.catalogModel.allProducts.length);
+  //     this.renderPage(1, this.catalogModel.allProducts);
+
+  //     return;
+  //   }
+
+  //   this.isFiltered = true;
+  //   this.addPagination(this.filteredProducts.length);
+  //   this.renderPage(1, this.filteredProducts);
+  // }
 }
