@@ -201,34 +201,4 @@ export default class CatalogController {
 
     console.log(this.catalogModel.allProducts);
   }
-
-  // private applyPriceFilter(): void {
-
-  //   if (!(this.catalogPage.filterPriceFrom instanceof CreateInput) || !(this.catalogPage.filterPriceTo instanceof CreateInput)) return;
-
-  //   const priceFrom = Number(this.catalogPage.filterPriceFrom.getValue()) || 0;
-  //   const priceTo = Number(this.catalogPage.filterPriceTo.getValue()) || 0;
-
-  //   const getPrice = (el: ProductProjection): number => (el.masterVariant?.prices?.[0]?.value?.centAmount ?? 0) / 100;
-
-  //   const baseProducts = this.isFiltered ? this.filteredProducts : this.catalogModel.allProducts;
-
-  //   this.filteredProducts = baseProducts.filter((el) => {
-  //     const price = getPrice(el);
-
-  //     return price >= priceFrom && (priceTo === 0 || price <= priceTo);
-  //   });
-
-  //   if (priceFrom === 0 && priceTo === 0) {
-  //     this.isFiltered = false;
-  //     this.addPagination(this.catalogModel.allProducts.length);
-  //     this.renderPage(1, this.catalogModel.allProducts);
-
-  //     return;
-  //   }
-
-  //   this.isFiltered = true;
-  //   this.addPagination(this.filteredProducts.length);
-  //   this.renderPage(1, this.filteredProducts);
-  // }
 }

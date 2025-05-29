@@ -19,8 +19,10 @@ export class DetailedProductController {
     this.model.clearQueryResults();
     this.model.getProductKeyByUrl();
     await this.model.getDetailedInformation();
+
     const layout = Layout.getInstance();
 
     layout.setMainContent(this.page.renderPage());
+    this.model.initSlider();
   }
 }
