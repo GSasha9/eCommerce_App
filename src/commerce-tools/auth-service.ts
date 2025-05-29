@@ -210,22 +210,33 @@ export class AuthorizationService {
 
   public searchProducts = async (): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
     try {
-      const body = new URLSearchParams();
+      // const body = new URLSearchParams();
 
-      body.append(
-        'filter.query',
-        '(categories.id:"cbf6814c-b9f2-43e9-b8af-f71b61ccebd5" or categories.id:"bb4d64dd-a398-468a-8aeb-cbce298b310e") and variants.price.centAmount:<2000',
-      );
-      body.append('limit', '5');
+      // body.append(
+      //   'filter.query',
+      //   '(categories.id:"cbf6814c-b9f2-43e9-b8af-f71b61ccebd5" or categories.id:"bb4d64dd-a398-468a-8aeb-cbce298b310e") and variants.price.centAmount:<2000',
+      // );
+      // body.append('limit', '5');
 
-      console.log('Request body:', body.toString());
+      // console.log('Request body:', body.toString());
+
+      // const response = await this.api
+      //   .productProjections()
+      //   .search()
+      //   .post({
+      //     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      //     body: body.toString(),
+      //   })
+      //   .execute();
 
       const response = await this.api
         .productProjections()
         .search()
-        .post({
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: body.toString(),
+        .get({
+          queryArgs: {
+            'filter.query': ['categories.id:"cbf6814c-b9f2-43e9-b8af-f71b61ccebd5"'],
+            limit: 5,
+          },
         })
         .execute();
 
