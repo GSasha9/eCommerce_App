@@ -305,12 +305,54 @@ export class CatalogPage extends View {
     const headerListItems = ['All', 'Sale'];
 
     headerListItems.forEach((el) => {
-      const item = new CreateElement({
-        tag: 'li',
-        classNames: ['catalog-header__list-item'],
-        textContent: el,
-        callback: (): void => {},
-      });
+      let item;
+
+      if (el === 'All') {
+        item = new CreateElement({
+          tag: 'li',
+          classNames: ['catalog-header__list-item', 'selected'],
+          textContent: el,
+          callback: (event: Event): void => {
+            const item = event.target;
+
+            if (!(item instanceof HTMLLIElement) || !item.textContent) return;
+
+            delete this.catalogController.filters.discount;
+
+            const allLi = document.querySelectorAll('.catalog-header__list-item');
+
+            allLi.forEach((el) => {
+              el.classList.remove('selected');
+            });
+
+            item.classList.add('selected');
+            void this.catalogController.showFilteredProducts();
+          },
+        });
+      } else {
+        item = new CreateElement({
+          tag: 'li',
+          classNames: ['catalog-header__list-item'],
+          textContent: el,
+          callback: (event: Event): void => {
+            const item = event.target;
+
+            if (!(item instanceof HTMLLIElement) || !item.textContent) return;
+
+            this.catalogController.isFiltered = true;
+
+            const allLi = document.querySelectorAll('.catalog-header__list-item');
+
+            allLi.forEach((el) => {
+              el.classList.remove('selected');
+            });
+
+            item.classList.add('selected');
+            this.catalogController.filters.discount = true;
+            void this.catalogController.showFilteredProducts();
+          },
+        });
+      }
 
       headerList.addInnerElement(item);
     });

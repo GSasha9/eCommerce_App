@@ -101,6 +101,7 @@
       gap: $spacing-xxl;
 
       .catalog-header__list-item {
+        cursor: pointer;
         list-style: none;
       }
     }

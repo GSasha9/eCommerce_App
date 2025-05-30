@@ -1,17 +1,24 @@
+import type { ProductProjection } from '@commercetools/platform-sdk';
+
 import { authService } from '../../commerce-tools/auth-service';
 import type CatalogController from '../../controllers/catalog/catalog-controller';
+import type { Filters } from '../../controllers/catalog/filters';
 import type { ProductPerPageResponse } from '../../shared/models/type';
 
 export class CatalogModel {
   private static instance: CatalogModel;
   public controller: CatalogController;
   public categories: Map<string, string>;
-  public filters: Map<string, []>;
+  public filteredProducts: ProductProjection[];
+  public allProducts: ProductProjection[];
 
   private constructor(controller: CatalogController) {
     this.controller = controller;
     this.categories = new Map();
-    this.filters = new Map();
+    this.filteredProducts = [];
+    this.allProducts = [];
+
+    void this.fetchCategories();
   }
 
   public static getInstance(controller: CatalogController): CatalogModel {
@@ -25,8 +32,6 @@ export class CatalogModel {
   public async fetchCategories(): Promise<void> {
     try {
       const response = await authService.getPlantCategories();
-
-      console.log(response);
 
       if (response) {
         for (const el of response) {
@@ -50,21 +55,50 @@ export class CatalogModel {
     }
   }
 
-  public static async fetchAllProducts(): Promise<ProductPerPageResponse | undefined> {
+  public async fetchAllProducts(): Promise<ProductPerPageResponse | undefined> {
     try {
       const response = await authService.fetchProducts();
 
-      if (response) return response;
+      if (response) {
+        this.allProducts = response.products;
+
+        return response;
+      }
     } catch (error) {
       console.warn(error);
     }
   }
 
-  public async applyFilters(): Promise<void> {
-    const response = await authService.searchProducts();
+  public async applyFilters(filters: Filters): Promise<void> {
+    const filterQuery: string[] = [];
 
-    console.log(response);
+    if (filters.categoriesId && filters.categoriesId.length > 0) {
+      const joinedIds = filters.categoriesId.map((id) => `"${id}"`).join(',');
+      const categoryFilter = `categories.id:${joinedIds}`;
 
-    console.log(this);
+      filterQuery.push(categoryFilter);
+    }
+
+    if (filters.range) {
+      const rangeFrom = typeof filters.range.from === 'number' ? filters.range.from * 100 : filters.range.from;
+
+      const rangeTo = typeof filters.range.to === 'number' ? filters.range.to * 100 : filters.range.to;
+
+      filterQuery.push(`variants.price.centAmount:range(${rangeFrom} to ${rangeTo})`);
+    }
+
+    if (filters.discount !== undefined) {
+      filterQuery.push(`variants.prices.discounted:exists`);
+    }
+
+    let sort: string | undefined;
+
+    if (filters.sort) {
+      sort = `${filters.sort.parameter} ${filters.sort.method}`;
+    }
+
+    const response = await authService.searchProducts(filterQuery, sort);
+
+    if (response) this.filteredProducts = response.body.results;
   }
 }

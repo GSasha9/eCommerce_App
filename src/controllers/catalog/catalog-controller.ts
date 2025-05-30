@@ -7,15 +7,20 @@ import type { IParametersCard } from '../../pages/catalog/models/interfaces';
 import { Layout } from '../../pages/layout/layout';
 import { PRODUCTS_PER_PAGE } from '../../shared/constants';
 import type { ProductPerPageResponse } from '../../shared/models/type';
+import type { Filters } from './filters';
 
 export default class CatalogController {
   private readonly catalogPage: CatalogPage;
-  private catalogModel: CatalogModel;
+  public catalogModel: CatalogModel;
   public allProductsResponse: ProductPerPageResponse | undefined;
+  public filters: Filters;
+  public isFiltered: boolean;
 
   constructor() {
     this.catalogPage = CatalogPage.getInstance({}, this);
     this.catalogModel = CatalogModel.getInstance(this);
+    this.filters = {};
+    this.isFiltered = false;
 
     this.allProductsResponse = undefined;
 
@@ -33,7 +38,22 @@ export default class CatalogController {
   public initListeners(): void {
     this.catalogPage.priceInputs.forEach((el) => {
       el.addEventListener('blur', () => {
-        // this.applyPriceFilter();
+        if (!this.catalogPage.filterPriceFrom || !this.catalogPage.filterPriceTo) return;
+
+        let priceFrom = Number(this.catalogPage.filterPriceFrom.getValue()) || '*';
+
+        const priceTo = Number(this.catalogPage.filterPriceTo.getValue()) || '*';
+
+        if (priceFrom === '*' && priceTo === '*') {
+          priceFrom = 0;
+        }
+
+        this.filters.range = {
+          from: priceFrom,
+          to: priceTo,
+        };
+
+        void this.showFilteredProducts();
       });
     });
 
@@ -48,19 +68,43 @@ export default class CatalogController {
     this.catalogPage.categoryList.getElement().addEventListener('click', (event) => {
       const category = event.target;
 
-      console.log(category);
-
       if (category && category instanceof HTMLElement) {
         const li = category.closest('li');
 
+        const name = li?.querySelector('.category__list_item-name')?.textContent;
+
+        if (!name) return;
+
+        const categoryIndex = this.catalogModel.categories.get(name);
+
+        if (!categoryIndex) return;
+
         if (li && li.classList.contains('selected-category')) {
           li.classList.remove('selected-category');
+
+          if (this.filters.categoriesId) {
+            const index = this.filters.categoriesId.indexOf(categoryIndex);
+
+            if (index !== -1) {
+              this.filters.categoriesId.splice(index, 1);
+
+              if (this.filters.categoriesId.length === 0) {
+                delete this.filters.categoriesId;
+              }
+            }
+          }
         } else {
           li?.classList.add('selected-category');
+
+          if (!this.filters.categoriesId) {
+            this.filters.categoriesId = [categoryIndex];
+          } else {
+            this.filters.categoriesId.push(categoryIndex);
+          }
         }
       }
 
-      this.showFilteredProducts();
+      void this.showFilteredProducts();
     });
 
     const productContainerFooter = this.catalogPage.catalogFooter.getElement();
@@ -81,6 +125,16 @@ export default class CatalogController {
         });
 
         pageNumber.classList.add('selected');
+
+        if (!pageNumber.textContent) return;
+
+        const page = Number(pageNumber.textContent);
+
+        if (this.isFiltered) {
+          this.renderPage(page, this.catalogModel.filteredProducts);
+        } else {
+          this.renderPage(page, this.catalogModel.allProducts);
+        }
       }
     });
   }
@@ -90,8 +144,7 @@ export default class CatalogController {
   }
 
   public async showAllProductCards(): Promise<void> {
-    await this.catalogModel.fetchCategories();
-    const response = await CatalogModel.fetchAllProducts();
+    const response = await this.catalogModel.fetchAllProducts();
 
     if (!response) return;
 
@@ -113,9 +166,36 @@ export default class CatalogController {
     }
   }
 
-  public showFilteredProducts(): void {
-    void this.catalogModel.applyFilters();
-    console.log(this);
+  public async showFilteredProducts(): Promise<void> {
+    console.log(this.filters);
+
+    if (Object.keys(this.filters).length === 0) {
+      this.isFiltered = false;
+
+      void this.showAllProductCards();
+
+      return;
+    }
+
+    this.isFiltered = true;
+
+    if (!this.filters.categoriesId) {
+      this.filters.categoriesId = [];
+
+      const categoryValues: string[] = Array.from(this.catalogModel.categories.values());
+
+      if (categoryValues.length === 0) {
+        console.warn('Categories are empty');
+      } else {
+        this.filters.categoriesId.push(...categoryValues);
+      }
+    }
+
+    await this.catalogModel.applyFilters(this.filters);
+
+    this.addPagination(this.catalogModel.filteredProducts.length);
+
+    this.renderPage(1, this.catalogModel.filteredProducts);
   }
 
   public renderPage(pageNumber: number, products: ProductProjection[]): void {

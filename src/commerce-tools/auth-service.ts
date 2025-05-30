@@ -208,39 +208,27 @@ export class AuthorizationService {
     }
   };
 
-  public searchProducts = async (): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
+  public searchProducts = async (
+    filterQuery: string[],
+    sort?: string,
+  ): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
     try {
-      // const body = new URLSearchParams();
-
-      // body.append(
-      //   'filter.query',
-      //   '(categories.id:"cbf6814c-b9f2-43e9-b8af-f71b61ccebd5" or categories.id:"bb4d64dd-a398-468a-8aeb-cbce298b310e") and variants.price.centAmount:<2000',
-      // );
-      // body.append('limit', '5');
-
-      // console.log('Request body:', body.toString());
-
-      // const response = await this.api
-      //   .productProjections()
-      //   .search()
-      //   .post({
-      //     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      //     body: body.toString(),
-      //   })
-      //   .execute();
-
+      console.log(filterQuery);
       const response = await this.api
         .productProjections()
         .search()
         .get({
           queryArgs: {
-            'filter.query': ['categories.id:"cbf6814c-b9f2-43e9-b8af-f71b61ccebd5"'],
-            limit: 5,
+            'filter.query': filterQuery,
+            sort: sort,
+            priceCountry: 'US',
+            priceCurrency: 'USD',
+            limit: 100,
           },
         })
         .execute();
 
-      console.log('Filtered products by category and price:', response.body.results);
+      console.log(response);
 
       return response;
     } catch (error) {
