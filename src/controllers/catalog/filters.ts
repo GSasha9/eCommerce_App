@@ -4,8 +4,8 @@ type RangeOfPrice = {
   to: number | '*';
 };
 type Sort = {
-  parameter: 'name.en-US' | 'price';
-  method: 'asc' | 'desc';
+  parameter: string;
+  method: string;
 };
 
 export type Filters = {

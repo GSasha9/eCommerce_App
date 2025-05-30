@@ -5,6 +5,7 @@ import type { IParameters } from '../../shared/models/interfaces';
 import { CreateElement } from '../../shared/utils/create-element';
 import { View } from '../view';
 import type { IParametersCard } from './models/interfaces';
+import { updateSortAndFilter } from './models/utils/update-sort-select';
 
 import './styles.scss';
 
@@ -285,12 +286,46 @@ export class CatalogPage extends View {
       callback: (): void => {},
     });
 
+    const reset = new CreateButton({
+      textContent: 'Reset filters',
+      classNames: ['reset-filters'],
+      callback: (): void => {
+        this.catalogController.isFiltered = false;
+        this.catalogController.filters = {};
+
+        this.filterPriceFrom?.setValue('');
+
+        this.filterPriceTo?.setValue('');
+        document.querySelectorAll('.selected-category').forEach((el) => {
+          el.classList.remove('selected-category');
+        });
+
+        document.querySelectorAll('.catalog-header__list-item').forEach((el) => {
+          if (el.textContent !== 'All') {
+            el.classList.remove('selected');
+          } else {
+            el.classList.add('selected');
+          }
+        });
+
+        console.log(document.querySelectorAll('.catalog-header__select>option'));
+
+        const select = document.querySelector('.catalog-header__select');
+
+        if (select instanceof HTMLSelectElement) {
+          select.value = 'default';
+        }
+
+        void this.catalogController.showAllProductCards();
+      },
+    });
+
     return new CreateElement({
       tag: 'div',
       classNames: ['container-filters'],
       textContent: '',
       callback: (): void => {},
-      children: [categoryListContainer, priceFilter, promotion],
+      children: [categoryListContainer, priceFilter, promotion, reset],
     });
   }
 
@@ -370,21 +405,34 @@ export class CatalogPage extends View {
       tag: 'select',
       classNames: ['catalog-header__select'],
       textContent: '',
-      callback: (): void => {},
+      callback: (): void => updateSortAndFilter(this.catalogController),
     });
 
     const options = ['default', 'name', 'price'];
 
-    options.forEach((el, i) => {
+    options.forEach((el) => {
       const optionElement = document.createElement('option');
 
-      if (i === 0) {
-        optionElement.setAttribute('selected', 'true');
-      }
+      optionElement.value = el === 'default' ? '' : el;
+      optionElement.textContent = el;
+      sortSelect.addInnerElement(optionElement);
+    });
+
+    const sortSelectArrow = new CreateElement({
+      tag: 'select',
+      classNames: ['catalog-header__select-arrow'],
+      textContent: '',
+      callback: (): void => updateSortAndFilter(this.catalogController),
+    });
+
+    const optionsArrow = ['asc', 'desc'];
+
+    optionsArrow.forEach((el) => {
+      const optionElement = document.createElement('option');
 
       optionElement.value = el;
       optionElement.textContent = el;
-      sortSelect.addInnerElement(optionElement);
+      sortSelectArrow.addInnerElement(optionElement);
     });
 
     const headerSortBy = new CreateElement({
@@ -392,7 +440,7 @@ export class CatalogPage extends View {
       classNames: ['catalog-header__sort'],
       textContent: '',
       callback: (): void => {},
-      children: [headerSortLabel, sortSelect],
+      children: [headerSortLabel, sortSelect, sortSelectArrow],
     });
 
     const catalogHeader = new CreateElement({

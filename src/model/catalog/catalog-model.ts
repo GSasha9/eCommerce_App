@@ -94,7 +94,10 @@ export class CatalogModel {
     let sort: string | undefined;
 
     if (filters.sort) {
-      sort = `${filters.sort.parameter} ${filters.sort.method}`;
+      const parameter = filters.sort.parameter === 'name' ? 'name.en-US' : filters.sort.parameter;
+      const method = filters.sort.method === 'asc' || filters.sort.method === 'desc' ? filters.sort.method : 'asc';
+
+      sort = `${parameter} ${method}`;
     }
 
     const response = await authService.searchProducts(filterQuery, sort);

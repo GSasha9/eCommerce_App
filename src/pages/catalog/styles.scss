@@ -21,6 +21,10 @@
   text-decoration: line-through;
 }
 
+.reset-filters {
+  width: 100% !important;
+}
+
 .catalog-page {
   display: flex;
   gap: $spacing-lg;
