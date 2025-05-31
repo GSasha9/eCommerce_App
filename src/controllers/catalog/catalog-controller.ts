@@ -8,9 +8,11 @@ import { Layout } from '../../pages/layout/layout';
 import { PRODUCTS_PER_PAGE } from '../../shared/constants';
 import type { ProductPerPageResponse } from '../../shared/models/type';
 import type { Filters } from './filters';
+import { addSearchTextToFilters } from './utils/add-search-text-to-filters';
+import { updateSortAndFilter } from './utils/update-sort-select';
 
 export default class CatalogController {
-  private readonly catalogPage: CatalogPage;
+  public readonly catalogPage: CatalogPage;
   public catalogModel: CatalogModel;
   public allProductsResponse: ProductPerPageResponse | undefined;
   public filters: Filters;
@@ -55,6 +57,13 @@ export default class CatalogController {
 
         void this.showFilteredProducts();
       });
+    });
+
+    this.catalogPage.sortSelect.getElement().addEventListener('change', () => updateSortAndFilter(this));
+    this.catalogPage.sortSelectArrow.getElement().addEventListener('change', () => updateSortAndFilter(this));
+
+    this.catalogPage.searchInput.getElement().addEventListener('change', () => {
+      addSearchTextToFilters(this);
     });
 
     const productContainer = this.catalogPage.productsContainer.getElement();

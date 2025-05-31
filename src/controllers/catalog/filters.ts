@@ -13,4 +13,5 @@ export type Filters = {
   range?: RangeOfPrice;
   sort?: Sort;
   discount?: boolean;
+  text?: string;
 };

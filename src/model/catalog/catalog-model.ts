@@ -100,7 +100,13 @@ export class CatalogModel {
       sort = `${parameter} ${method}`;
     }
 
-    const response = await authService.searchProducts(filterQuery, sort);
+    let text: string | undefined;
+
+    if (filters.text) {
+      text = filters.text ?? '';
+    }
+
+    const response = await authService.searchProducts(filterQuery, sort, text);
 
     if (response) this.filteredProducts = response.body.results;
   }

@@ -211,20 +211,30 @@ export class AuthorizationService {
   public searchProducts = async (
     filterQuery: string[],
     sort?: string,
+    text?: string,
   ): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
     try {
       console.log(filterQuery);
+      const queryArgs: Record<string, string | string[] | number> = {
+        'filter.query': filterQuery,
+        priceCountry: 'US',
+        priceCurrency: 'USD',
+        limit: 100,
+      };
+
+      if (sort) {
+        queryArgs['sort'] = sort;
+      }
+
+      if (text) {
+        queryArgs['text.en-US'] = text.trim();
+      }
+
       const response = await this.api
         .productProjections()
         .search()
         .get({
-          queryArgs: {
-            'filter.query': filterQuery,
-            sort: sort,
-            priceCountry: 'US',
-            priceCurrency: 'USD',
-            limit: 100,
-          },
+          queryArgs,
         })
         .execute();
 

@@ -93,12 +93,16 @@
 }
 
 .container-products-catalog {
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
+  gap: $spacing-lg;
+
+  padding: 0 50px;
 
   .catalog-header {
     display: flex;
     justify-content: space-between;
-    padding: 0 50px;
 
     .catalog-header__list {
       display: flex;
@@ -120,6 +124,10 @@
     }
   }
 
+  .catalog-search-input {
+    width: 100%;
+  }
+
   .catalog-footer {
     display: flex;
     gap: $spacing-sm;
@@ -138,9 +146,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: $spacing-xxl;
-
-  padding: 0 50px;
-  padding-top: $spacing-lg;
 
   .card {
     position: relative;

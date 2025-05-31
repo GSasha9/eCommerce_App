@@ -1,4 +1,4 @@
-import type CatalogController from '../../../../controllers/catalog/catalog-controller';
+import type CatalogController from '../catalog-controller';
 
 export const updateSortAndFilter = (controller: CatalogController): void => {
   const parameterElement = document.querySelector('.catalog-header__select');
