@@ -15,7 +15,10 @@ export class HomePage extends View {
     // temporarily ⬇
     this.detailedProduct = new CreateButton({ classNames: ['detailed-product'], textContent: 'detailed' });
     this.detailedProduct.getElement().addEventListener('click', () => {
-      this.openDetailedProduct('lavender-product');
+      // this.openDetailedProduct('orchid-product');
+      // this.openDetailedProduct('lavender-product');
+      this.openDetailedProduct('lily-product');
+      // this.openDetailedProduct('rose-product');
     });
     this.temporarily = '';
     // temporarily ⬆

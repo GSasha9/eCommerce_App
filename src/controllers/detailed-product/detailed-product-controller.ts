@@ -1,6 +1,7 @@
 import DetailedProductModel from '../../model/detailed-product/detailed-product-model.ts';
 import DetailedProductPage from '../../pages/detailed-product/detailed-product-page.ts';
 import { Layout } from '../../pages/layout/layout.ts';
+import { isHTMLElement } from '../../shared/models/typeguards.ts/typeguards.ts';
 
 export class DetailedProductController {
   private readonly page: DetailedProductPage;
@@ -9,17 +10,28 @@ export class DetailedProductController {
   constructor() {
     this.model = DetailedProductModel.getInstance();
     this.page = DetailedProductPage.getInstance(this.model);
-    // this.initListeners();
+    this.initListeners();
   }
 
-  // public initListeners(): void {
-  // }
+  public initListeners(): void {
+    this.page.wrapperContent.addEventListener('click', this.onClick);
+  }
+
+  public onClick = (event: Event): void => {
+    if (!isHTMLElement(event.target)) return;
+
+    const value = event.target.id;
+
+    if (value === 'modal-image') {
+      console.log('open modal!!');
+      console.log(this.page);
+    }
+  };
 
   public async render(): Promise<void> {
     this.model.clearQueryResults();
     this.model.getProductKeyByUrl();
     await this.model.getDetailedInformation();
-
     const layout = Layout.getInstance();
 
     layout.setMainContent(this.page.renderPage());

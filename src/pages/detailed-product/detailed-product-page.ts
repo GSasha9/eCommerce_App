@@ -40,15 +40,38 @@ class DetailedProductPage {
     }
   }
 
+  private genPrice(): HTMLDivElement {
+    const discount = this.model.response?.discounted;
+    const price = genElement('div', { className: `detailed-price${discount ? ' discount' : ''}` }, [
+      this.model.formatPrice(),
+    ]);
+    let discountedPrice;
+    const wrapperPrice = genElement('div', { className: 'detailed-wrapper-price' }, [price]);
+
+    if (discount) {
+      discountedPrice = genElement('div', { className: 'detailed-discounted-price' }, [
+        this.model.formatDiscountedPrice(),
+      ]);
+      wrapperPrice.append(discountedPrice);
+    }
+
+    return wrapperPrice;
+  }
+
   private genDescription(): HTMLDivElement {
     const name = genElement('div', { className: 'name-detailed-product' }, [`${this.model.response?.name}`]);
+    const price = this.genPrice();
+
     const description = genElement('div', { className: 'value' }, ['Description: ']);
     const descriptionValue = genElement('div', { className: 'description-value' }, [
       `${this.model.response?.description}`,
     ]);
-    const wrappeDescription = genElement('div', { className: 'wrapper-item' }, [description, descriptionValue]);
-
-    const wrapperInformation = genElement('div', { className: 'wrapper-information' }, [name, wrappeDescription]);
+    const wrapperDescription = genElement('div', { className: 'wrapper-item' }, [description, descriptionValue]);
+    const wrapperInformation = genElement('div', { className: 'wrapper-information' }, [
+      name,
+      price,
+      wrapperDescription,
+    ]);
 
     return wrapperInformation;
   }
@@ -63,7 +86,8 @@ class DetailedProductPage {
         images.map((img) => {
           return genElement('div', { className: 'swiper-slide' }, [
             genElement('img', {
-              className: 'image',
+              className: 'modal-image',
+              id: 'modal-image',
               src: img,
               alt: `${this.model.response?.name}`,
               width: 200,

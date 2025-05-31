@@ -5,7 +5,7 @@ import { Modal } from '../modal';
 import '../styles.scss';
 import './styles.scss';
 
-export class ImageModal extends Modal {
+export class detailedInformationModal extends Modal {
   private content: Element<'div'>;
   private button: Element<'button'>;
   private image: Element<'img'>;
