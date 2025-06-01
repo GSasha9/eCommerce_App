@@ -5,6 +5,7 @@ import type {
   CustomerSignInResult,
   MyCustomerDraft,
   ProductProjection,
+  ProductProjectionPagedSearchResponse,
   //ProductProjectionPagedQueryResponse,
 } from '@commercetools/platform-sdk';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
@@ -139,7 +140,7 @@ export class AuthorizationService {
   //     .execute();
   // }
 
-  public getPlantCategories = async (): Promise<Category[]> => {
+  public getPlantSubCategories = async (): Promise<Record<string, Category[]>> => {
     const response = await this.api
       .categories()
       .get({
@@ -149,11 +150,23 @@ export class AuthorizationService {
       })
       .execute();
 
-    const category = response.body.results.filter(
-      (result) => result.key === 'house-plants' || result.key === 'gardening',
-    );
+    const allCategories = response.body.results;
 
-    return category;
+    const plantCategory = allCategories.filter((result) => result.key === 'plants-main');
+
+    const mainCategoryName = plantCategory[0].name['en-US'];
+
+    const subcategories = allCategories.filter((cat) => cat.parent?.id === plantCategory[0].id);
+
+    console.log('sub', subcategories);
+
+    const result: Record<string, Category[]> = {
+      [mainCategoryName]: subcategories,
+    };
+
+    console.log(result);
+
+    return result;
   };
 
   public fetchProducts = async (
@@ -161,13 +174,13 @@ export class AuthorizationService {
     limit: number = PRODUCTS_PER_PAGE,
   ): Promise<ProductPerPageResponse | undefined> => {
     try {
-      const category = await this.getPlantCategories();
+      const category = await this.getPlantSubCategories();
       const offset = (page - 1) * limit;
       const response = await this.api
         .productProjections()
         .get({
           queryArgs: {
-            where: `(categories(id="${category[0].id}") or categories(id="${category[1].id}")) and published= true`,
+            where: `(categories(id="${Object.values(category)[0][0].id}") or categories(id="${Object.values(category)[0][1].id}")) and published= true`,
             limit: 100,
             offset,
           },
@@ -186,13 +199,15 @@ export class AuthorizationService {
     }
   };
 
-  public fetchProductsByCategory = async (categoryId: string): Promise<ProductProjection[] | undefined> => {
+  public fetchProductsByCategory = async (key: string): Promise<ProductProjection[] | undefined> => {
     try {
+      const category = await this.api.categories().withKey({ key }).get().execute();
+
       const response = await this.api
         .productProjections()
         .get({
           queryArgs: {
-            where: `(categories(id="${categoryId}") and published= true)`,
+            where: `(categories(id="${category.body.id}") and published= true)`,
             limit: 100,
           },
         })
@@ -201,6 +216,45 @@ export class AuthorizationService {
       return response.body.results;
     } catch (error) {
       console.error(ErrorMessage.UNABLE_TO_GET_PRODUCT_BY_CATEGORY, error);
+      throw error;
+    }
+  };
+
+  public searchProducts = async (
+    filterQuery: string[],
+    sort?: string,
+    text?: string,
+  ): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
+    try {
+      console.log(filterQuery);
+      const queryArgs: Record<string, string | string[] | number> = {
+        'filter.query': filterQuery,
+        priceCountry: 'US',
+        priceCurrency: 'USD',
+        limit: 100,
+      };
+
+      if (sort) {
+        queryArgs['sort'] = sort;
+      }
+
+      if (text) {
+        queryArgs['text.en-US'] = text.trim();
+      }
+
+      const response = await this.api
+        .productProjections()
+        .search()
+        .get({
+          queryArgs,
+        })
+        .execute();
+
+      console.log(response);
+
+      return response;
+    } catch (error) {
+      console.error('Unable to get products by category and price', error);
       throw error;
     }
   };

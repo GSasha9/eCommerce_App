@@ -1,9 +1,13 @@
 import { CreateButton } from '../../components/button/create-button';
+import { CreateInput } from '../../components/input/create-input';
 import type CatalogController from '../../controllers/catalog/catalog-controller';
+import { updateSortAndFilter } from '../../controllers/catalog/utils/update-sort-select';
+import { route } from '../../router';
 import type { IParameters } from '../../shared/models/interfaces';
 import { CreateElement } from '../../shared/utils/create-element';
 import { View } from '../view';
 import type { IParametersCard } from './models/interfaces';
+import { resetCallback } from './models/utils/reset-callback';
 
 import './styles.scss';
 
@@ -15,6 +19,12 @@ export class CatalogPage extends View {
   public categoryList: CreateElement;
   public productsContainer: CreateElement;
   public catalogFooter: CreateElement;
+  public priceInputs: HTMLElement[];
+  public filterPriceFrom: CreateInput | null;
+  public filterPriceTo: CreateInput | null;
+  public sortSelectArrow: CreateElement;
+  public sortSelect: CreateElement;
+  public searchInput: CreateInput;
 
   private constructor(parameters: Partial<IParameters> = {}, controller: CatalogController) {
     super({ tag: 'div', classNames: ['catalog-page'], ...parameters });
@@ -23,6 +33,27 @@ export class CatalogPage extends View {
       tag: 'ul',
       classNames: ['category__list'],
       textContent: '',
+      callback: (): void => {},
+    });
+
+    this.sortSelectArrow = new CreateElement({
+      tag: 'select',
+      classNames: ['catalog-header__select-arrow'],
+      textContent: '',
+      callback: (): void => updateSortAndFilter(this.catalogController),
+    });
+
+    this.sortSelect = new CreateElement({
+      tag: 'select',
+      classNames: ['catalog-header__select'],
+      textContent: '',
+      callback: (): void => updateSortAndFilter(this.catalogController),
+    });
+
+    this.searchInput = new CreateInput({
+      type: 'text',
+      classNames: ['catalog-search-input'],
+      placeholder: 'What do you like to find?',
       callback: (): void => {},
     });
 
@@ -40,6 +71,11 @@ export class CatalogPage extends View {
       callback: (): void => {},
     });
 
+    this.priceInputs = [];
+
+    this.filterPriceFrom = null;
+    this.filterPriceTo = null;
+
     this.containerFilters = this.createContainerFilters();
 
     this.containerProductsCatalog = this.createcontainerProductsCatalog();
@@ -56,7 +92,42 @@ export class CatalogPage extends View {
     return CatalogPage.instance;
   }
 
-  public addCategory(name: string, amount: number): void {
+  public addCategory(title: string): void {
+    const li = new CreateElement({
+      tag: 'li',
+      classNames: ['category__list-item', 'main-category'],
+      textContent: title,
+      callback: (event: MouseEvent): void => {
+        const element = event.target;
+
+        if (!(element instanceof HTMLElement)) return;
+
+        const li = element.closest('li');
+
+        console.log(li);
+
+        if (!(li instanceof HTMLLIElement)) return;
+
+        if (li.classList.contains('selected-category')) {
+          li.classList.remove('selected-category');
+        } else {
+          li.classList.add('selected-category');
+        }
+
+        this.catalogController.catalogPage.filterPriceTo?.setValue('');
+        document.querySelectorAll('.selected-category').forEach((el) => {
+          if (!el.classList.contains('main-category')) el.classList.remove('selected-category');
+        });
+
+        delete this.catalogController.filters.categoriesId;
+        void this.catalogController.showFilteredProducts();
+      },
+    });
+
+    this.categoryList.addInnerElement(li);
+  }
+
+  public addSubCategory(name: string, amount: number): void {
     const categoryName = new CreateElement({
       tag: 'p',
       classNames: ['category__list_item-name'],
@@ -64,7 +135,7 @@ export class CatalogPage extends View {
       callback: (): void => {},
     });
 
-    const input = new CreateElement({
+    const amountOfProducts = new CreateElement({
       tag: 'p',
       classNames: ['category__list_item-amount'],
       textContent: `(${amount})`,
@@ -76,7 +147,7 @@ export class CatalogPage extends View {
       classNames: ['category__list-item'],
       textContent: '',
       callback: (): void => {},
-      children: [categoryName, input],
+      children: [categoryName, amountOfProducts],
     });
 
     this.categoryList.addInnerElement(li);
@@ -87,7 +158,13 @@ export class CatalogPage extends View {
       tag: 'div',
       classNames: ['card-img'],
       textContent: '',
-      callback: (): void => {},
+      callback: (): void => {
+        const key = parameters.key;
+
+        if (key) {
+          route.navigate(`/detailed-product/${key}`);
+        }
+      },
     });
 
     if (typeof parameters.img === 'string') img.getElement().style.backgroundImage = `url("${parameters.img}")`;
@@ -214,6 +291,10 @@ export class CatalogPage extends View {
     this.productsContainer.getElement().replaceChildren();
   }
 
+  public clearPagination(): void {
+    this.catalogFooter.getElement().replaceChildren();
+  }
+
   private createContainerFilters(): CreateElement {
     const title = new CreateElement({
       tag: 'h3',
@@ -230,11 +311,39 @@ export class CatalogPage extends View {
       children: [title, this.categoryList],
     });
 
-    const rangeFilter = new CreateElement({
-      tag: 'div',
-      classNames: ['range-filter'],
-      textContent: 'Range filter',
+    const priceTitle = new CreateElement({
+      tag: 'h3',
+      classNames: ['price-filter-title'],
+      textContent: 'Price',
       callback: (): void => {},
+    });
+
+    const priceFilter = new CreateElement({
+      tag: 'div',
+      classNames: ['price-filter'],
+      textContent: '',
+      callback: (): void => {},
+      children: [priceTitle],
+    });
+
+    const inputs = ['from', 'to'];
+
+    inputs.forEach((el) => {
+      const input = new CreateInput({
+        type: 'text',
+        placeholder: el,
+        classNames: ['price-filter-input'],
+      });
+
+      if (el === 'from') {
+        this.filterPriceFrom = input;
+      } else {
+        this.filterPriceTo = input;
+      }
+
+      this.priceInputs.push(input.getElement());
+
+      priceFilter.addInnerElement(input);
     });
 
     const promotion = new CreateElement({
@@ -244,12 +353,20 @@ export class CatalogPage extends View {
       callback: (): void => {},
     });
 
+    const reset = new CreateButton({
+      textContent: 'Reset filters',
+      classNames: ['reset-filters'],
+      callback: (): void => {
+        resetCallback(this.catalogController);
+      },
+    });
+
     return new CreateElement({
       tag: 'div',
       classNames: ['container-filters'],
       textContent: '',
       callback: (): void => {},
-      children: [categoryListContainer, rangeFilter, promotion],
+      children: [categoryListContainer, priceFilter, promotion, reset],
     });
   }
 
@@ -264,12 +381,54 @@ export class CatalogPage extends View {
     const headerListItems = ['All', 'Sale'];
 
     headerListItems.forEach((el) => {
-      const item = new CreateElement({
-        tag: 'li',
-        classNames: ['catalog-header__list-item'],
-        textContent: el,
-        callback: (): void => {},
-      });
+      let item;
+
+      if (el === 'All') {
+        item = new CreateElement({
+          tag: 'li',
+          classNames: ['catalog-header__list-item', 'selected'],
+          textContent: el,
+          callback: (event: Event): void => {
+            const item = event.target;
+
+            if (!(item instanceof HTMLLIElement) || !item.textContent) return;
+
+            delete this.catalogController.filters.discount;
+
+            const allLi = document.querySelectorAll('.catalog-header__list-item');
+
+            allLi.forEach((el) => {
+              el.classList.remove('selected');
+            });
+
+            item.classList.add('selected');
+            void this.catalogController.showFilteredProducts();
+          },
+        });
+      } else {
+        item = new CreateElement({
+          tag: 'li',
+          classNames: ['catalog-header__list-item'],
+          textContent: el,
+          callback: (event: Event): void => {
+            const item = event.target;
+
+            if (!(item instanceof HTMLLIElement) || !item.textContent) return;
+
+            this.catalogController.isFiltered = true;
+
+            const allLi = document.querySelectorAll('.catalog-header__list-item');
+
+            allLi.forEach((el) => {
+              el.classList.remove('selected');
+            });
+
+            item.classList.add('selected');
+            this.catalogController.filters.discount = true;
+            void this.catalogController.showFilteredProducts();
+          },
+        });
+      }
 
       headerList.addInnerElement(item);
     });
@@ -283,25 +442,24 @@ export class CatalogPage extends View {
 
     headerSortLabel.getElement().setAttribute('for', 'catalog-header__sort-input');
 
-    const sortSelect = new CreateElement({
-      tag: 'select',
-      classNames: ['catalog-header__select'],
-      textContent: '',
-      callback: (): void => {},
-    });
+    const options = ['default', 'name', 'price'];
 
-    const options = ['name', 'price'];
-
-    options.forEach((el, i) => {
+    options.forEach((el) => {
       const optionElement = document.createElement('option');
 
-      if (i === 0) {
-        optionElement.setAttribute('selected', 'true');
-      }
+      optionElement.value = el === 'default' ? '' : el;
+      optionElement.textContent = el;
+      this.sortSelect.addInnerElement(optionElement);
+    });
+
+    const optionsArrow = ['asc', 'desc'];
+
+    optionsArrow.forEach((el) => {
+      const optionElement = document.createElement('option');
 
       optionElement.value = el;
       optionElement.textContent = el;
-      sortSelect.addInnerElement(optionElement);
+      this.sortSelectArrow.addInnerElement(optionElement);
     });
 
     const headerSortBy = new CreateElement({
@@ -309,7 +467,7 @@ export class CatalogPage extends View {
       classNames: ['catalog-header__sort'],
       textContent: '',
       callback: (): void => {},
-      children: [headerSortLabel, sortSelect],
+      children: [headerSortLabel, this.sortSelect, this.sortSelectArrow],
     });
 
     const catalogHeader = new CreateElement({
@@ -325,7 +483,7 @@ export class CatalogPage extends View {
       classNames: ['container-products-catalog'],
       textContent: '',
       callback: (): void => {},
-      children: [catalogHeader, this.productsContainer, this.catalogFooter],
+      children: [catalogHeader, this.searchInput, this.productsContainer, this.catalogFooter],
     });
   }
 }

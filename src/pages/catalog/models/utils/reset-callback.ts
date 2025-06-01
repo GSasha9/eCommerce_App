@@ -1,0 +1,33 @@
+import type CatalogController from '../../../../controllers/catalog/catalog-controller';
+
+export const resetCallback = (controller: CatalogController): void => {
+  controller.isFiltered = false;
+  controller.filters = {};
+
+  controller.catalogPage.filterPriceFrom?.setValue('');
+
+  controller.catalogPage.filterPriceTo?.setValue('');
+  document.querySelectorAll('.selected-category').forEach((el) => {
+    el.classList.remove('selected-category');
+  });
+
+  document.querySelectorAll('.catalog-header__list-item').forEach((el) => {
+    if (el.textContent !== 'All') {
+      el.classList.remove('selected');
+    } else {
+      el.classList.add('selected');
+    }
+  });
+
+  console.log(document.querySelectorAll('.catalog-header__select>option'));
+
+  const select = document.querySelector('.catalog-header__select');
+
+  if (select instanceof HTMLSelectElement) {
+    select.value = 'default';
+  }
+
+  controller.catalogPage.searchInput.setValue('');
+
+  void controller.showAllProductCards();
+};

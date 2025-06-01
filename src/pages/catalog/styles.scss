@@ -7,11 +7,22 @@
   text-decoration: underline;
 }
 
+.selected-category {
+  font-weight: $font-weight-bold !important;
+  color: $primary-text-green;
+  text-decoration: underline;
+  background-color: rgb(224 241 224) !important;
+}
+
 .old-price {
   order: 2;
   font-size: $font-size-button-cards;
   color: $text-secondary;
   text-decoration: line-through;
+}
+
+.reset-filters {
+  width: 100% !important;
 }
 
 .catalog-page {
@@ -41,10 +52,22 @@
     color: $primary-text-green;
   }
 
-  .range-filter {
+  .price-filter {
+    display: flex;
+    flex-wrap: wrap;
+
     font-size: $font-size-h4;
     font-weight: $font-weight-bold;
     color: $primary-text-green;
+
+    .price-filter-title {
+      width: 100%;
+      padding-bottom: $spacing-md;
+    }
+
+    .price-filter-input {
+      max-width: 100px;
+    }
   }
 }
 
@@ -57,9 +80,15 @@
 
   list-style: none;
 
+  .main-category {
+    font-size: $font-size-h3;
+    color: $primary-text-green;
+  }
+
   .category__list-item {
     display: flex;
     justify-content: space-between;
+    padding: $spacing-sm;
 
     &:hover {
       cursor: pointer;
@@ -69,18 +98,23 @@
 }
 
 .container-products-catalog {
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
+  gap: $spacing-lg;
+
+  padding: 0 50px;
 
   .catalog-header {
     display: flex;
     justify-content: space-between;
-    padding: 0 50px;
 
     .catalog-header__list {
       display: flex;
       gap: $spacing-xxl;
 
       .catalog-header__list-item {
+        cursor: pointer;
         list-style: none;
       }
     }
@@ -93,6 +127,10 @@
         border: none;
       }
     }
+  }
+
+  .catalog-search-input {
+    width: 100%;
   }
 
   .catalog-footer {
@@ -113,9 +151,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: $spacing-xxl;
-
-  padding: 0 50px;
-  padding-top: $spacing-lg;
 
   .card {
     position: relative;
