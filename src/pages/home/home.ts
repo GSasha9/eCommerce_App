@@ -14,21 +14,24 @@ export class HomePage extends View {
     super({ tag: 'div', classNames: ['home-page'], ...parameters });
     // temporarily ⬇
     this.detailedProduct = new CreateButton({ classNames: ['detailed-product'], textContent: 'detailed' });
-    this.detailedProduct.getElement().addEventListener('click', () => {
-      this.openDetailedProduct('lavender-product');
-    });
+    this.detailedProduct.getElement().addEventListener('click', this.openDetailedProduct);
     this.temporarily = '';
     // temporarily ⬆
     this.createHome();
   }
 
   // temporarily ⬇
-  public openDetailedProduct = (key: string): string => {
+  public openDetailedProduct = (): void => {
+    // const key = 'orchid-product';
+    // const key = 'lavender-product';
+    // const key = 'lily-product';
+    const key = 'orchid-product';
+
+    this.temporarily = '';
+
     if (key) {
       route.navigate(`/detailed-product/${key}`);
     }
-
-    return this.temporarily;
   };
 
   public static isAuth(): boolean {
