@@ -51,20 +51,38 @@
 
 .swiper {
   flex-shrink: 0;
+  margin: 0;
+}
+
+.swiper.detailed {
   width: 400px;
   height: 300px;
+}
+
+.swiper.big {
+  flex-shrink: 0;
+  width: 600px;
+  height: 500px;
   margin: 0;
 }
 
 .swiper-slide {
   display: flex;
   justify-content: center;
+  width: auto;
 }
 
-.modal-image {
+.modal-image.detailed {
   cursor: zoom-in;
   width: 300px;
   height: 300px;
+  object-fit: cover;
+}
+
+.modal-image.big {
+  cursor: zoom-in;
+  width: 500px;
+  height: 500px;
   object-fit: cover;
 }
 

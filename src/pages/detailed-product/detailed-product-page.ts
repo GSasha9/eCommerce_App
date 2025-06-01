@@ -1,5 +1,6 @@
 import type DetailedProductModel from '../../model/detailed-product/detailed-product-model';
 import { genElement } from '../../shared/utils/gen-element';
+import { genSliderElement } from '../../shared/utils/gen-slider-element';
 
 import './style.scss';
 
@@ -29,8 +30,21 @@ class DetailedProductPage {
   public renderPage(): HTMLElement {
     this.wrapperContent.innerHTML = '';
 
-    if (this.model.key && this.model.isSuccess) {
-      this.wrapperContent.append(this.genSlider(), this.genDescription());
+    if (
+      this.model.response &&
+      this.model.key &&
+      this.model.isSuccess &&
+      this.model.response.img &&
+      this.model.response.name
+    ) {
+      const sliderElement = genSliderElement({
+        images: this.model.response.img,
+        width: 150,
+        alt: this.model.response.name,
+        name: 'detailed',
+      });
+
+      this.wrapperContent.append(sliderElement, this.genDescription());
 
       return this.page;
     } else {
@@ -76,35 +90,35 @@ class DetailedProductPage {
     return wrapperInformation;
   }
 
-  public genSlider(): HTMLDivElement {
-    const images = this.model.response?.img ?? [];
+  // public genSlider(): HTMLDivElement {
+  //   const images = this.model.response?.img ?? [];
 
-    return genElement('div', { className: 'swiper' }, [
-      genElement(
-        'div',
-        { className: 'swiper-wrapper' },
-        images.map((img) => {
-          return genElement('div', { className: 'swiper-slide' }, [
-            genElement('img', {
-              className: 'modal-image',
-              id: 'modal-image',
-              src: img,
-              alt: `${this.model.response?.name}`,
-              width: 200,
-              height: 200,
-            }),
-          ]);
-        }),
-      ),
-      genElement('div', { className: 'swiper-pagination' }),
-      ...(images.length > 1
-        ? [
-            genElement('div', { className: 'swiper-button-next' }),
-            genElement('div', { className: 'swiper-button-prev' }),
-          ]
-        : []),
-    ]);
-  }
+  //   return genElement('div', { className: 'swiper' }, [
+  //     genElement(
+  //       'div',
+  //       { className: 'swiper-wrapper' },
+  //       images.map((img) => {
+  //         return genElement('div', { className: 'swiper-slide' }, [
+  //           genElement('img', {
+  //             className: 'modal-image',
+  //             id: 'modal-image',
+  //             src: img,
+  //             alt: `${this.model.response?.name}`,
+  //             width: 200,
+  //             height: 200,
+  //           }),
+  //         ]);
+  //       }),
+  //     ),
+  //     genElement('div', { className: 'swiper-pagination' }),
+  //     ...(images.length > 1
+  //       ? [
+  //           genElement('div', { className: 'swiper-button-next' }),
+  //           genElement('div', { className: 'swiper-button-prev' }),
+  //         ]
+  //       : []),
+  //   ]);
+  // }
 }
 
 export default DetailedProductPage;
