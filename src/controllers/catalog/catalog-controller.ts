@@ -148,8 +148,12 @@ export default class CatalogController {
     });
   }
 
-  public addCategory(name: string, amount: number): void {
-    this.catalogPage.addCategory(name, amount);
+  public addCategory(title: string): void {
+    this.catalogPage.addCategory(title);
+  }
+
+  public addSubCategory(name: string, amount: number): void {
+    this.catalogPage.addSubCategory(name, amount);
   }
 
   public async showAllProductCards(): Promise<void> {
@@ -160,6 +164,8 @@ export default class CatalogController {
     this.addPagination(response.totalPages);
 
     this.renderPage(1, response.products);
+
+    console.log(this.filters);
   }
 
   public addPagination(productsAmount: number): void {
@@ -222,6 +228,7 @@ export default class CatalogController {
         img: el.masterVariant.images?.[0]?.url ?? '',
         price: `${el.masterVariant.prices?.[0].value.centAmount !== undefined ? el.masterVariant.prices?.[0].value.centAmount / 100 : 0}$`,
         discount: `${el.masterVariant.prices?.[0].discounted?.value.centAmount !== undefined ? el.masterVariant.prices?.[0].discounted?.value.centAmount / 100 : ''}$`,
+        key: el.key ?? '',
       };
 
       this.catalogPage.addCard(parameters);

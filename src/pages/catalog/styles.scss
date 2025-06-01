@@ -8,10 +8,10 @@
 }
 
 .selected-category {
-  font-weight: $font-weight-bold;
+  font-weight: $font-weight-bold !important;
   color: $primary-text-green;
   text-decoration: underline;
-  background-color: rgb(224 241 224);
+  background-color: rgb(224 241 224) !important;
 }
 
 .old-price {
@@ -79,6 +79,11 @@
   padding-top: $spacing-md;
 
   list-style: none;
+
+  .main-category {
+    font-size: $font-size-h3;
+    color: $primary-text-green;
+  }
 
   .category__list-item {
     display: flex;

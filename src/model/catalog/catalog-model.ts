@@ -31,10 +31,11 @@ export class CatalogModel {
 
   public async fetchCategories(): Promise<void> {
     try {
-      const response = await authService.getPlantCategories();
+      const response = await authService.getPlantSubCategories();
 
       if (response) {
-        for (const el of response) {
+        this.controller.addCategory(Object.keys(response)[0]);
+        for (const el of Object.values(response)[0]) {
           const name = el.name?.['en'] ?? el.name?.['en-US'] ?? 'No description available';
 
           if (el.key) {
@@ -42,7 +43,7 @@ export class CatalogModel {
 
             const amount = products?.length ?? 0;
 
-            this.controller.addCategory(name, amount);
+            this.controller.addSubCategory(name, amount);
 
             if (this.categories.get(el.key)) continue;
 

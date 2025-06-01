@@ -140,7 +140,7 @@ export class AuthorizationService {
   //     .execute();
   // }
 
-  public getPlantCategories = async (): Promise<Category[]> => {
+  public getPlantSubCategories = async (): Promise<Record<string, Category[]>> => {
     const response = await this.api
       .categories()
       .get({
@@ -150,11 +150,23 @@ export class AuthorizationService {
       })
       .execute();
 
-    const category = response.body.results.filter(
-      (result) => result.key === 'house-plants' || result.key === 'gardening',
-    );
+    const allCategories = response.body.results;
 
-    return category;
+    const plantCategory = allCategories.filter((result) => result.key === 'plants-main');
+
+    const mainCategoryName = plantCategory[0].name['en-US'];
+
+    const subcategories = allCategories.filter((cat) => cat.parent?.id === plantCategory[0].id);
+
+    console.log('sub', subcategories);
+
+    const result: Record<string, Category[]> = {
+      [mainCategoryName]: subcategories,
+    };
+
+    console.log(result);
+
+    return result;
   };
 
   public fetchProducts = async (
@@ -162,13 +174,13 @@ export class AuthorizationService {
     limit: number = PRODUCTS_PER_PAGE,
   ): Promise<ProductPerPageResponse | undefined> => {
     try {
-      const category = await this.getPlantCategories();
+      const category = await this.getPlantSubCategories();
       const offset = (page - 1) * limit;
       const response = await this.api
         .productProjections()
         .get({
           queryArgs: {
-            where: `(categories(id="${category[0].id}") or categories(id="${category[1].id}")) and published= true`,
+            where: `(categories(id="${Object.values(category)[0][0].id}") or categories(id="${Object.values(category)[0][1].id}")) and published= true`,
             limit: 100,
             offset,
           },

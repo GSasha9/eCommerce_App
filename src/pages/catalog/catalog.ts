@@ -2,6 +2,7 @@ import { CreateButton } from '../../components/button/create-button';
 import { CreateInput } from '../../components/input/create-input';
 import type CatalogController from '../../controllers/catalog/catalog-controller';
 import { updateSortAndFilter } from '../../controllers/catalog/utils/update-sort-select';
+import { route } from '../../router';
 import type { IParameters } from '../../shared/models/interfaces';
 import { CreateElement } from '../../shared/utils/create-element';
 import { View } from '../view';
@@ -91,7 +92,42 @@ export class CatalogPage extends View {
     return CatalogPage.instance;
   }
 
-  public addCategory(name: string, amount: number): void {
+  public addCategory(title: string): void {
+    const li = new CreateElement({
+      tag: 'li',
+      classNames: ['category__list-item', 'main-category'],
+      textContent: title,
+      callback: (event: MouseEvent): void => {
+        const element = event.target;
+
+        if (!(element instanceof HTMLElement)) return;
+
+        const li = element.closest('li');
+
+        console.log(li);
+
+        if (!(li instanceof HTMLLIElement)) return;
+
+        if (li.classList.contains('selected-category')) {
+          li.classList.remove('selected-category');
+        } else {
+          li.classList.add('selected-category');
+        }
+
+        this.catalogController.catalogPage.filterPriceTo?.setValue('');
+        document.querySelectorAll('.selected-category').forEach((el) => {
+          if (!el.classList.contains('main-category')) el.classList.remove('selected-category');
+        });
+
+        delete this.catalogController.filters.categoriesId;
+        void this.catalogController.showFilteredProducts();
+      },
+    });
+
+    this.categoryList.addInnerElement(li);
+  }
+
+  public addSubCategory(name: string, amount: number): void {
     const categoryName = new CreateElement({
       tag: 'p',
       classNames: ['category__list_item-name'],
@@ -122,7 +158,13 @@ export class CatalogPage extends View {
       tag: 'div',
       classNames: ['card-img'],
       textContent: '',
-      callback: (): void => {},
+      callback: (): void => {
+        const key = parameters.key;
+
+        if (key) {
+          route.navigate(`/detailed-product/${key}`);
+        }
+      },
     });
 
     if (typeof parameters.img === 'string') img.getElement().style.backgroundImage = `url("${parameters.img}")`;
