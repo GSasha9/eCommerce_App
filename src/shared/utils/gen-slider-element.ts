@@ -36,33 +36,3 @@ export function genSliderElement(properties: ISliderElementProperties): HTMLDivE
 
   return slider;
 }
-
-//  public genSlider(): HTMLDivElement {
-//     const images = this.model.response?.img ?? [];
-
-//     return genElement('div', { className: 'swiper' }, [
-//       genElement(
-//         'div',
-//         { className: 'swiper-wrapper' },
-//         images.map((img) => {
-//           return genElement('div', { className: 'swiper-slide' }, [
-//             genElement('img', {
-//               className: 'modal-image',
-//               id: 'modal-image',
-//               src: img,
-//               alt: `${this.model.response?.name}`,
-//               width: 200,
-//               height: 200,
-//             }),
-//           ]);
-//         }),
-//       ),
-//       genElement('div', { className: 'swiper-pagination' }),
-//       ...(images.length > 1
-//         ? [
-//             genElement('div', { className: 'swiper-button-next' }),
-//             genElement('div', { className: 'swiper-button-prev' }),
-//           ]
-//         : []),
-//     ]);
-//   }
