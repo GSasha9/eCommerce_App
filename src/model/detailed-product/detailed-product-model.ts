@@ -40,11 +40,10 @@ class DetailedProductModel {
     return Boolean(this.key);
   }
 
-  public getDetailedInformation = async (): Promise<void> => {
+  public async getDetailedInformation(): Promise<void> {
     try {
       if (this.key) {
         const response = await authService.getProductByKey(this.key);
-
         const name = response.body.name.en;
         const img = response.body.masterVariant.images?.map((img) => img.url);
         const description = response.body.description?.en;
@@ -52,7 +51,6 @@ class DetailedProductModel {
         const pricesFractionDigits = response.body.masterVariant.prices?.[0].value.fractionDigits;
         const discounted = response.body.masterVariant.prices?.[0].discounted?.value.centAmount;
         const discountedFractionDigits = response.body.masterVariant.prices?.[0].discounted?.value.fractionDigits;
-        // const discountId = response.body.masterVariant.prices?.[0].discounted?.discount.id;
 
         this.isSuccess = true;
 
@@ -86,49 +84,13 @@ class DetailedProductModel {
         console.error('Unknown error', error);
       }
     }
-  };
+  }
 
   public clearQueryResults(): void {
     this.key = '';
     this.response = undefined;
     this.isSuccess = undefined;
   }
-
-  // public initSlider(): void {
-  //   const swiperEl = document.querySelector('.swiper');
-
-  //   const images = this.response?.img ?? [];
-  //   const hasMultipleImages = images.length > 1;
-
-  //   const swiperParams: SwiperOptions = {
-  //     loop: true,
-  //     slidesPerView: 1,
-  //     centeredSlides: true,
-  //     direction: 'horizontal',
-  //     ...(hasMultipleImages && {
-  //       navigation: {
-  //         nextEl: '.swiper-button-next',
-  //         prevEl: '.swiper-button-prev',
-  //       },
-  //       pagination: {
-  //         el: '.swiper-pagination',
-  //         clickable: true,
-  //       },
-  //     }),
-  //     // breakpoints: {
-  //     //   640: {
-  //     //     slidesPerView: 2,
-  //     //   },
-  //     //   1024: {
-  //     //     slidesPerView: 3,
-  //     //   },
-  //     // },
-  //   };
-
-  //   if (isHTMLElement(swiperEl) && hasMultipleImages) {
-  //     new Swiper(swiperEl, swiperParams);
-  //   }
-  // }
 
   public formatPrice(): string {
     if (this.response) {

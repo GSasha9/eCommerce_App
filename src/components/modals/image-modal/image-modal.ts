@@ -24,9 +24,12 @@ export class ImageModal extends Modal {
 
     const sliderElement = genSliderElement({ images, width, alt, name });
 
-    this.button = genElement('button', { className: 'button-close' }, ['x']);
+    this.button = genElement('button', { className: 'close-big-image-button' });
     this.button.addEventListener('click', this.close);
-    this.modal.node.append(this.button, sliderElement);
+
+    sliderElement.append(this.button);
+
+    this.wrapper.node.append(sliderElement);
     setTimeout(() => {
       initSlider({ images, name });
     });

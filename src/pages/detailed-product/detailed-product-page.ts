@@ -56,7 +56,7 @@ class DetailedProductPage {
 
   private genPrice(): HTMLDivElement {
     const discount = this.model.response?.discounted;
-    const price = genElement('div', { className: `detailed-price${discount ? ' discount' : ''}` }, [
+    const price = genElement('div', { className: `detailed-price${discount ? ' discount-detailed' : ''}` }, [
       this.model.formatPrice(),
     ]);
     let discountedPrice;
@@ -66,7 +66,7 @@ class DetailedProductPage {
       discountedPrice = genElement('div', { className: 'detailed-discounted-price' }, [
         this.model.formatDiscountedPrice(),
       ]);
-      wrapperPrice.append(discountedPrice);
+      wrapperPrice.prepend(discountedPrice);
     }
 
     return wrapperPrice;

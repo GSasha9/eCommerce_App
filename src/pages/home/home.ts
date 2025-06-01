@@ -17,8 +17,8 @@ export class HomePage extends View {
     this.detailedProduct.getElement().addEventListener('click', () => {
       // this.openDetailedProduct('orchid-product');
       // this.openDetailedProduct('lavender-product');
-      this.openDetailedProduct('lily-product');
-      // this.openDetailedProduct('rose-product');
+      // this.openDetailedProduct('lily-product');
+      this.openDetailedProduct('rose-product');
     });
     this.temporarily = '';
     // temporarily ⬆
