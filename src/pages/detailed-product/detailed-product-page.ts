@@ -1,5 +1,6 @@
 import type DetailedProductModel from '../../model/detailed-product/detailed-product-model';
 import { genElement } from '../../shared/utils/gen-element';
+import { genSliderElement } from '../../shared/utils/gen-slider-element';
 
 import './style.scss';
 
@@ -29,8 +30,21 @@ class DetailedProductPage {
   public renderPage(): HTMLElement {
     this.wrapperContent.innerHTML = '';
 
-    if (this.model.key && this.model.isSuccess) {
-      this.wrapperContent.append(this.genSlider(), this.genDescription());
+    if (
+      this.model.response &&
+      this.model.key &&
+      this.model.isSuccess &&
+      this.model.response.img &&
+      this.model.response.name
+    ) {
+      const sliderElement = genSliderElement({
+        images: this.model.response.img,
+        width: 150,
+        alt: this.model.response.name,
+        name: 'detailed',
+      });
+
+      this.wrapperContent.append(sliderElement, this.genDescription());
 
       return this.page;
     } else {
@@ -40,46 +54,40 @@ class DetailedProductPage {
     }
   }
 
+  private genPrice(): HTMLDivElement {
+    const discount = this.model.response?.discounted;
+    const price = genElement('div', { className: `detailed-price${discount ? ' discount-detailed' : ''}` }, [
+      this.model.formatPrice(),
+    ]);
+    let discountedPrice;
+    const wrapperPrice = genElement('div', { className: 'detailed-wrapper-price' }, [price]);
+
+    if (discount) {
+      discountedPrice = genElement('div', { className: 'detailed-discounted-price' }, [
+        this.model.formatDiscountedPrice(),
+      ]);
+      wrapperPrice.prepend(discountedPrice);
+    }
+
+    return wrapperPrice;
+  }
+
   private genDescription(): HTMLDivElement {
     const name = genElement('div', { className: 'name-detailed-product' }, [`${this.model.response?.name}`]);
+    const price = this.genPrice();
+
     const description = genElement('div', { className: 'value' }, ['Description: ']);
     const descriptionValue = genElement('div', { className: 'description-value' }, [
       `${this.model.response?.description}`,
     ]);
-    const wrappeDescription = genElement('div', { className: 'wrapper-item' }, [description, descriptionValue]);
-
-    const wrapperInformation = genElement('div', { className: 'wrapper-information' }, [name, wrappeDescription]);
+    const wrapperDescription = genElement('div', { className: 'wrapper-item' }, [description, descriptionValue]);
+    const wrapperInformation = genElement('div', { className: 'wrapper-information' }, [
+      name,
+      price,
+      wrapperDescription,
+    ]);
 
     return wrapperInformation;
-  }
-
-  public genSlider(): HTMLDivElement {
-    const images = this.model.response?.img ?? [];
-
-    return genElement('div', { className: 'swiper' }, [
-      genElement(
-        'div',
-        { className: 'swiper-wrapper' },
-        images.map((img) => {
-          return genElement('div', { className: 'swiper-slide' }, [
-            genElement('img', {
-              className: 'image',
-              src: img,
-              alt: `${this.model.response?.name}`,
-              width: 200,
-              height: 200,
-            }),
-          ]);
-        }),
-      ),
-      genElement('div', { className: 'swiper-pagination' }),
-      ...(images.length > 1
-        ? [
-            genElement('div', { className: 'swiper-button-next' }),
-            genElement('div', { className: 'swiper-button-prev' }),
-          ]
-        : []),
-    ]);
   }
 }
 

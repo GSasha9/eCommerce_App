@@ -1,9 +1,8 @@
-@use '../../styles/scss/variables' as *;
-@use '../../styles/scss/fonts';
+@use '../../../styles/scss/variables' as *;
+@use '../../../styles/scss/fonts';
 
 .wrapper-modal {
   position: fixed;
-  z-index: 30;
   inset: 0;
 
   display: flex;

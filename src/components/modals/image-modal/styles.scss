@@ -43,28 +43,29 @@
   }
 }
 
-.button-close {
+.close-big-image-button {
+  position: absolute;
+  z-index: 40;
+  top: 3%;
+  right: 3%;
+
   display: flex;
   align-items: center;
   justify-content: center;
 
-  padding: $spacing-sm;
+  padding: 16px;
   border: none;
   border-radius: $border-radius-input;
 
-  color: white;
-
-  background-color: $primary-button;
-
-  &:disabled {
-    cursor: not-allowed;
-    color: rgb(37 37 32);
-    background-color: rgb(83 83 83);
-  }
+  background-color: rgb(228 228 228 / 33.9%);
+  background-image: $close-button;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 
   &:not(:disabled):hover {
     cursor: pointer;
-    color: rgb(224 229 211);
-    background-color: rgb(88 168 70);
+    background-color: rgb(208 208 208 / 90.7%);
+    background-image: $close-button-hover;
   }
 }

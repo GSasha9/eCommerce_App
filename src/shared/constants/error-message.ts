@@ -6,4 +6,5 @@ export enum ErrorMessage {
   INPUT_CREATOR_INVALID = 'InputCreator must create an HTMLInputElement',
   UNABLE_TO_GET_INFO_PRODUCT = 'Unable to retrieve information about all products:',
   UNABLE_TO_GET_PRODUCT_BY_CATEGORY = 'Failed to fetch products by category:',
+  UNABLE_TO_GET_DISCOUNT_INFORMATION = 'Unable to retrieve detailed information about the product discount:',
 }
