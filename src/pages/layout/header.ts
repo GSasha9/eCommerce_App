@@ -5,9 +5,18 @@ import { CreateElement } from '../../shared/utils/create-element.ts';
 
 export class Header {
   private readonly headerElement: HTMLElement;
+  private static instance: Header;
 
   constructor() {
     this.headerElement = Header.createHeader();
+  }
+
+  public static getInstance(): Header {
+    if (!Header.instance) {
+      Header.instance = new Header();
+    }
+
+    return Header.instance;
   }
 
   private static createHeader(): HTMLElement {
@@ -88,7 +97,12 @@ export class Header {
       textContent: 'Register',
       callback: (event): void => {
         event.preventDefault();
-        route.navigate('/registration');
+
+        if (regButton.getElement().classList.contains('header__button--cabinet')) {
+          route.navigate('/account');
+        } else {
+          route.navigate('/registration');
+        }
       },
     });
 
@@ -126,6 +140,22 @@ export class Header {
     headerWrapper.addInnerElement(authContainer.getElement());
 
     return header.getElement();
+  }
+
+  public static switchBtn(): void {
+    const headerReg = document.querySelector('.header__button');
+
+    if (!headerReg) return;
+
+    if (headerReg && headerReg.classList.contains('header__button--reg')) {
+      headerReg.textContent = 'Account';
+      headerReg.classList.add('header__button--cabinet');
+      headerReg.classList.remove('header__button--reg');
+    } else {
+      headerReg.textContent = 'Register';
+      headerReg.classList.remove('header__button--cabinet');
+      headerReg.classList.add('header__button--reg');
+    }
   }
 
   public getElement(): HTMLElement {
