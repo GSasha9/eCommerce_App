@@ -25,6 +25,12 @@ export const resetCallback = (controller: CatalogController): void => {
     select.value = 'default';
   }
 
+  const nameOfSubCategories = controller.catalogModel.categories.keys();
+
+  for (const el of nameOfSubCategories) {
+    controller.catalogPage.removeBreadCrumb(el);
+  }
+
   controller.catalogPage.searchInput.setValue('');
 
   void controller.showAllProductCards();

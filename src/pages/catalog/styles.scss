@@ -25,6 +25,11 @@
   width: 100% !important;
 }
 
+.items-not-found {
+  min-height: 500px;
+  background-image: url('../../../public/images/no-data.svg');
+}
+
 .catalog-page {
   display: flex;
   gap: $spacing-lg;
@@ -125,6 +130,33 @@
       .catalog-header__select {
         max-width: 100px;
         border: none;
+      }
+    }
+  }
+
+  .catalog-breadcrumb {
+    display: flex;
+    gap: $spacing-sm;
+
+    .catalog-breadcrumb-path {
+      &::after {
+        content: '>';
+      }
+
+      &:hover {
+        cursor: pointer;
+        color: $primary-text-green;
+      }
+    }
+
+    .catalog-breadcrumb-path-plus {
+      &::after {
+        content: '...';
+      }
+
+      &:hover {
+        cursor: pointer;
+        color: $primary-text-green;
       }
     }
   }

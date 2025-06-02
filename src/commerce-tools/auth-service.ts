@@ -222,7 +222,6 @@ export class AuthorizationService {
     text?: string,
   ): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
     try {
-      console.log(filterQuery);
       const queryArgs: Record<string, string | string[] | number> = {
         'filter.query': filterQuery,
         priceCountry: 'US',

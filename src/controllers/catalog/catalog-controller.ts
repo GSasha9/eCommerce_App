@@ -95,6 +95,7 @@ export default class CatalogController {
 
         if (li && li.classList.contains('selected-category')) {
           li.classList.remove('selected-category');
+          this.catalogPage.removeBreadCrumb(name);
 
           if (this.filters.categoriesId) {
             const index = this.filters.categoriesId.indexOf(categoryIndex);
@@ -109,6 +110,7 @@ export default class CatalogController {
           }
         } else {
           li?.classList.add('selected-category');
+          this.catalogPage.addBreadCrumb(name);
 
           if (!this.filters.categoriesId) {
             this.filters.categoriesId = [categoryIndex];
@@ -218,15 +220,9 @@ export default class CatalogController {
     const productsByCategory: Record<string, ProductProjection[]> = {};
 
     products.forEach((product) => {
-      console.log(product);
       const categoryId = product.categories[0]?.id;
 
-      console.log(categoryId);
       const categoryName = findKeyByValue(this.catalogModel.categories, categoryId);
-
-      console.log(this.catalogModel.categories);
-
-      //console.log(categoryName)
 
       if (!categoryName) return;
 
@@ -259,6 +255,10 @@ export default class CatalogController {
     const cards = products.slice(start, end);
 
     this.catalogPage.clearCards();
+
+    if (products.length === 0) {
+      this.catalogPage.itemsNotFound();
+    }
 
     cards.forEach((el) => {
       const parameters: IParametersCard = {

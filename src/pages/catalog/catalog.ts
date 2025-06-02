@@ -25,6 +25,7 @@ export class CatalogPage extends View {
   public sortSelectArrow: CreateElement;
   public sortSelect: CreateElement;
   public searchInput: CreateInput;
+  public breadCrumbPath: CreateElement;
 
   private constructor(parameters: Partial<IParameters> = {}, controller: CatalogController) {
     super({ tag: 'div', classNames: ['catalog-page'], ...parameters });
@@ -48,6 +49,13 @@ export class CatalogPage extends View {
       classNames: ['catalog-header__select'],
       textContent: '',
       callback: (): void => updateSortAndFilter(this.catalogController),
+    });
+
+    this.breadCrumbPath = new CreateElement({
+      tag: 'div',
+      classNames: ['catalog-breadcrumb'],
+      textContent: '',
+      callback: (): void => {},
     });
 
     this.searchInput = new CreateInput({
@@ -95,7 +103,7 @@ export class CatalogPage extends View {
   public addCategory(title: string): void {
     const li = new CreateElement({
       tag: 'li',
-      classNames: ['category__list-item', 'main-category'],
+      classNames: ['category__list-item', 'main-category', 'selected-category'],
       textContent: title,
       callback: (event: MouseEvent): void => {
         const element = event.target;
@@ -108,8 +116,17 @@ export class CatalogPage extends View {
 
         if (li.classList.contains('selected-category')) {
           li.classList.remove('selected-category');
+          this.itemsNotFound();
+          this.breadCrumbPath.getElement().replaceChildren();
+
+          const categories = this.categoryList.getElement().querySelectorAll<HTMLElement>('.category__list-item');
+
+          categories.forEach((el) => el.classList.remove('selected-category'));
+
+          return;
         } else {
           li.classList.add('selected-category');
+          this.addBreadCrumb('Plants');
         }
 
         this.catalogController.catalogPage.filterPriceTo?.setValue('');
@@ -117,10 +134,17 @@ export class CatalogPage extends View {
           if (!el.classList.contains('main-category')) el.classList.remove('selected-category');
         });
 
-        delete this.catalogController.filters.categoriesId;
+        const nameOfSubCategories = this.catalogController.catalogModel.categories.keys();
+
+        for (const el of nameOfSubCategories) {
+          this.removeBreadCrumb(el);
+        }
+
         void this.catalogController.showFilteredProducts();
       },
     });
+
+    this.addBreadCrumb(title);
 
     this.categoryList.addInnerElement(li);
   }
@@ -151,6 +175,70 @@ export class CatalogPage extends View {
     li.getElement().setAttribute('data-key', `${name}`);
 
     this.categoryList.addInnerElement(li);
+  }
+
+  public addBreadCrumb(string: string): void {
+    const children = this.breadCrumbPath.getElement().childNodes;
+
+    let className = 'catalog-breadcrumb-path';
+
+    if (children.length !== 0) {
+      const crumbs = this.breadCrumbPath.getElement().querySelectorAll('.catalog-breadcrumb-path');
+
+      const repeat = Array.from(crumbs).filter((el) => el.textContent === string);
+
+      console.log(crumbs, repeat);
+
+      className = 'catalog-breadcrumb-path-plus';
+
+      if (repeat.length !== 0) return;
+    }
+
+    const link = new CreateElement({
+      tag: 'p',
+      textContent: string,
+      classNames: [className],
+      callback: (event: MouseEvent): void => {
+        if (!(event.target instanceof HTMLParagraphElement)) return;
+
+        const name = event.target.textContent;
+
+        const categories = this.categoryList.getElement().querySelectorAll<HTMLElement>('.category__list-item');
+
+        const category = Array.from(categories).find((el) => el.textContent === name);
+
+        if (category) category.click();
+      },
+    });
+
+    this.breadCrumbPath.addInnerElement(link);
+  }
+
+  public removeBreadCrumb(string: string): void {
+    const children = this.breadCrumbPath.getElement().childNodes;
+
+    console.log(children.length);
+
+    if (children.length !== 0) {
+      const crumbs = this.breadCrumbPath.getElement().querySelectorAll('.catalog-breadcrumb-path-plus');
+
+      Array.from(crumbs).forEach((el) => {
+        if (el.textContent === string) el.remove();
+      });
+    }
+  }
+
+  public itemsNotFound(): void {
+    this.clearCards();
+
+    console.log('itemsNotFound called');
+    const img = new CreateElement({
+      tag: 'div',
+      classNames: ['items-not-found'],
+      textContent: '',
+    });
+
+    this.productsContainer.getElement().append(img.getElement());
   }
 
   public addCard(parameters: IParametersCard): void {
@@ -483,7 +571,7 @@ export class CatalogPage extends View {
       classNames: ['container-products-catalog'],
       textContent: '',
       callback: (): void => {},
-      children: [catalogHeader, this.searchInput, this.productsContainer, this.catalogFooter],
+      children: [catalogHeader, this.breadCrumbPath, this.searchInput, this.productsContainer, this.catalogFooter],
     });
   }
 }
