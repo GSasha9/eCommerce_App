@@ -6,7 +6,6 @@ import type {
 } from '@commercetools/platform-sdk';
 import type { ClientResponse } from '@commercetools/ts-client';
 
-import { route } from '../../router';
 import { isCustomer } from '../../shared/models/typeguards.ts/account-type-guards.ts';
 import { UserState } from '../../state/customer-state.ts';
 import { authService } from '../auth-service';
@@ -194,9 +193,6 @@ export class CustomerProfileService {
       }
     } catch (error) {
       console.warn(error);
-      route.navigate('/home');
-      localStorage.clear();
-      throw error;
     }
   }
 

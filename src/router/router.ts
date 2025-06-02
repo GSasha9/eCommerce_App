@@ -40,7 +40,7 @@ export class Router implements IRouter {
       window.history.replaceState({}, '', normalizedPath);
     } else if (pushState) {
       window.history.pushState({}, '', normalizedPath);
-    } else if (!token) {
+    } else if (!token && normalizedPath === '/account') {
       normalizedPath = '/home';
       window.history.replaceState({}, '', normalizedPath);
     }
