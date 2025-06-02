@@ -1,6 +1,5 @@
 import type { Address } from '@commercetools/platform-sdk';
 
-import { authService } from '../../commerce-tools/auth-service.ts';
 import { CustomerProfileService } from '../../commerce-tools/customer-profile-service/customer-profile-service.ts';
 import { AccountModel } from '../../model/account/account-model.ts';
 import AccountPage from '../../pages/account/account-page.ts';
@@ -8,7 +7,6 @@ import { BillingAddressAccount } from '../../pages/account/billing-account.ts';
 import { ShippingAddressAccount } from '../../pages/account/shipping-account.ts';
 import { UnsortedAddressAccount } from '../../pages/account/unsorted-account.ts';
 import { Layout } from '../../pages/layout/layout.ts';
-import { route } from '../../router';
 import {
   isFormName,
   isHTMLCheckboxElement,
@@ -28,8 +26,8 @@ export class AccountController {
 
   constructor() {
     this.page = AccountPage.getInstance();
-    this.model = AccountModel.getInstance(this.page);
-    new CustomerProfileService();
+    this.model = AccountModel.getInstance();
+
     UserState.getInstance().subscribe(this.onCustomerUpdate);
 
     if (localStorage.getItem('isLoggedPlants')) {
@@ -39,15 +37,7 @@ export class AccountController {
         })();
       }
 
-      if (!this.page || typeof this.page.getHtmlElement !== 'function') {
-        return;
-      }
-
       this.page.containerForm.node.addEventListener('input', this.onChangeInputs);
-    } else {
-      localStorage.clear();
-      authService.logOutCustomer();
-      route.navigate('/home');
     }
   }
 
@@ -219,23 +209,6 @@ export class AccountController {
 
     this.checkAndShowErrors();
   };
-
-  /*  private async editButtonHandler() {
-    if (this.page.registrationButton.getElement().textContent === 'EDIT') {
-      this.page.registrationButton.getElement().textContent = 'SAVE';
-      this.page.personalInfoElements.setEditable(true);
-      this.page.billingAddressesList.setEditable(true);
-    } else {
-      this.page.registrationButton.getElement().textContent = 'EDIT';
-      this.page.personalInfoElements.setEditable(false);
-      this.page.billingAddressesList.setEditable(false);
-      try {
-        await this.onClickRegistration();
-      } catch (err) {
-        console.warn(err);
-      }
-    }
-  }*/
 
   private checkAndShowErrors(): void {
     this.page.deleteErrorMessage();

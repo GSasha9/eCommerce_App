@@ -8,6 +8,7 @@ import { CreateElement } from '../../shared/utils/create-element.ts';
 import { View } from '../view.ts';
 import { BillingAddressesList } from './billing-adress-list.ts';
 import { AddShippingAddressModal } from './new-shipping/new-shipping.ts';
+import { ChangePasswordModal } from './password/password.ts';
 import { PersonalInfoElementsAccount } from './personal-info-account.ts';
 import { ShippingAddressesList } from './shiping-adressess-list.ts';
 import { UnsortedAccountList } from './unsorted-account-list.ts';
@@ -25,6 +26,7 @@ class AccountPage extends View {
   public unsortedAddressesList: UnsortedAccountList;
   private container: CreateElement;
   private buttonAdd: CreateElement;
+  private buttonChange: CreateElement;
 
   private constructor(parameters: Partial<IParameters> = {}) {
     super({ tag: 'div', classNames: ['account-page'], ...parameters });
@@ -71,12 +73,12 @@ class AccountPage extends View {
       textContent: 'Uncategorized adresses',
     });
 
-    this.container = new CreateElement({ tag: 'div', classNames: ['container'] });
+    this.container = new CreateElement({ tag: 'div', classNames: ['container-btn'] });
 
     this.buttonAdd = new CreateElement({
       tag: 'button',
       textContent: 'Add new',
-      classNames: ['root-button'],
+      classNames: ['root-button', 'btn-add-change'],
       callback: (evt): void => {
         evt.preventDefault();
         const modal = new AddShippingAddressModal();
@@ -85,7 +87,20 @@ class AccountPage extends View {
       },
     });
 
+    this.buttonChange = new CreateElement({
+      tag: 'button',
+      textContent: 'Change Password',
+      classNames: ['root-button', 'btn-add-change'],
+      callback: (evt): void => {
+        evt.preventDefault();
+        const changePasswordModal = new ChangePasswordModal();
+
+        changePasswordModal.open();
+      },
+    });
+
     this.container.getElement().appendChild(this.buttonAdd.getElement());
+    this.container.getElement().appendChild(this.buttonChange.getElement());
 
     this.containerForm = new Element<'form'>({
       tag: 'form',
@@ -174,35 +189,6 @@ class AccountPage extends View {
       });
     }
   }
-  /*  public updateBillingAddress(model: AccountModel): void {
-    const isDisabled = model.currentFormValuesAccount['isShippingAsBilling'];
-    const street = this.billingInfoElements.inputStreet;
-    const city = this.billingInfoElements.inputCity;
-    const postal = this.billingInfoElements.inputPostalCode;
-    const country = this.billingInfoElements.countryList;
-    const isDefault = this.billingInfoElements.checkboxDefault;
-
-    [street.getElement(), city.getElement(), postal.getElement(), country.node, isDefault.getElement()].forEach(
-      (node) => {
-        if (isDisabled) node.setAttribute('disabled', 'true');
-        else node.removeAttribute('disabled');
-      },
-    );
-
-    if (isDisabled) {
-      const values = model.currentFormValuesAccount;
-
-      street.setValue(values.street);
-      city.setValue(values.city);
-      postal.setValue(values['postalCode']);
-      country.node.value = values.country;
-      isDefault.setValue(values['isDefaultShipping']);
-      model.setStringValue(values.street, 'streetBilling');
-      model.setStringValue(values.city, 'cityBilling');
-      model.setStringValue(values['postalCode'], 'postalCodeBilling');
-      model.setStringValue(values['country'], 'countryBilling');
-    }
-  } */
 }
 
 export default AccountPage;
