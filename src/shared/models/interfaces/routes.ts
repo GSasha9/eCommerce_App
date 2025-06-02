@@ -9,4 +9,5 @@ export interface IRoutes {
   MAIN: string;
   ABOUT: string;
   CATALOG: string;
+  ACCOUNT: string;
 }

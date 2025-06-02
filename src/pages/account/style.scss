@@ -1,0 +1,55 @@
+@use '../../styles/scss/_variables' as *;
+
+.actions-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+
+  margin: 6px;
+}
+
+.account-button {
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  max-width: 95px;
+  height: 35px;
+  padding: 4px 6px;
+  border-radius: 5px;
+
+  font-family: 'Cera Pro', sans-serif;
+  font-size: 11px;
+  color: white;
+
+  background-color: $primary-button;
+}
+
+.default-billing,
+.default-shipping {
+  width: 20px;
+  height: 20px;
+}
+
+.billing-addresses-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.save {
+  background-color: darkred;
+}
+
+.error-message {
+  min-height: 45px;
+}

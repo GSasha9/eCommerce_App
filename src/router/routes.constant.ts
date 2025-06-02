@@ -11,4 +11,5 @@ export const ROUTES_URL: IRoutes = {
   NOT_FOUND: '/404',
   ABOUT: '/about',
   CATALOG: '/catalog',
+  ACCOUNT: '/account',
 };
