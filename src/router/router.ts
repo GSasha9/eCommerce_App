@@ -40,6 +40,9 @@ export class Router implements IRouter {
       window.history.replaceState({}, '', normalizedPath);
     } else if (pushState) {
       window.history.pushState({}, '', normalizedPath);
+    } else if (!token) {
+      normalizedPath = '/home';
+      window.history.replaceState({}, '', normalizedPath);
     }
 
     const controller = dynamicPath ? this.routes.get(dynamicPath) : this.routes.get(normalizedPath);
