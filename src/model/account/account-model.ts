@@ -1,4 +1,3 @@
-import type AccountPage from '../../pages/account/account-page.ts';
 import type { IFormValues } from '../../shared/models/interfaces';
 import { isBooleanFormName, isStringFormName } from '../../shared/models/typeguards.ts';
 import { Validator } from '../../shared/utils/validator.ts';
@@ -22,13 +21,10 @@ export class AccountModel {
     isDefaultBilling?: boolean;
   };
 
-  public page: AccountPage;
   public errorsAcc: (keyof IFormValues)[];
   public isValidForm: boolean;
 
-  private constructor(page: AccountPage) {
-    this.page = page;
-
+  private constructor() {
     this.currentFormValuesAccount = {
       name: '',
       surname: '',
@@ -49,32 +45,35 @@ export class AccountModel {
     this.isValidForm = true;
   }
 
-  /*
-  private updateFormValuesFromSortedAddresses(): void {
-    if (!this.data) return;
+  public validatePersonalInfo(): boolean {
+    this.errorsAcc.length = 0;
 
-    this.currentFormValuesAccount = {
-      name: this.customer?.firstName ?? '',
-      surname: this.customer?.lastName ?? '',
-      birthday: this.customer?.dateOfBirth ?? '',
-      street: this.data.shippingAddress?.streetName ?? '',
-      city: this.data.shippingAddress?.city ?? '',
-      postalCode: this.data.shippingAddress?.postalCode ?? '',
-      country: this.data.shippingAddress?.country ?? '',
-      streetBilling: this.data.billingAddress?.streetName ?? '',
-      cityBilling: this.data.billingAddress?.city ?? '',
-      postalCodeBilling: this.data.billingAddress?.postalCode ?? '',
-      countryBilling: this.data.billingAddress?.country ?? '',
-      isDefaultShipping: !!this.data.defaultShippingAddress,
-      isShippingAsBilling: false,
-      isDefaultBilling: false,
-    };
+    const name = this.currentFormValuesAccount.name;
 
-    console.log("Updated form values:", this.currentFormValuesAccount);
-  } */
-  public static getInstance(page: AccountPage): AccountModel {
+    if (!name || !Validator.isName(name)) {
+      this.errorsAcc.push('name');
+    }
+
+    const surname = this.currentFormValuesAccount.surname;
+
+    if (!surname || !Validator.isName(surname)) {
+      this.errorsAcc.push('surname');
+    }
+
+    const birthday = this.currentFormValuesAccount.birthday;
+
+    if (!birthday || !Validator.isDateOfBirth(birthday)) {
+      this.errorsAcc.push('birthday');
+    }
+
+    this.isValidForm = this.errorsAcc.length === 0;
+
+    return this.isValidForm;
+  }
+
+  public static getInstance(): AccountModel {
     if (!AccountModel.instance) {
-      AccountModel.instance = new AccountModel(page);
+      AccountModel.instance = new AccountModel();
     }
 
     return AccountModel.instance;
@@ -139,7 +138,6 @@ export class AccountModel {
     for (const key of keys) {
       const value = this.currentFormValuesAccount[key];
 
-      // Make sure value is a non-empty string
       if (typeof value !== 'string' || value.trim() === '') {
         this.isValidForm = false;
         continue;
