@@ -123,6 +123,8 @@ export class CatalogPage extends View {
 
           categories.forEach((el) => el.classList.remove('selected-category'));
 
+          delete this.catalogController.filters.categoriesId;
+
           return;
         } else {
           li.classList.add('selected-category');
@@ -384,6 +386,28 @@ export class CatalogPage extends View {
   }
 
   private createContainerFilters(): CreateElement {
+    const filters = new CreateElement({
+      tag: 'div',
+      classNames: ['filters'],
+      textContent: '',
+      callback: (): void => {
+        console.log('container');
+        const container = this.containerFilters.getElement();
+
+        console.log(container);
+
+        if (!container.classList.contains('open')) {
+          container.classList.add('open');
+          filters.getElement().classList.add('filters-open');
+        } else {
+          container.classList.remove('open');
+          filters.getElement().classList.remove('filters-open');
+        }
+      },
+    });
+
+    this.viewElementCreator.addInnerElement(filters);
+
     const title = new CreateElement({
       tag: 'h3',
       classNames: ['category__list-title'],

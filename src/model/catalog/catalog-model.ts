@@ -74,7 +74,8 @@ export class CatalogModel {
     const filterQuery: string[] = [];
 
     if (filters.categoriesId && filters.categoriesId.length > 0) {
-      const joinedIds = filters.categoriesId.map((id) => `"${id}"`).join(',');
+      const uniqueCategoryIds = Array.from(new Set(filters.categoriesId));
+      const joinedIds = uniqueCategoryIds.map((id) => `"${id}"`).join(',');
       const categoryFilter = `categories.id:${joinedIds}`;
 
       filterQuery.push(categoryFilter);
