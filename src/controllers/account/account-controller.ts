@@ -220,23 +220,6 @@ export class AccountController {
     this.checkAndShowErrors();
   };
 
-  /*  private async editButtonHandler() {
-    if (this.page.registrationButton.getElement().textContent === 'EDIT') {
-      this.page.registrationButton.getElement().textContent = 'SAVE';
-      this.page.personalInfoElements.setEditable(true);
-      this.page.billingAddressesList.setEditable(true);
-    } else {
-      this.page.registrationButton.getElement().textContent = 'EDIT';
-      this.page.personalInfoElements.setEditable(false);
-      this.page.billingAddressesList.setEditable(false);
-      try {
-        await this.onClickRegistration();
-      } catch (err) {
-        console.warn(err);
-      }
-    }
-  }*/
-
   private checkAndShowErrors(): void {
     this.page.deleteErrorMessage();
     this.model.validateForm();

@@ -33,9 +33,10 @@ export class Router implements IRouter {
       dynamicPath = `/${normalizedPath.split('/')[1]}`;
     }
 
+    console.log(normalizedPath);
     const token = localStorage.getItem('isLoggedPlants');
 
-    if (token === 'true' && (normalizedPath === '/login' || normalizedPath === '/registration')) {
+    if (token && (normalizedPath === '/login' || normalizedPath === '/registration')) {
       normalizedPath = '/home';
       window.history.replaceState({}, '', normalizedPath);
     } else if (pushState) {
