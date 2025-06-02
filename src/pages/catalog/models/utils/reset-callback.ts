@@ -19,8 +19,6 @@ export const resetCallback = (controller: CatalogController): void => {
     }
   });
 
-  console.log(document.querySelectorAll('.catalog-header__select>option'));
-
   const select = document.querySelector('.catalog-header__select');
 
   if (select instanceof HTMLSelectElement) {

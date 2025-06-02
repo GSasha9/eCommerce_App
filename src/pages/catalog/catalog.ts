@@ -104,8 +104,6 @@ export class CatalogPage extends View {
 
         const li = element.closest('li');
 
-        console.log(li);
-
         if (!(li instanceof HTMLLIElement)) return;
 
         if (li.classList.contains('selected-category')) {
@@ -149,6 +147,8 @@ export class CatalogPage extends View {
       callback: (): void => {},
       children: [categoryName, amountOfProducts],
     });
+
+    li.getElement().setAttribute('data-key', `${name}`);
 
     this.categoryList.addInnerElement(li);
   }

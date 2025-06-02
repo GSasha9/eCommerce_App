@@ -9,6 +9,7 @@ import { PRODUCTS_PER_PAGE } from '../../shared/constants';
 import type { ProductPerPageResponse } from '../../shared/models/type';
 import type { Filters } from './filters';
 import { addSearchTextToFilters } from './utils/add-search-text-to-filters';
+import { findKeyByValue } from './utils/find-key-by-value';
 import { updateSortAndFilter } from './utils/update-sort-select';
 
 export default class CatalogController {
@@ -63,6 +64,10 @@ export default class CatalogController {
     this.catalogPage.sortSelectArrow.getElement().addEventListener('change', () => updateSortAndFilter(this));
 
     this.catalogPage.searchInput.getElement().addEventListener('change', () => {
+      addSearchTextToFilters(this);
+    });
+
+    this.catalogPage.searchInput.getElement().addEventListener('blur', () => {
       addSearchTextToFilters(this);
     });
 
@@ -164,8 +169,6 @@ export default class CatalogController {
     this.addPagination(response.totalPages);
 
     this.renderPage(1, response.products);
-
-    console.log(this.filters);
   }
 
   public addPagination(productsAmount: number): void {
@@ -182,8 +185,6 @@ export default class CatalogController {
   }
 
   public async showFilteredProducts(): Promise<void> {
-    console.log(this.filters);
-
     if (Object.keys(this.filters).length === 0) {
       this.isFiltered = false;
 
@@ -214,6 +215,44 @@ export default class CatalogController {
   }
 
   public renderPage(pageNumber: number, products: ProductProjection[]): void {
+    const productsByCategory: Record<string, ProductProjection[]> = {};
+
+    products.forEach((product) => {
+      console.log(product);
+      const categoryId = product.categories[0]?.id;
+
+      console.log(categoryId);
+      const categoryName = findKeyByValue(this.catalogModel.categories, categoryId);
+
+      console.log(this.catalogModel.categories);
+
+      //console.log(categoryName)
+
+      if (!categoryName) return;
+
+      if (!productsByCategory[categoryName]) {
+        productsByCategory[categoryName] = [product];
+      } else {
+        productsByCategory[categoryName].push(product);
+      }
+    });
+
+    const categoryElements = this.catalogPage.categoryList.getElement().querySelectorAll('.category__list-item');
+
+    categoryElements.forEach((el) => {
+      const key = el.getAttribute('data-key');
+
+      if (!key) return;
+
+      const count = productsByCategory[key]?.length ?? 0;
+
+      const amountEl = el.querySelector('.category__list_item-amount');
+
+      if (amountEl) {
+        amountEl.textContent = `(${String(count)})`;
+      }
+    });
+
     const start = (pageNumber - 1) * PRODUCTS_PER_PAGE;
     const end = start + PRODUCTS_PER_PAGE;
 

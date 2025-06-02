@@ -158,13 +158,9 @@ export class AuthorizationService {
 
     const subcategories = allCategories.filter((cat) => cat.parent?.id === plantCategory[0].id);
 
-    console.log('sub', subcategories);
-
     const result: Record<string, Category[]> = {
       [mainCategoryName]: subcategories,
     };
-
-    console.log(result);
 
     return result;
   };
@@ -249,8 +245,6 @@ export class AuthorizationService {
           queryArgs,
         })
         .execute();
-
-      console.log(response);
 
       return response;
     } catch (error) {
