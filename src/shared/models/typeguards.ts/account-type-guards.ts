@@ -1,5 +1,5 @@
 import type { IShippingAddressFormValues } from '../../../model/account/new-adress/new-adress.ts';
-import type { IFormValues } from '../interfaces';
+import type { IFormValues } from '../interfaces/index.ts';
 import { isStringFormName } from './typeguards.ts';
 
 interface LastModifiedBy {

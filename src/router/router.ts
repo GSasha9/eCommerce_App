@@ -46,6 +46,7 @@ export class Router implements IRouter {
 
     if (controller) {
       this.currentPath = dynamicPath ? dynamicPath : normalizedPath;
+
       controller();
     } else {
       this.currentPath = '/404';
