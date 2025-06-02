@@ -179,14 +179,6 @@ export class CustomerProfileService {
   }
 
   public static async fetchCustomerData(): Promise<Customer | undefined> {
-    if (!authService.getAuthenticatedStatus()) {
-      authService.logOutCustomer();
-      localStorage.clear();
-      route.navigate('/home');
-
-      return undefined;
-    }
-
     try {
       const response: ClientResponse<Customer> = await authService.api
         .me()

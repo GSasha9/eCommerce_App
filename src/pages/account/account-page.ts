@@ -73,12 +73,12 @@ class AccountPage extends View {
       textContent: 'Uncategorized adresses',
     });
 
-    this.container = new CreateElement({ tag: 'div', classNames: ['container'] });
+    this.container = new CreateElement({ tag: 'div', classNames: ['container-btn'] });
 
     this.buttonAdd = new CreateElement({
       tag: 'button',
       textContent: 'Add new',
-      classNames: ['root-button'],
+      classNames: ['root-button', 'btn-add-change'],
       callback: (evt): void => {
         evt.preventDefault();
         const modal = new AddShippingAddressModal();
@@ -90,7 +90,7 @@ class AccountPage extends View {
     this.buttonChange = new CreateElement({
       tag: 'button',
       textContent: 'Change Password',
-      classNames: ['root-button'],
+      classNames: ['root-button', 'btn-add-change'],
       callback: (evt): void => {
         evt.preventDefault();
         const changePasswordModal = new ChangePasswordModal();

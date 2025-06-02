@@ -10,7 +10,9 @@
 }
 
 .account-button,
-.btn {
+.btn,
+.btn-add-change,
+.edit {
   cursor: pointer;
 
   display: flex;
@@ -53,4 +55,10 @@
 
 .error-message {
   min-height: 45px;
+}
+
+.container-btn {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }

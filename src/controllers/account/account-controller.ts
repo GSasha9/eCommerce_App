@@ -1,6 +1,5 @@
 import type { Address } from '@commercetools/platform-sdk';
 
-import { authService } from '../../commerce-tools/auth-service.ts';
 import { CustomerProfileService } from '../../commerce-tools/customer-profile-service/customer-profile-service.ts';
 import { AccountModel } from '../../model/account/account-model.ts';
 import AccountPage from '../../pages/account/account-page.ts';
@@ -8,7 +7,6 @@ import { BillingAddressAccount } from '../../pages/account/billing-account.ts';
 import { ShippingAddressAccount } from '../../pages/account/shipping-account.ts';
 import { UnsortedAddressAccount } from '../../pages/account/unsorted-account.ts';
 import { Layout } from '../../pages/layout/layout.ts';
-import { route } from '../../router';
 import {
   isFormName,
   isHTMLCheckboxElement,
@@ -29,7 +27,7 @@ export class AccountController {
   constructor() {
     this.page = AccountPage.getInstance();
     this.model = AccountModel.getInstance();
-    new CustomerProfileService();
+
     UserState.getInstance().subscribe(this.onCustomerUpdate);
 
     if (localStorage.getItem('isLoggedPlants')) {
@@ -39,15 +37,7 @@ export class AccountController {
         })();
       }
 
-      if (!this.page || typeof this.page.getHtmlElement !== 'function') {
-        return;
-      }
-
       this.page.containerForm.node.addEventListener('input', this.onChangeInputs);
-    } else {
-      localStorage.clear();
-      authService.logOutCustomer();
-      route.navigate('/home');
     }
   }
 
