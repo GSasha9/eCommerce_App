@@ -5,6 +5,7 @@ export const addSearchTextToFilters = (controller: CatalogController): void => {
 
   if (value === '') {
     delete controller.filters.text;
+    void controller.showFilteredProducts();
 
     return;
   }

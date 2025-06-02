@@ -158,13 +158,9 @@ export class AuthorizationService {
 
     const subcategories = allCategories.filter((cat) => cat.parent?.id === plantCategory[0].id);
 
-    console.log('sub', subcategories);
-
     const result: Record<string, Category[]> = {
       [mainCategoryName]: subcategories,
     };
-
-    console.log(result);
 
     return result;
   };
@@ -226,7 +222,6 @@ export class AuthorizationService {
     text?: string,
   ): Promise<ClientResponse<ProductProjectionPagedSearchResponse>> => {
     try {
-      console.log(filterQuery);
       const queryArgs: Record<string, string | string[] | number> = {
         'filter.query': filterQuery,
         priceCountry: 'US',
@@ -249,8 +244,6 @@ export class AuthorizationService {
           queryArgs,
         })
         .execute();
-
-      console.log(response);
 
       return response;
     } catch (error) {

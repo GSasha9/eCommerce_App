@@ -74,7 +74,8 @@ export class CatalogModel {
     const filterQuery: string[] = [];
 
     if (filters.categoriesId && filters.categoriesId.length > 0) {
-      const joinedIds = filters.categoriesId.map((id) => `"${id}"`).join(',');
+      const uniqueCategoryIds = Array.from(new Set(filters.categoriesId));
+      const joinedIds = uniqueCategoryIds.map((id) => `"${id}"`).join(',');
       const categoryFilter = `categories.id:${joinedIds}`;
 
       filterQuery.push(categoryFilter);
@@ -108,6 +109,8 @@ export class CatalogModel {
     }
 
     const response = await authService.searchProducts(filterQuery, sort, text);
+
+    console.log(response);
 
     if (response) this.filteredProducts = response.body.results;
   }

@@ -19,12 +19,16 @@ export const resetCallback = (controller: CatalogController): void => {
     }
   });
 
-  console.log(document.querySelectorAll('.catalog-header__select>option'));
-
   const select = document.querySelector('.catalog-header__select');
 
   if (select instanceof HTMLSelectElement) {
     select.value = 'default';
+  }
+
+  const nameOfSubCategories = controller.catalogModel.categories.keys();
+
+  for (const el of nameOfSubCategories) {
+    controller.catalogPage.removeBreadCrumb(el);
   }
 
   controller.catalogPage.searchInput.setValue('');
