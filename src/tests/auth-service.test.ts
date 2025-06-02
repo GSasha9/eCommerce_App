@@ -27,7 +27,6 @@ describe('Return authenticated status', () => {
 
 describe('Login error because of absents of project key', () => {
   test('shoud return an error if project key = undefined', async () => {
-    // @ts-expect-error: overriding private property for testing
     authService.projectKey = '';
 
     await expect(authService.signInCustomer('email@test.com', 'password')).rejects.toThrow(

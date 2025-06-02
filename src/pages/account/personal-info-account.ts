@@ -1,9 +1,12 @@
 import type { Customer } from '@commercetools/platform-sdk';
 
+import { CustomerProfileService } from '../../commerce-tools/customer-profile-service/customer-profile-service.ts';
 import { CreateInput } from '../../components/input/create-input.ts';
 import { Label } from '../../components/label/label.ts';
+import { AccountModel } from '../../model/account/account-model.ts';
 import type { IParameters } from '../../shared/models/interfaces';
 import { CreateElement } from '../../shared/utils/create-element.ts';
+import { UserState } from '../../state/customer-state.ts';
 
 export class PersonalInfoElementsAccount extends CreateElement {
   public inputName: CreateInput;
@@ -15,10 +18,18 @@ export class PersonalInfoElementsAccount extends CreateElement {
   public nameContainer: CreateElement;
   public surnameContainer: CreateElement;
   public birthdayContainer: CreateElement;
-  private data: Customer | null = null;
+  private data: Customer | undefined = undefined;
+  private readonly editButton: CreateElement;
+  private model: AccountModel;
+
+  private readonly errorName: CreateElement;
+  private readonly errorSurname: CreateElement;
+  private readonly errorBirthday: CreateElement;
 
   constructor(parameters: Partial<IParameters> = {}) {
     super({ tag: 'div', classNames: ['group'], ...parameters });
+
+    this.model = AccountModel.getInstance();
 
     this.nameLabel = new Label({
       classNames: ['label'],
@@ -70,26 +81,114 @@ export class PersonalInfoElementsAccount extends CreateElement {
       this.inputBirthday.getElement().setAttribute('disabled', 'true');
     }
 
+    this.errorName = new CreateElement({
+      tag: 'div',
+      classNames: ['error-message'],
+      textContent: '',
+    });
+    this.errorSurname = new CreateElement({
+      tag: 'div',
+      classNames: ['error-message'],
+      textContent: '',
+    });
+    this.errorBirthday = new CreateElement({
+      tag: 'div',
+      classNames: ['error-message'],
+      textContent: '',
+    });
+
     this.nameContainer = new CreateElement({
       tag: 'div',
       classNames: ['input', 'input-name'],
-      children: [this.nameLabel, this.inputName],
+      children: [this.nameLabel, this.inputName, this.errorName],
     });
     this.surnameContainer = new CreateElement({
       tag: 'div',
       classNames: ['input', 'input-surname'],
-      children: [this.surnameLabel, this.inputSurname],
+      children: [this.surnameLabel, this.inputSurname, this.errorSurname],
     });
     this.birthdayContainer = new CreateElement({
       tag: 'div',
       classNames: ['input', 'input-birthday'],
-      children: [this.birthdayLabel, this.inputBirthday],
+      children: [this.birthdayLabel, this.inputBirthday, this.errorBirthday],
     });
 
-    this.addInnerElement([this.nameContainer, this.surnameContainer, this.birthdayContainer]);
+    this.editButton = new CreateElement({
+      tag: 'button',
+      textContent: 'Edit',
+      classNames: ['root-button', 'edit'],
+      callback: (evt): void => {
+        evt.preventDefault();
+
+        if (this.editButton.getElement().classList.contains('save')) {
+          void this.onSavePersonalInfo();
+        } else {
+          this.onEdit(true);
+        }
+      },
+    });
+
+    this.addInnerElement([this.nameContainer, this.surnameContainer, this.birthdayContainer, this.editButton]);
+
+    if (this.inputName.getElement() instanceof HTMLInputElement) {
+      this.inputName.getElement().addEventListener('input', () => {
+        this.onInputChange('name');
+      });
+    }
+
+    if (this.inputSurname.getElement() instanceof HTMLInputElement) {
+      this.inputSurname.getElement().addEventListener('input', () => {
+        this.onInputChange('surname');
+      });
+    }
+
+    if (this.inputBirthday.getElement() instanceof HTMLInputElement) {
+      this.inputBirthday.getElement().addEventListener('input', () => {
+        this.onInputChange('birthday');
+      });
+    }
+
+    UserState.getInstance().subscribe(this.onCustomerUpdate);
   }
 
-  public onCustomerUpdate = (customer: Customer | null): void => {
+  private onInputChange(field: 'name' | 'surname' | 'birthday'): void {
+    let value = '';
+
+    switch (field) {
+      case 'name': {
+        const element = this.inputName.getElement();
+
+        if (element instanceof HTMLInputElement) {
+          value = element.value;
+        }
+
+        break;
+      }
+      case 'surname': {
+        const element = this.inputSurname.getElement();
+
+        if (element instanceof HTMLInputElement) {
+          value = element.value;
+        }
+
+        break;
+      }
+      case 'birthday': {
+        const element = this.inputBirthday.getElement();
+
+        if (element instanceof HTMLInputElement) {
+          value = element.value;
+        }
+
+        break;
+      }
+    }
+    this.model.setStringValue(value, field);
+    this.model.validatePersonalInfo();
+    this.displayErrors();
+  }
+
+  public onCustomerUpdate = (customer: Customer | undefined): void => {
     this.data = customer;
 
     if (this.data) {
@@ -110,8 +209,77 @@ export class PersonalInfoElementsAccount extends CreateElement {
       if (birthdayInputEl instanceof HTMLInputElement) {
         birthdayInputEl.value = this.data.dateOfBirth ?? '';
       }
+
+      this.model.setStringValue(this.data.firstName ?? '', 'name');
+      this.model.setStringValue(this.data.lastName ?? '', 'surname');
+      this.model.setStringValue(this.data.dateOfBirth ?? '', 'birthday');
     }
+
+    this.clearErrors();
   };
+
+  private clearErrors(): void {
+    this.errorName.getElement().textContent = '';
+    this.errorSurname.getElement().textContent = '';
+    this.errorBirthday.getElement().textContent = '';
+  }
+
+  private displayErrors(): void {
+    this.clearErrors();
+    this.model.errorsAcc.forEach((field) => {
+      const message = PersonalInfoElementsAccount.getErrorMessageForField(field);
+
+      switch (field) {
+        case 'name':
+          this.errorName.getElement().textContent = message;
+
+          break;
+        case 'surname':
+          this.errorSurname.getElement().textContent = message;
+
+          break;
+        case 'birthday':
+          this.errorBirthday.getElement().textContent = message;
+
+          break;
+      }
+    });
+  }
+
+  private static getErrorMessageForField(field: string): string {
+    switch (field) {
+      case 'name':
+        return 'Please enter a valid first name.';
+      case 'surname':
+        return 'Please enter a valid last name.';
+      case 'birthday':
+        return 'Please enter a valid date of birth.';
+      default:
+        return '';
+    }
+  }
+
+  private onEdit(isEdit: boolean): void {
+    const btn = this.editButton.getElement();
+
+    if (!(btn instanceof HTMLButtonElement)) {
+      console.warn("Edit button isn't an HTMLButtonElement.");
+
+      return;
+    }
+
+    if (isEdit) {
+      this.setEditable(true);
+      btn.classList.remove('edit');
+      btn.classList.add('save');
+      btn.textContent = 'Save';
+    } else {
+      this.setEditable(false);
+      btn.classList.remove('save');
+      btn.classList.add('edit');
+      btn.textContent = 'Edit';
+    }
+  }
 
   public setEditable(isEditable: boolean): void {
     const inputs = [this.inputName.getElement(), this.inputSurname.getElement(), this.inputBirthday.getElement()];
@@ -125,5 +293,60 @@ export class PersonalInfoElementsAccount extends CreateElement {
         }
       }
     });
+  }
+
+  private async onSavePersonalInfo(): Promise<void> {
+    const nameEl = this.inputName.getElement();
+    const surnameEl = this.inputSurname.getElement();
+    const birthdayEl = this.inputBirthday.getElement();
+
+    if (
+      !(
+        nameEl instanceof HTMLInputElement &&
+        surnameEl instanceof HTMLInputElement &&
+        birthdayEl instanceof HTMLInputElement
+      )
+    ) {
+      return;
+    }
+
+    const newFirstName = nameEl.value;
+    const newLastName = surnameEl.value;
+    const newBirthday = birthdayEl.value;
+
+    this.model.setStringValue(newFirstName, 'name');
+    this.model.setStringValue(newLastName, 'surname');
+    this.model.setStringValue(newBirthday, 'birthday');
+
+    if (!this.model.validatePersonalInfo()) {
+      this.displayErrors();
+
+      return;
+    }
+
+    const currentCustomer = UserState.getInstance().customer;
+
+    if (!currentCustomer) {
+      console.warn('Customer state not found.');
+
+      return;
+    }
+
+    const updatedData = {
+      version: currentCustomer.version,
+      firstName: newFirstName,
+      lastName: newLastName,
+      dateOfBirth: newBirthday,
+    };
+
+    try {
+      const updatedCustomer: Customer = await CustomerProfileService.updateCustomerData(updatedData);
+
+      UserState.getInstance().customer = updatedCustomer;
+    } catch (error) {
+      console.error('Failed to update customer data:', error);
+    } finally {
+      this.onEdit(false);
+    }
   }
 }

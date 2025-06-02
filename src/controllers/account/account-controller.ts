@@ -28,7 +28,7 @@ export class AccountController {
 
   constructor() {
     this.page = AccountPage.getInstance();
-    this.model = AccountModel.getInstance(this.page);
+    this.model = AccountModel.getInstance();
     new CustomerProfileService();
     UserState.getInstance().subscribe(this.onCustomerUpdate);
 

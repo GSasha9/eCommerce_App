@@ -1,4 +1,9 @@
-import type { Customer, MyCustomerUpdate, MyCustomerUpdateAction } from '@commercetools/platform-sdk';
+import type {
+  Customer,
+  MyCustomerChangePassword,
+  MyCustomerUpdate,
+  MyCustomerUpdateAction,
+} from '@commercetools/platform-sdk';
 import type { ClientResponse } from '@commercetools/ts-client';
 
 import { route } from '../../router';
@@ -91,6 +96,30 @@ export class CustomerProfileService {
       .execute();
 
     return response.body;
+  }
+
+  public static async changeMyPassword(payload: MyCustomerChangePassword): Promise<Customer> {
+    const requestBody = {
+      version: payload.version,
+      currentPassword: payload.currentPassword,
+      newPassword: payload.newPassword,
+    };
+
+    try {
+      const response = await authService.api
+        .me()
+        .password()
+        .post({
+          body: requestBody,
+          headers: { 'Content-Type': 'application/json' },
+        })
+        .execute();
+
+      return response.body;
+    } catch (error) {
+      console.warn(error);
+      throw error;
+    }
   }
 
   public static async updateBillingAddressData(updatedData: {

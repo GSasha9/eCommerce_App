@@ -6,7 +6,6 @@ import type {
   MyCustomerDraft,
   ProductProjection,
   ProductProjectionPagedSearchResponse,
-  //ProductProjectionPagedQueryResponse,
 } from '@commercetools/platform-sdk';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
@@ -23,7 +22,7 @@ export class AuthorizationService {
 
   public api: ByProjectKeyRequestBuilder;
 
-  protected projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
+  public projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
   private authUrl = import.meta.env.VITE_CTP_AUTH_URL;
   private clientId = import.meta.env.VITE_CTP_CLIENT_ID;
   private clientSecret = import.meta.env.VITE_CTP_CLIENT_SECRET;
