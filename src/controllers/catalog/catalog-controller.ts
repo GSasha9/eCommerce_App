@@ -110,7 +110,13 @@ export default class CatalogController {
           }
         } else {
           li?.classList.add('selected-category');
-          this.catalogPage.addBreadCrumb(name);
+
+          if (this.catalogPage.breadCrumbPath.getElement().childNodes.length > 0) {
+            this.catalogPage.addBreadCrumb(name);
+          } else {
+            this.catalogPage.addBreadCrumb('Plant');
+            this.catalogPage.addBreadCrumb(name);
+          }
 
           if (!this.filters.categoriesId) {
             this.filters.categoriesId = [categoryIndex];

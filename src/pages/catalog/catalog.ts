@@ -119,16 +119,18 @@ export class CatalogPage extends View {
           this.itemsNotFound();
           this.breadCrumbPath.getElement().replaceChildren();
 
-          const categories = this.categoryList.getElement().querySelectorAll<HTMLElement>('.category__list-item');
+          // const categories = this.categoryList.getElement().querySelectorAll<HTMLElement>('.category__list-item');
 
-          categories.forEach((el) => el.classList.remove('selected-category'));
+          // categories.forEach((el) => el.classList.remove('selected-category'));
 
-          delete this.catalogController.filters.categoriesId;
+          // delete this.catalogController.filters.categoriesId;
+
+          resetCallback(this.catalogController);
 
           return;
         } else {
           li.classList.add('selected-category');
-          this.addBreadCrumb('Plants');
+          //this.addBreadCrumb('Plants');
         }
 
         this.catalogController.catalogPage.filterPriceTo?.setValue('');
@@ -187,13 +189,20 @@ export class CatalogPage extends View {
     if (children.length !== 0) {
       const crumbs = this.breadCrumbPath.getElement().querySelectorAll('.catalog-breadcrumb-path');
 
-      const repeat = Array.from(crumbs).filter((el) => el.textContent === string);
-
-      console.log(crumbs, repeat);
-
       className = 'catalog-breadcrumb-path-plus';
 
-      if (repeat.length !== 0) return;
+      const categories = this.categoryList.getElement().querySelectorAll<HTMLElement>('.category__list-item');
+
+      crumbs.forEach((el) => {
+        if (el.textContent === string) {
+          categories.forEach((cat) => {
+            if (cat.getAttribute('data-key') === el.textContent) {
+              cat.classList.remove('selected-category');
+            }
+          });
+          this.removeBreadCrumb(el.textContent);
+        }
+      });
     }
 
     const link = new CreateElement({
@@ -205,8 +214,24 @@ export class CatalogPage extends View {
 
         const name = event.target.textContent;
 
-        const categories = this.categoryList.getElement().querySelectorAll<HTMLElement>('.category__list-item');
+        if (name === 'Plants' || name === 'Plant') {
+          this.catalogController.filters.categoriesId = [];
+          this.breadCrumbPath.getElement().replaceChildren(); // очистить крошки
 
+          this.categoryList
+            .getElement()
+            .querySelectorAll('.selected-category')
+            .forEach((el) => el.classList.remove('selected-category'));
+
+          this.clearCards();
+          this.itemsNotFound();
+
+          resetCallback(this.catalogController);
+
+          return;
+        }
+
+        const categories = this.categoryList.getElement().querySelectorAll<HTMLElement>('.category__list-item');
         const category = Array.from(categories).find((el) => el.textContent === name);
 
         if (category) category.click();
