@@ -1,11 +1,5 @@
+import type { ISliderElementProperties } from '../models/interfaces';
 import { genElement } from './gen-element';
-
-export interface ISliderElementProperties {
-  images: string[];
-  width: number;
-  alt: string;
-  name: string;
-}
 
 export function genSliderElement(properties: ISliderElementProperties): HTMLDivElement {
   const { images, width, alt, name } = properties;

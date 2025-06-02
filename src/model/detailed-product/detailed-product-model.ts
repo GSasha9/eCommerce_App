@@ -1,17 +1,8 @@
 import { authService } from '../../commerce-tools/auth-service';
+import type { IResponseDetailedProduct } from '../../shared/models/interfaces/response-detailed-product.ts';
 import { isCommercetoolsApiError } from '../../shared/models/typeguards.ts';
 
 import 'swiper/css/bundle';
-
-export interface IResponseDetailedProduct {
-  name: string;
-  img: string[];
-  description: string;
-  prices: number;
-  pricesFractionDigits: number;
-  discounted?: number;
-  discountedFractionDigits?: number;
-}
 
 class DetailedProductModel {
   private static instance: DetailedProductModel;
@@ -46,7 +37,7 @@ class DetailedProductModel {
         const response = await authService.getProductByKey(this.key);
         const name = response.body.name.en;
         const img = response.body.masterVariant.images?.map((img) => img.url);
-        const description = response.body.description?.en;
+        const description = response.body.description?.['en-US'];
         const prices = response.body.masterVariant.prices?.[0].value.centAmount;
         const pricesFractionDigits = response.body.masterVariant.prices?.[0].value.fractionDigits;
         const discounted = response.body.masterVariant.prices?.[0].discounted?.value.centAmount;
@@ -70,15 +61,9 @@ class DetailedProductModel {
             discountedFractionDigits,
           });
         }
-
-        console.log('response------', response.body);
-        console.log('this.response', this.response);
       }
     } catch (error) {
       if (isCommercetoolsApiError(error)) {
-        // const statusCode = error.body.statusCode;
-        // const code = error.body.errors[0].code;
-
         this.isSuccess = false;
       } else {
         console.error('Unknown error', error);

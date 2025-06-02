@@ -72,7 +72,7 @@ class DetailedProductPage {
     return wrapperPrice;
   }
 
-  private genDescription(): HTMLDivElement {
+  public genDescription(): HTMLDivElement {
     const name = genElement('div', { className: 'name-detailed-product' }, [`${this.model.response?.name}`]);
     const price = this.genPrice();
 
