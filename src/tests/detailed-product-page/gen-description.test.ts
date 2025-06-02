@@ -9,6 +9,7 @@ describe('DetailedProductPage.genDescription', () => {
       name: 'Test Product',
       img: ['image.jpg'],
       description: 'A short description',
+      fullDescription: 'A full description',
       prices: 10000,
       pricesFractionDigits: 2,
     },

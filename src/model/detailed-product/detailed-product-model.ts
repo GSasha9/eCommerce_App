@@ -3,6 +3,7 @@ import type { IResponseDetailedProduct } from '../../shared/models/interfaces/re
 import { isCommercetoolsApiError } from '../../shared/models/typeguards.ts';
 
 import 'swiper/css/bundle';
+const isString = (value: unknown): value is string => typeof value === 'string';
 
 class DetailedProductModel {
   private static instance: DetailedProductModel;
@@ -35,9 +36,15 @@ class DetailedProductModel {
     try {
       if (this.key) {
         const response = await authService.getProductByKey(this.key);
+
+        console.log('response-----', response);
+
         const name = response.body.name.en;
         const img = response.body.masterVariant.images?.map((img) => img.url);
         const description = response.body.description?.['en-US'];
+        const fullDescription = isString(response.body.masterVariant.attributes?.[3].value)
+          ? response.body.masterVariant.attributes?.[3].value
+          : '';
         const prices = response.body.masterVariant.prices?.[0].value.centAmount;
         const pricesFractionDigits = response.body.masterVariant.prices?.[0].value.fractionDigits;
         const discounted = response.body.masterVariant.prices?.[0].discounted?.value.centAmount;
@@ -45,11 +52,12 @@ class DetailedProductModel {
 
         this.isSuccess = true;
 
-        if (name && img && description && prices && pricesFractionDigits) {
+        if (name && img && description && fullDescription && prices && pricesFractionDigits) {
           this.response = {
             name,
             img,
             description,
+            fullDescription,
             prices,
             pricesFractionDigits,
           };

@@ -80,11 +80,20 @@ class DetailedProductPage {
     const descriptionValue = genElement('div', { className: 'description-value' }, [
       `${this.model.response?.description}`,
     ]);
+    const fullDescription = genElement('div', { className: 'value' }, ['Full description: ']);
+    const fullDescriptionValue = genElement('div', { className: 'description-value' }, [
+      `${this.model.response?.fullDescription}`,
+    ]);
     const wrapperDescription = genElement('div', { className: 'wrapper-item' }, [description, descriptionValue]);
+    const wrapperFullDescription = genElement('div', { className: 'wrapper-item' }, [
+      fullDescription,
+      fullDescriptionValue,
+    ]);
     const wrapperInformation = genElement('div', { className: 'wrapper-information' }, [
       name,
       price,
       wrapperDescription,
+      wrapperFullDescription,
     ]);
 
     return wrapperInformation;
