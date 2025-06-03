@@ -451,9 +451,16 @@ export class ShippingAddressAccount extends CreateElement {
       this.inputStreet.getElement(),
       this.inputCity.getElement(),
       this.inputPostalCode.getElement(),
-      this.checkboxDefault.getElement(),
       this.countryList.node,
     ];
+
+    const checkboxElement = this.checkboxDefault.getElement();
+
+    if (checkboxElement instanceof HTMLInputElement) {
+      if (!checkboxElement.checked) {
+        inputs.push(checkboxElement);
+      }
+    }
 
     inputs.forEach((el: HTMLElement): void => {
       if (el instanceof HTMLInputElement || el instanceof HTMLSelectElement) {

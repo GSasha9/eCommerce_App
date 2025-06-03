@@ -15,29 +15,30 @@ import { UserState } from '../../../state/customer-state.ts';
 import './style.scss';
 
 export class AddShippingAddressModal extends CreateElement {
-  private modalContent: CreateElement;
-  private inputStreet: CreateInput;
-  private inputCity: CreateInput;
-  private inputPostalCode: CreateInput;
+  private readonly modalContent: CreateElement;
+  private readonly inputStreet: CreateInput;
+  private readonly inputCity: CreateInput;
+  private readonly inputPostalCode: CreateInput;
   private countryList: Element<'select'>;
-  private saveButton: HTMLButtonElement;
-  private closeButton: HTMLButtonElement;
+  private readonly saveButton: HTMLButtonElement;
+  private readonly closeButton: HTMLButtonElement;
   private errorContainers: Partial<Record<keyof IShippingAddressFormValues, HTMLElement>> = {};
-  private checkboxDefault: CreateInput;
-  private asBillingLabel: Label;
-  private checkboxAsBilling: CreateInput;
-  private default: CreateElement;
-  private asBilling: CreateElement;
-  private checkboxWrapper: CreateElement;
-  private defaultLabel: Label;
-  private checkboxShipping: CreateInput;
-  private shippingLabel: Label;
-  private billingLabel: Label;
-  private billingAdress: CreateInput;
-  private defaultAdress: CreateElement;
-  private asBillingAdress: CreateElement;
-  private checkboxWrapperAdress: HTMLElement | CreateElement | CreateElement[];
-  private error: CreateElement;
+  private readonly checkboxDefault: CreateInput;
+  private readonly asBillingLabel: Label;
+  private readonly checkboxAsBilling: CreateInput;
+  private readonly default: CreateElement;
+  private readonly asBilling: CreateElement;
+  private readonly checkboxWrapper: CreateElement;
+  private readonly defaultLabel: Label;
+  private readonly checkboxShipping: CreateInput;
+  private readonly shippingLabel: Label;
+  private readonly billingLabel: Label;
+  private readonly billingAdress: CreateInput;
+  private readonly defaultAdress: CreateElement;
+  private readonly asBillingAdress: CreateElement;
+  private readonly checkboxWrapperAdress: HTMLElement | CreateElement | CreateElement[];
+  private readonly error: CreateElement;
+  private isSaving: boolean = false;
 
   constructor(parameters: Partial<IParameters> = {}) {
     super({ tag: 'dialog', classNames: ['modal', 'add-shipping-address-modal'], ...parameters });
@@ -221,9 +222,11 @@ export class AddShippingAddressModal extends CreateElement {
 
     this.saveButton = document.createElement('button');
     this.saveButton.textContent = 'Save';
+    this.saveButton.className = 'btn';
     this.saveButton.addEventListener('click', () => void this.onSave());
     this.closeButton = document.createElement('button');
     this.closeButton.textContent = 'Cancel';
+    this.closeButton.className = 'btn';
     this.closeButton.addEventListener('click', () => this.close());
     const buttonsContainer = new CreateElement({ tag: 'div', classNames: ['buttons-container'] });
 
@@ -307,6 +310,9 @@ export class AddShippingAddressModal extends CreateElement {
   }
 
   public async onSave(): Promise<void> {
+    if (this.isSaving) return;
+
+    this.isSaving = true;
     const modalModel = ShippingAddressModalModel.getInstance();
 
     const streetEl: unknown = this.inputStreet.getElement();
@@ -341,6 +347,7 @@ export class AddShippingAddressModal extends CreateElement {
       modalModel.errors.forEach((errorKey: string): void => {
         this.renderErrorMessage(errorKey);
       });
+      this.isSaving = false;
 
       return;
     }
@@ -355,6 +362,8 @@ export class AddShippingAddressModal extends CreateElement {
     const customer: Customer | undefined = UserState.getInstance().customer;
 
     if (!customer) {
+      this.isSaving = false;
+
       return;
     }
 
@@ -373,6 +382,8 @@ export class AddShippingAddressModal extends CreateElement {
       });
 
       if (!updatedCustomer) {
+        this.isSaving = false;
+
         return;
       }
 
@@ -382,6 +393,8 @@ export class AddShippingAddressModal extends CreateElement {
       );
 
       if (!newAddressId) {
+        this.isSaving = false;
+
         return;
       }
 
@@ -417,7 +430,7 @@ export class AddShippingAddressModal extends CreateElement {
       if (shippingCheckbox instanceof HTMLInputElement && shippingCheckbox.checked) {
         const shippingPayload = {
           version: currentVersion,
-          defaultShippingAddress: newAddressId,
+          addShippingAddressId: newAddressId,
         };
         const customerAfterShippingDefault: Customer = await CustomerProfileService.updateCustomerData(shippingPayload);
 
@@ -439,8 +452,10 @@ export class AddShippingAddressModal extends CreateElement {
         UserState.getInstance().customer = customerAfterBillingAddress;
       }
 
+      this.isSaving = false;
       this.close();
     } catch (error) {
+      this.isSaving = false;
       this.error.getElement().textContent = `${String(error)}`;
     }
   }
