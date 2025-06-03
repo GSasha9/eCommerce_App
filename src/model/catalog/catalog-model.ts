@@ -110,8 +110,6 @@ export class CatalogModel {
 
     const response = await authService.searchProducts(filterQuery, sort, text);
 
-    console.log(response);
-
     if (response) this.filteredProducts = response.body.results;
   }
 }
