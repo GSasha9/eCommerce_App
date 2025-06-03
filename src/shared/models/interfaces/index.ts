@@ -19,3 +19,9 @@ export type { IFormValues } from './form-values.ts';
 export type { IValidationResult } from './validation-result.ts';
 
 export type { IResponse } from './response.ts';
+
+export type { ISliderElementProperties } from './slider-element-properties.ts';
+
+export type { IResponseDetailedProduct } from './response-detailed-product.ts';
+
+export type { IImageModal } from './image-modal.ts';
