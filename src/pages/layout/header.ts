@@ -62,7 +62,19 @@ export class Header {
         tag: 'li',
         classNames: ['header__menu-item'],
         textContent: '',
-        callback: (): void => {},
+        callback: (event: MouseEvent): void => {
+          const menuItems = navList.getElement().querySelectorAll<HTMLElement>('.header__menu-item');
+
+          menuItems.forEach((el) => el.classList.remove('header__menu-item-active'));
+
+          const item = event.target;
+
+          console.log(item);
+
+          if (!(item instanceof HTMLElement)) return;
+
+          item.closest('.header__menu-item')?.classList.add('header__menu-item-active');
+        },
       });
 
       if (item === 'Home') {
