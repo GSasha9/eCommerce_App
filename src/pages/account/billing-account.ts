@@ -342,8 +342,10 @@ export class BillingAddressAccount extends CreateElement {
       if (customer && address.id === customer.defaultBillingAddressId) {
         checkboxDefault.checked = true;
         this.checkboxInitialClick = checkboxDefault.checked;
+        checkboxDefault.disabled = true;
       } else {
         checkboxDefault.checked = false;
+        checkboxDefault.disabled = true;
         this.checkboxInitialClick = checkboxDefault.checked;
       }
     }
@@ -388,15 +390,22 @@ export class BillingAddressAccount extends CreateElement {
   }
 
   public setEditable(isEditable: boolean): void {
-    const elements: HTMLElement[] = [
+    const inputs: HTMLElement[] = [
       this.inputStreet.getElement(),
       this.inputCity.getElement(),
       this.inputPostalCode.getElement(),
-      this.checkboxDefault.getElement(),
       this.countryList.node,
     ];
 
-    elements.forEach((el: HTMLElement): void => {
+    const checkboxElement = this.checkboxDefault.getElement();
+
+    if (checkboxElement instanceof HTMLInputElement) {
+      if (!checkboxElement.checked) {
+        inputs.push(checkboxElement);
+      }
+    }
+
+    inputs.forEach((el: HTMLElement): void => {
       if (el instanceof HTMLInputElement || el instanceof HTMLSelectElement) {
         if (isEditable) {
           el.removeAttribute('disabled');
