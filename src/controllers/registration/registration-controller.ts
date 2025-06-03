@@ -84,7 +84,7 @@ export class RegistrationController {
         const auth = authService.getAuthenticatedStatus();
 
         if (auth) {
-          localStorage.setItem('isLoggedPlants', 'true');
+          //localStorage.setItem('isLoggedPlants', 'true');
         }
       } catch (error) {
         if (isCommercetoolsApiError(error)) {

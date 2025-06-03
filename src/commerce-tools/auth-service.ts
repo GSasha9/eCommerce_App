@@ -13,14 +13,15 @@ import { type Client, ClientBuilder } from '@commercetools/ts-client';
 
 import { ErrorMessage, PRODUCTS_PER_PAGE } from '../shared/constants';
 import type { ProductPerPageResponse } from '../shared/models/type';
-import { TOKEN } from './models/constants';
+//import { TOKEN } from './models/constants';
 import type { AuthState } from './models/types';
+import { isCredentials } from './models/utils/isCredentials';
 import { getToken, tokenCache } from './models/utils/token';
 
 export class AuthorizationService {
   private static instance: AuthorizationService;
 
-  public api: ByProjectKeyRequestBuilder;
+  public api!: ByProjectKeyRequestBuilder;
 
   public projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
   private authUrl = import.meta.env.VITE_CTP_AUTH_URL;
@@ -28,14 +29,17 @@ export class AuthorizationService {
   private clientSecret = import.meta.env.VITE_CTP_CLIENT_SECRET;
   private apiUrl = import.meta.env.VITE_CTP_API_URL;
   private scopes = import.meta.env.VITE_CTP_SCOPES;
-  private isAuthenticated = false;
+  public isAuthenticated = false;
   private token: string | null;
 
   private options: ExistingTokenMiddlewareOptions = { force: true };
 
   private constructor() {
     this.token = getToken();
-    this.api = this.initializeAnonymousSession();
+
+    if (!this.tryRestoreUserSession()) {
+      this.api = this.initializeAnonymousSession();
+    }
   }
 
   public static getInstance(): AuthorizationService {
@@ -83,6 +87,8 @@ export class AuthorizationService {
       throw new Error(ErrorMessage.MISSING_PROJECT_KEY);
     }
 
+    this.api = this.apiDefinition({ type: 'authenticated', email, password });
+
     const response = await this.api
       .me()
       .login()
@@ -100,9 +106,11 @@ export class AuthorizationService {
       })
       .execute();
 
-    this.api = this.apiDefinition({ type: 'authenticated', email, password });
     this.isAuthenticated = true;
-    localStorage.removeItem('ct_anon_token');
+
+    if (localStorage.getItem('ct_anon_token')) localStorage.removeItem('ct_anon_token');
+
+    localStorage.setItem('ct_user_credentials', JSON.stringify({ email, password }));
 
     return response.body;
   };
@@ -119,12 +127,14 @@ export class AuthorizationService {
   };
 
   public logOutCustomer = (): void => {
-    const cacheKey = TOKEN.USER;
+    //const cacheKey = TOKEN.USER;
 
-    if (!localStorage.getItem(cacheKey)) return;
+    //if (!localStorage.getItem(cacheKey)) return;
 
-    localStorage.removeItem(cacheKey);
+    this.api = this.initializeAnonymousSession();
 
+    localStorage.removeItem('ct_user_token');
+    localStorage.removeItem('ct_user_credentials');
     this.isAuthenticated = false;
   };
 
@@ -251,8 +261,69 @@ export class AuthorizationService {
     }
   };
 
-  private initializeAnonymousSession(): ByProjectKeyRequestBuilder {
+  public initializeAnonymousSession(): ByProjectKeyRequestBuilder {
     return this.apiDefinition({ type: 'anonymous' });
+  }
+
+  public async refreshAnonymousToken(): Promise<void> {
+    const client = new ClientBuilder()
+      .withAnonymousSessionFlow({
+        host: this.authUrl,
+        projectKey: this.projectKey,
+        credentials: { clientId: this.clientId, clientSecret: this.clientSecret },
+        scopes: [
+          'manage_my_profile:plants',
+          'view_published_products:plants',
+          'view_categories:plants',
+          'create_anonymous_token:plants',
+        ],
+        httpClient: fetch,
+        tokenCache: tokenCache('ct_anon_token'),
+      })
+      .withHttpMiddleware({ host: this.apiUrl, httpClient: fetch })
+      .build();
+
+    await createApiBuilderFromCtpClient(client)
+      .withProjectKey({ projectKey: this.projectKey })
+      .categories()
+      .get({ queryArgs: { limit: 1 } })
+      .execute();
+
+    this.api = createApiBuilderFromCtpClient(client).withProjectKey({ projectKey: this.projectKey });
+  }
+
+  private tryRestoreUserSession(): boolean {
+    const userTokenStore = tokenCache('ct_user_token').get();
+    const credentialsRaw = localStorage.getItem('ct_user_credentials');
+
+    console.log('Try restore:', userTokenStore);
+
+    if (userTokenStore?.token && userTokenStore?.expirationTime > Date.now() && credentialsRaw) {
+      try {
+        const parsed: unknown = JSON.parse(credentialsRaw);
+
+        if (!isCredentials(parsed)) {
+          return false;
+        }
+
+        this.token = `Bearer ${userTokenStore.token}`;
+        console.log(this.token, 'token');
+        this.api = this.apiDefinition({
+          type: 'authenticated',
+          email: parsed.email,
+          password: parsed.password,
+        });
+        this.isAuthenticated = true;
+
+        return true;
+      } catch (e) {
+        console.error('Failed to parse stored credentials:', e);
+
+        return false;
+      }
+    }
+
+    return false;
   }
 
   private apiDefinition = (auth: AuthState, projectKey = this.projectKey): ByProjectKeyRequestBuilder => {

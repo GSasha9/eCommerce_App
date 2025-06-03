@@ -33,7 +33,7 @@ export class Router implements IRouter {
       dynamicPath = `/${normalizedPath.split('/')[1]}`;
     }
 
-    const token = localStorage.getItem('isLoggedPlants');
+    const token = localStorage.getItem('ct_user_token');
 
     if (token && (normalizedPath === '/login' || normalizedPath === '/registration')) {
       normalizedPath = '/home';
@@ -41,7 +41,7 @@ export class Router implements IRouter {
     } else if (pushState) {
       window.history.pushState({}, '', normalizedPath);
     } else if (!token && normalizedPath === '/account') {
-      normalizedPath = '/home';
+      normalizedPath = '/login';
       window.history.replaceState({}, '', normalizedPath);
     }
 

@@ -106,12 +106,12 @@ export class Header {
       },
     });
 
-    const isAuthenticated: boolean = !!localStorage.getItem('isLoggedPlants');
+    const isAuthenticated: boolean = !!localStorage.getItem('ct_user_token');
 
     const loginButton: CreateButton = new CreateButton({
       classNames: ['header__button', 'header__button--login', isAuthenticated ? 'logout' : 'login'],
       textContent: isAuthenticated ? 'Logout' : 'Login',
-      type: 'button',
+      //type: 'button',
       disabled: false,
       callback: (event: Event): void => {
         event.preventDefault();
@@ -122,10 +122,12 @@ export class Header {
             event.target.classList.add('login');
             event.target.textContent = 'Login';
             authService.logOutCustomer();
-            localStorage.clear();
+            //localStorage.removeItem('ct_user_token');
+            this.switchBtn();
             route.navigate('/login');
           }
         } else {
+          this.switchBtn();
           route.navigate('/login');
         }
       },
@@ -147,7 +149,9 @@ export class Header {
 
     if (!headerReg) return;
 
-    if (headerReg && headerReg.classList.contains('header__button--reg')) {
+    const isLoggedIn = !!localStorage.getItem('ct_user_token');
+
+    if (isLoggedIn) {
       headerReg.textContent = 'Account';
       headerReg.classList.add('header__button--cabinet');
       headerReg.classList.remove('header__button--reg');

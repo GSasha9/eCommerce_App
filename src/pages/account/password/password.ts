@@ -1,6 +1,7 @@
 import { authService } from '../../../commerce-tools/auth-service.ts';
 import { CustomerProfileService } from '../../../commerce-tools/customer-profile-service/customer-profile-service.ts';
 import { CreateInput } from '../../../components/input/create-input.ts';
+import { ModalMessage } from '../../../components/modals/modal-message.ts';
 import { route } from '../../../router';
 import type { IParameters } from '../../../shared/models/interfaces';
 import { CreateElement } from '../../../shared/utils/create-element.ts';
@@ -222,7 +223,7 @@ export class ChangePasswordModal extends CreateElement {
       return;
     }
 
-    const id = localStorage.getItem('isLoggedPlants');
+    const id = localStorage.getItem('ct_user_token');
 
     if (!id) return;
 
@@ -240,21 +241,16 @@ export class ChangePasswordModal extends CreateElement {
       const response = await CustomerProfileService.changeMyPassword(payload);
 
       if (response) {
-        authService.logOutCustomer();
+        authService.isAuthenticated = false;
+        localStorage.removeItem('ct_user_token');
         localStorage.removeItem('ct_anon_token');
-        const signInResult = await authService.signInCustomer(user.email, newPwdEl.value);
+        localStorage.removeItem('ct_user_credentials');
 
-        if (signInResult) {
-          route.navigate('/home');
-          const auth = authService.getAuthenticatedStatus();
+        UserState.getInstance().customer = undefined;
 
-          if (auth) {
-            localStorage.setItem('isLoggedPlants', signInResult.customer.id);
-            UserState.getInstance().customer = signInResult.customer;
-            Header.switchBtn();
-            route.navigate('/account');
-          }
-        }
+        await authService.refreshAnonymousToken();
+
+        route.navigate('/login');
       }
     } catch (error) {
       this.errorContainer.getElement().textContent = `Password update failed: ${String(error)}`;
@@ -263,6 +259,14 @@ export class ChangePasswordModal extends CreateElement {
     }
 
     this.close();
+
+    const modal = new ModalMessage('Password changed successfully. Please log in again with your new credentials.');
+
+    void (await modal.open());
+    Header.switchBtn();
+    const logout = document.querySelector<HTMLElement>('.header__button--login');
+
+    if (logout?.classList.contains('logout')) logout?.classList.remove('logout');
   }
 
   private onCancel(): void {
