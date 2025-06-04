@@ -3,6 +3,7 @@ import { CustomerProfileService } from '../../../commerce-tools/customer-profile
 import { CreateInput } from '../../../components/input/create-input.ts';
 import { ModalGreeting } from '../../../components/modals/modal-greeting.ts';
 import { route } from '../../../router';
+import { MESSAGE_CONTENT } from '../../../shared/constants/messages-for-validator.ts';
 import type { IParameters } from '../../../shared/models/interfaces';
 import { CreateElement } from '../../../shared/utils/create-element.ts';
 import { UserState } from '../../../state/customer-state.ts';
@@ -55,6 +56,13 @@ export class ChangePasswordModal extends CreateElement {
       id: 'confirm-password',
       name: 'confirmPassword',
       type: 'password',
+      // callback: (event: InputEvent):void => {
+      //   const input = event.target;
+
+      //   if(input instanceof HTMLInputElement) {
+      //     Validator.isPassword(input.value)
+      //   }
+      // }
     });
 
     this.currentPwdToggle = new CreateElement({
@@ -147,6 +155,19 @@ export class ChangePasswordModal extends CreateElement {
     const newPwdEl = this.newPasswordInput.getElement();
     const confirmPwdEl = this.confirmPasswordInput.getElement();
 
+    const currPass = this.currentPasswordInput.getElement();
+
+    if (currPass instanceof HTMLInputElement) {
+      currPass.addEventListener('input', () => {
+        if (currPass.value.length < 8 || !/\d/.test(currPass.value)) {
+          this.errorContainer.getElement().textContent =
+            MESSAGE_CONTENT.password || 'New password must be at least 8 characters and contain a number.';
+
+          return;
+        }
+      });
+    }
+
     if (newPwdEl instanceof HTMLInputElement && confirmPwdEl instanceof HTMLInputElement) {
       newPwdEl.addEventListener('input', () => this.handleRealTimeValidation());
       confirmPwdEl.addEventListener('input', () => this.handleRealTimeValidation());
@@ -175,14 +196,15 @@ export class ChangePasswordModal extends CreateElement {
       return;
     }
 
-    if (newPwdEl.value !== confirmPwdEl.value) {
-      this.errorContainer.getElement().textContent = 'New passwords do not match.';
+    if (newPwdEl.value.length < 8 || !/\d/.test(newPwdEl.value)) {
+      this.errorContainer.getElement().textContent =
+        MESSAGE_CONTENT.password || 'New password must be at least 8 characters and contain a number.';
 
       return;
     }
 
-    if (newPwdEl.value.length < 8 || !/\d/.test(newPwdEl.value)) {
-      this.errorContainer.getElement().textContent = 'New password must be at least 8 characters and contain a number.';
+    if (newPwdEl.value !== confirmPwdEl.value) {
+      this.errorContainer.getElement().textContent = 'New passwords do not match.';
 
       return;
     }
@@ -211,14 +233,15 @@ export class ChangePasswordModal extends CreateElement {
       return;
     }
 
-    if (newPwdEl.value !== confirmPwdEl.value) {
-      this.errorContainer.getElement().textContent = 'New passwords do not match.';
+    if (newPwdEl.value.length < 8 || !/\d/.test(newPwdEl.value)) {
+      this.errorContainer.getElement().textContent =
+        MESSAGE_CONTENT.password || 'New password must be at least 8 characters and contain a number.';
 
       return;
     }
 
-    if (newPwdEl.value.length < 8 || !/\d/.test(newPwdEl.value)) {
-      this.errorContainer.getElement().textContent = 'New password must be at least 8 characters and contain a number.';
+    if (newPwdEl.value !== confirmPwdEl.value) {
+      this.errorContainer.getElement().textContent = 'New passwords do not match.';
 
       return;
     }
