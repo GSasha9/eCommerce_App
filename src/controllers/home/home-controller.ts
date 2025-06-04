@@ -1,5 +1,5 @@
 import { HomePage } from '../../pages/home/home.ts';
-import { Header } from '../../pages/layout/header.ts';
+//import { Header } from '../../pages/layout/header.ts';
 import { Layout } from '../../pages/layout/layout.ts';
 
 export class HomeController {
@@ -11,7 +11,7 @@ export class HomeController {
       classNames: ['home-page'],
     });
 
-    Header.switchBtn();
+    //Header.switchBtn();
   }
 
   public render(): void {

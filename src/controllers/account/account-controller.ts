@@ -34,7 +34,6 @@ export class AccountController {
       if (!isCustomer(UserState.getInstance().customer)) {
         void (async (): Promise<void> => {
           UserState.getInstance().customer = await CustomerProfileService.fetchCustomerData();
-          console.log('Fetched customer data:', UserState.getInstance().customer);
         })();
       }
 
@@ -65,8 +64,6 @@ export class AccountController {
 
   private onCustomerUpdate = (): void => {
     const customer = UserState.getInstance().customer;
-
-    console.log('onCustomerUpdate triggered, customer:', customer);
 
     if (!customer) {
       return;

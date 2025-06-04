@@ -11,6 +11,7 @@ import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
 import { type Client, ClientBuilder } from '@commercetools/ts-client';
 
+import { Header } from '../pages/layout/header';
 import { ErrorMessage, PRODUCTS_PER_PAGE } from '../shared/constants';
 import type { ProductPerPageResponse } from '../shared/models/type';
 //import { TOKEN } from './models/constants';
@@ -37,9 +38,7 @@ export class AuthorizationService {
   private constructor() {
     this.token = getToken();
 
-    if (!this.tryRestoreUserSession()) {
-      this.api = this.initializeAnonymousSession();
-    }
+    void this.init();
   }
 
   public static getInstance(): AuthorizationService {
@@ -48,6 +47,14 @@ export class AuthorizationService {
     }
 
     return AuthorizationService.instance;
+  }
+
+  public async init(): Promise<void> {
+    const restored = await this.tryRestoreUserSession();
+
+    if (!restored) {
+      this.api = this.initializeAnonymousSession();
+    }
   }
 
   public getAuthenticatedStatus(): boolean {
@@ -110,6 +117,7 @@ export class AuthorizationService {
       this.isAuthenticated = true;
       localStorage.removeItem('ct_anon_token');
       localStorage.setItem('ct_user_credentials', JSON.stringify({ email, password }));
+      Header.switchBtn(true);
 
       return response.body;
     } catch (error) {
@@ -305,7 +313,7 @@ export class AuthorizationService {
     this.api = createApiBuilderFromCtpClient(client).withProjectKey({ projectKey: this.projectKey });
   }
 
-  private tryRestoreUserSession(): boolean {
+  private async tryRestoreUserSession(): Promise<boolean> {
     const userTokenStore = tokenCache('ct_user_token').get();
     const credentialsRaw = localStorage.getItem('ct_user_credentials');
 

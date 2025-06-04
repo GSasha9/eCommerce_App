@@ -33,7 +33,7 @@ export class Router implements IRouter {
       dynamicPath = `/${normalizedPath.split('/')[1]}`;
     }
 
-    const token = localStorage.getItem('ct_user_token');
+    const token = localStorage.getItem('ct_user_credentials');
 
     if (token && (normalizedPath === '/login' || normalizedPath === '/registration')) {
       normalizedPath = '/home';
