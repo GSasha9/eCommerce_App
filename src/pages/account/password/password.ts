@@ -1,7 +1,7 @@
 import { authService } from '../../../commerce-tools/auth-service.ts';
 import { CustomerProfileService } from '../../../commerce-tools/customer-profile-service/customer-profile-service.ts';
 import { CreateInput } from '../../../components/input/create-input.ts';
-import { ModalMessage } from '../../../components/modals/modal-message.ts';
+import { ModalGreeting } from '../../../components/modals/modal-greeting.ts';
 import { route } from '../../../router';
 import type { IParameters } from '../../../shared/models/interfaces';
 import { CreateElement } from '../../../shared/utils/create-element.ts';
@@ -260,7 +260,7 @@ export class ChangePasswordModal extends CreateElement {
 
     this.close();
 
-    const modal = new ModalMessage('Password changed successfully. Please log in again with your new credentials.');
+    const modal = new ModalGreeting('Password changed successfully. Please log in again with your new credentials.');
 
     void (await modal.open());
     Header.switchBtn();

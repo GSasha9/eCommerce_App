@@ -3,6 +3,7 @@ import type { Customer } from '@commercetools/platform-sdk';
 import { CustomerProfileService } from '../../commerce-tools/customer-profile-service/customer-profile-service.ts';
 import { CreateInput } from '../../components/input/create-input.ts';
 import { Label } from '../../components/label/label.ts';
+import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import { AccountModel } from '../../model/account/account-model.ts';
 import type { IParameters } from '../../shared/models/interfaces';
 import { CreateElement } from '../../shared/utils/create-element.ts';
@@ -343,6 +344,9 @@ export class PersonalInfoElementsAccount extends CreateElement {
       const updatedCustomer: Customer = await CustomerProfileService.updateCustomerData(updatedData);
 
       UserState.getInstance().customer = updatedCustomer;
+      const modal = new ModalGreeting('Your data was saved successfully');
+
+      void modal.open();
     } catch (error) {
       console.error('Failed to update customer data:', error);
     } finally {

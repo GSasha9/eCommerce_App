@@ -4,6 +4,7 @@ import { CustomerProfileService } from '../../commerce-tools/customer-profile-se
 import Element from '../../components/element/element.ts';
 import { CreateInput } from '../../components/input/create-input.ts';
 import { Label } from '../../components/label/label.ts';
+import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import { BillingAddressModalModel } from '../../model/account/billing-account/billing-account-model.ts';
 import type { IShippingAddressFormValues } from '../../model/account/new-adress/new-adress.ts';
 import { COUNTRIES, MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
@@ -503,6 +504,9 @@ export class BillingAddressAccount extends CreateElement {
 
       this.setEditable(false);
       this.isEdited = false;
+      const modal = new ModalGreeting('Your data was saved successfully');
+
+      void modal.open();
     } catch (error) {
       console.warn(error);
       this.isEdited = false;
