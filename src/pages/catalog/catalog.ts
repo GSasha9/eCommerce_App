@@ -103,7 +103,7 @@ export class CatalogPage extends View {
   public addCategory(title: string): void {
     const li = new CreateElement({
       tag: 'li',
-      classNames: ['category__list-item', 'main-category', 'selected-category'],
+      classNames: ['category__list-item', 'main-category'],
       textContent: title,
       callback: (event: MouseEvent): void => {
         const element = event.target;
@@ -114,29 +114,10 @@ export class CatalogPage extends View {
 
         if (!(li instanceof HTMLLIElement)) return;
 
-        if (li.classList.contains('selected-category')) {
-          li.classList.remove('selected-category');
-          this.itemsNotFound();
-          this.breadCrumbPath.getElement().replaceChildren();
+        this.itemsNotFound();
+        this.breadCrumbPath.getElement().replaceChildren();
 
-          // const categories = this.categoryList.getElement().querySelectorAll<HTMLElement>('.category__list-item');
-
-          // categories.forEach((el) => el.classList.remove('selected-category'));
-
-          // delete this.catalogController.filters.categoriesId;
-
-          resetCallback(this.catalogController);
-
-          return;
-        } else {
-          li.classList.add('selected-category');
-          //this.addBreadCrumb('Plants');
-        }
-
-        this.catalogController.catalogPage.filterPriceTo?.setValue('');
-        document.querySelectorAll('.selected-category').forEach((el) => {
-          if (!el.classList.contains('main-category')) el.classList.remove('selected-category');
-        });
+        resetCallback(this.catalogController);
 
         const nameOfSubCategories = this.catalogController.catalogModel.categories.keys();
 
@@ -216,7 +197,7 @@ export class CatalogPage extends View {
 
         if (name === 'Plants' || name === 'Plant') {
           this.catalogController.filters.categoriesId = [];
-          this.breadCrumbPath.getElement().replaceChildren(); // очистить крошки
+          this.breadCrumbPath.getElement().replaceChildren();
 
           this.categoryList
             .getElement()
@@ -232,7 +213,7 @@ export class CatalogPage extends View {
         }
 
         const categories = this.categoryList.getElement().querySelectorAll<HTMLElement>('.category__list-item');
-        const category = Array.from(categories).find((el) => el.textContent === name);
+        const category = Array.from(categories).find((el) => el.getAttribute('data-key') === name);
 
         if (category) category.click();
       },
@@ -243,8 +224,6 @@ export class CatalogPage extends View {
 
   public removeBreadCrumb(string: string): void {
     const children = this.breadCrumbPath.getElement().childNodes;
-
-    console.log(children.length);
 
     if (children.length !== 0) {
       const crumbs = this.breadCrumbPath.getElement().querySelectorAll('.catalog-breadcrumb-path-plus');
@@ -257,8 +236,6 @@ export class CatalogPage extends View {
 
   public itemsNotFound(): void {
     this.clearCards();
-
-    console.log('itemsNotFound called');
     const img = new CreateElement({
       tag: 'div',
       classNames: ['items-not-found'],
@@ -416,10 +393,7 @@ export class CatalogPage extends View {
       classNames: ['filters'],
       textContent: '',
       callback: (): void => {
-        console.log('container');
         const container = this.containerFilters.getElement();
-
-        console.log(container);
 
         if (!container.classList.contains('open')) {
           container.classList.add('open');

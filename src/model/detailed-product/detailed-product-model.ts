@@ -37,7 +37,7 @@ class DetailedProductModel {
       if (this.key) {
         const response = await authService.getProductByKey(this.key);
 
-        console.log('response-----', response);
+        //console.log('response-----', response);
 
         const name = response.body.name.en;
         const img = response.body.masterVariant.images?.map((img) => img.url);

@@ -1,6 +1,5 @@
 import type { ProductProjection } from '@commercetools/platform-sdk';
 
-// import { CreateInput } from '../../components/input/create-input';
 import { CatalogModel } from '../../model/catalog/catalog-model';
 import { CatalogPage } from '../../pages/catalog/catalog';
 import type { IParametersCard } from '../../pages/catalog/models/interfaces';
@@ -109,6 +108,20 @@ export default class CatalogController {
             }
           }
         } else {
+          const allSubCaregories = this.catalogPage.categoryList
+            .getElement()
+            .querySelectorAll<HTMLElement>('.category__list-item');
+
+          allSubCaregories.forEach((subCat) => {
+            const catName = subCat.getAttribute('data-key');
+
+            if (catName !== name && subCat.classList.contains('selected-category')) {
+              subCat.classList.remove('selected-category');
+
+              if (catName) this.catalogPage.removeBreadCrumb(catName);
+            }
+          });
+
           li?.classList.add('selected-category');
 
           if (this.catalogPage.breadCrumbPath.getElement().childNodes.length > 0) {
@@ -118,11 +131,7 @@ export default class CatalogController {
             this.catalogPage.addBreadCrumb(name);
           }
 
-          if (!this.filters.categoriesId) {
-            this.filters.categoriesId = [categoryIndex];
-          } else {
-            this.filters.categoriesId.push(categoryIndex);
-          }
+          this.filters.categoriesId = [categoryIndex];
         }
       }
 
@@ -195,7 +204,6 @@ export default class CatalogController {
   public async showFilteredProducts(): Promise<void> {
     if (Object.keys(this.filters).length === 0) {
       this.isFiltered = false;
-
       void this.showAllProductCards();
 
       return;
@@ -205,7 +213,6 @@ export default class CatalogController {
 
     if (!this.filters.categoriesId) {
       this.filters.categoriesId = [];
-
       const categoryValues: string[] = Array.from(this.catalogModel.categories.values());
 
       if (categoryValues.length === 0) {
@@ -216,9 +223,7 @@ export default class CatalogController {
     }
 
     await this.catalogModel.applyFilters(this.filters);
-
     this.addPagination(this.catalogModel.filteredProducts.length);
-
     this.renderPage(1, this.catalogModel.filteredProducts);
   }
 
@@ -254,10 +259,8 @@ export default class CatalogController {
         amountEl.textContent = `(${String(count)})`;
       }
     });
-
     const start = (pageNumber - 1) * PRODUCTS_PER_PAGE;
     const end = start + PRODUCTS_PER_PAGE;
-
     const cards = products.slice(start, end);
 
     this.catalogPage.clearCards();
