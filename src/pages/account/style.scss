@@ -43,11 +43,22 @@
   flex-direction: column;
 }
 
-.group {
+.group-info {
   display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.group-account {
+  display: flex;
+  flex-wrap: wrap;
   gap: 10px;
   align-items: center;
   justify-content: center;
+
+  margin-bottom: 20px;
 }
 
 .save {
