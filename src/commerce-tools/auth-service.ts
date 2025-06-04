@@ -16,7 +16,6 @@ import { ErrorMessage, PRODUCTS_PER_PAGE } from '../shared/constants';
 import type { ProductPerPageResponse } from '../shared/models/type';
 import { UserState } from '../state/customer-state';
 import { CustomerProfileService } from './customer-profile-service/customer-profile-service';
-//import { TOKEN } from './models/constants';
 import type { AuthState } from './models/types';
 import { isCredentials } from './models/utils/isCredentials';
 import { getToken, tokenCache } from './models/utils/token';
@@ -144,12 +143,17 @@ export class AuthorizationService {
   };
 
   public getProductByKey = async (productKey: string): Promise<ClientResponse<ProductProjection>> => {
+    if (!this.api) {
+      console.warn('API client not initialized. Reinitializing...');
+      this.api = this.initializeAnonymousSession();
+    }
+
     try {
       const res = await this.api.productProjections().withKey({ key: productKey }).get().execute();
 
       return res;
     } catch (error) {
-      console.error(ErrorMessage.UNABLE_TO_GET_INFO_PRODUCT, error);
+      console.error('Failed to retrieve product information', error);
       throw error;
     }
   };
@@ -402,6 +406,14 @@ export class AuthorizationService {
     const builder = new ClientBuilder();
 
     if (this.token) {
+      let formattedToken = this.token;
+
+      if (formattedToken.startsWith('Basic ')) {
+        formattedToken = `Bearer ${formattedToken.replace(/^Basic\s*/i, '')}`;
+      }
+
+      this.token = formattedToken;
+
       return builder
         .withExistingTokenFlow(this.token, this.options)
         .withHttpMiddleware({ host: this.apiUrl, httpClient: fetch })
