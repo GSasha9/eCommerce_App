@@ -14,6 +14,8 @@ import { type Client, ClientBuilder } from '@commercetools/ts-client';
 import { Header } from '../pages/layout/header';
 import { ErrorMessage, PRODUCTS_PER_PAGE } from '../shared/constants';
 import type { ProductPerPageResponse } from '../shared/models/type';
+import { UserState } from '../state/customer-state';
+import { CustomerProfileService } from './customer-profile-service/customer-profile-service';
 //import { TOKEN } from './models/constants';
 import type { AuthState } from './models/types';
 import { isCredentials } from './models/utils/isCredentials';
@@ -53,7 +55,7 @@ export class AuthorizationService {
     const restored = await this.tryRestoreUserSession();
 
     if (!restored) {
-      this.api = this.initializeAnonymousSession();
+      await this.refreshAnonymousToken();
     }
   }
 
@@ -82,6 +84,11 @@ export class AuthorizationService {
     this.api = this.apiDefinition({ type: 'authenticated', email, password });
     this.isAuthenticated = true;
     localStorage.removeItem('ct_anon_token');
+    localStorage.setItem('ct_user_credentials', JSON.stringify({ email, password }));
+    Header.switchBtn(true);
+    const customer = await CustomerProfileService.fetchCustomerData();
+
+    UserState.getInstance().customer = customer;
   };
 
   public signInCustomer = async (
@@ -171,6 +178,11 @@ export class AuthorizationService {
   // }
 
   public getPlantSubCategories = async (): Promise<Record<string, Category[]>> => {
+    if (!this.api) {
+      console.warn('Initialization of the API client');
+      await this.refreshAnonymousToken();
+    }
+
     const response = await this.api
       .categories()
       .get({
