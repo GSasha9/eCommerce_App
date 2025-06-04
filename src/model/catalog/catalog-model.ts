@@ -93,6 +93,12 @@ export class CatalogModel {
       filterQuery.push(`variants.prices.discounted:exists`);
     }
 
+    if (filters.height?.length) {
+      for (const value of filters.height) {
+        filterQuery.push(`variants.attributes.height.key:"${value}"`);
+      }
+    }
+
     let sort: string | undefined;
 
     if (filters.sort) {

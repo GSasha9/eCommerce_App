@@ -129,7 +129,7 @@ export class CatalogPage extends View {
       },
     });
 
-    this.addBreadCrumb(title);
+    //this.addBreadCrumb(title);
 
     this.categoryList.addInnerElement(li);
   }
@@ -427,7 +427,7 @@ export class CatalogPage extends View {
     });
 
     const priceTitle = new CreateElement({
-      tag: 'h3',
+      tag: 'h4',
       classNames: ['price-filter-title'],
       textContent: 'Price',
       callback: (): void => {},
@@ -461,6 +461,69 @@ export class CatalogPage extends View {
       priceFilter.addInnerElement(input);
     });
 
+    const attrHeightTitle = new CreateElement({
+      tag: 'h4',
+      classNames: ['attribute-height-title'],
+      textContent: 'Height',
+      callback: (): void => {},
+    });
+
+    const attrHeightList = new CreateElement({
+      tag: 'ul',
+      classNames: ['attribute-height-list'],
+      textContent: '',
+      callback: (): void => {},
+    });
+
+    const attrHeight = ['low (under 30sm)', 'medium (30-70sm)', 'tall (above 70sm)'];
+
+    attrHeight.forEach((item) => {
+      const attr = new CreateElement({
+        tag: 'li',
+        classNames: ['attribute-height--list-item'],
+        textContent: item,
+        callback: (event: MouseEvent): void => {
+          const li = event.target;
+
+          if (li instanceof HTMLLIElement) {
+            const key = li.getAttribute('data-name');
+
+            if (!key) return;
+
+            const isSelected = li.classList.contains('selected-category');
+
+            const allAttr = li
+              .closest('.attribute-height-list')
+              ?.querySelectorAll<HTMLElement>('.attribute-height--list-item');
+
+            allAttr?.forEach((el) => el.classList.remove('selected-category'));
+
+            if (isSelected) {
+              delete this.catalogController.filters.height;
+            } else {
+              li.classList.add('selected-category');
+              this.catalogController.filters.height = [key];
+            }
+
+            void this.catalogController.showFilteredProducts();
+          }
+        },
+        children: [attrHeightTitle],
+      });
+
+      attr.setDataAttrsClasses({ name: item.split(' ')[0] });
+
+      attrHeightList.addInnerElement(attr);
+    });
+
+    const attributeContainer = new CreateElement({
+      tag: 'div',
+      classNames: ['attribute-height'],
+      textContent: '',
+      callback: (): void => {},
+      children: [attrHeightTitle, attrHeightList],
+    });
+
     const promotion = new CreateElement({
       tag: 'div',
       classNames: ['promotion'],
@@ -481,7 +544,7 @@ export class CatalogPage extends View {
       classNames: ['container-filters'],
       textContent: '',
       callback: (): void => {},
-      children: [categoryListContainer, priceFilter, promotion, reset],
+      children: [categoryListContainer, priceFilter, attributeContainer, promotion, reset],
     });
   }
 

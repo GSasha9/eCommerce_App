@@ -14,4 +14,5 @@ export type Filters = {
   sort?: Sort;
   discount?: boolean;
   text?: string;
+  height?: string[];
 };

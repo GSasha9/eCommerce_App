@@ -85,7 +85,7 @@
 .container-filters {
   display: flex;
   flex-direction: column;
-  gap: $spacing-lg;
+  gap: $spacing-xxl;
   max-width: 25%;
 
   .category__list-title {
@@ -94,7 +94,8 @@
 
   .price-filter {
     display: flex;
-    flex-wrap: wrap;
+    flex-flow: column wrap;
+    gap: $spacing-sm;
 
     font-size: 1.2rem;
     font-weight: $font-weight-bold;
@@ -106,7 +107,7 @@
     }
 
     .price-filter-input {
-      max-width: 100px;
+      max-width: 140px;
     }
   }
 }
@@ -138,18 +139,43 @@
   list-style: none;
 
   .main-category {
+    padding: 0 !important;
     font-size: 1.2rem;
+    font-weight: $font-weight-bold;
     color: $primary-text-green;
   }
 
   .category__list-item {
     display: flex;
     justify-content: space-between;
-    padding: $spacing-sm;
 
     &:hover {
       cursor: pointer;
       color: $primary-text-green;
+    }
+  }
+}
+
+.attribute-height {
+  .attribute-height-title {
+    padding-bottom: $spacing-md;
+    font-size: 1.2rem;
+    color: $primary-text-green;
+  }
+
+  .attribute-height-list {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+
+    font-size: 0.97rem;
+    list-style: none;
+
+    .attribute-height--list-item {
+      &:hover {
+        cursor: pointer;
+        color: $primary-text-green;
+      }
     }
   }
 }

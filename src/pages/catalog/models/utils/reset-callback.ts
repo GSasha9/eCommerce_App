@@ -22,7 +22,7 @@ export const resetCallback = (controller: CatalogController): void => {
   const select = document.querySelector('.catalog-header__select');
 
   if (select instanceof HTMLSelectElement) {
-    select.value = 'default';
+    select.selectedIndex = 0;
   }
 
   const nameOfSubCategories = controller.catalogModel.categories.keys();
