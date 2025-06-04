@@ -8,6 +8,7 @@ import { BillingAddressAccount } from '../../pages/account/billing-account.ts';
 import { ShippingAddressAccount } from '../../pages/account/shipping-account.ts';
 import { UnsortedAddressAccount } from '../../pages/account/unsorted-account.ts';
 import { Layout } from '../../pages/layout/layout.ts';
+import type { IParameters } from '../../shared/models/interfaces';
 import {
   isFormName,
   isHTMLCheckboxElement,
@@ -136,7 +137,6 @@ export class AccountController {
   private static updateAddressComponents<
     T extends {
       currentAddressId: string;
-
       updateData: (
         address: Address,
         unique: { commonIds: Address[]; uniqueBilling: Address[]; uniqueShipping: Address[] },
@@ -147,20 +147,20 @@ export class AccountController {
     newAddresses: Address[],
     currentComponents: T[],
     containerEl: HTMLElement,
-    ComponentType: { new (): T },
+    ComponentType: { new (parameters?: Partial<IParameters>, ind?: number | string): T },
     unique: { commonIds: Address[]; uniqueBilling: Address[]; uniqueShipping: Address[] },
   ): void {
     if (containerEl.childElementCount === 1 && containerEl.firstElementChild?.textContent === 'Nothing here...') {
       containerEl.firstElementChild.remove();
     }
 
-    newAddresses.forEach((newAddress) => {
+    newAddresses.forEach((newAddress, index) => {
       const existingComp = currentComponents.find((comp) => comp.currentAddressId === newAddress.id);
 
       if (existingComp) {
         existingComp.updateData(newAddress, unique);
       } else {
-        const comp = new ComponentType();
+        const comp = new ComponentType({}, index);
 
         comp.updateData(newAddress, unique);
         currentComponents.push(comp);

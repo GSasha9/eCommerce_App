@@ -44,22 +44,22 @@ export class UnsortedAddressAccount extends CreateElement {
   private isEdited: boolean = false;
   private state: UserState = UserState.getInstance();
 
-  constructor(parameters: Partial<IParameters> = {}) {
-    super({ tag: 'div', classNames: ['group'], ...parameters });
+  constructor(parameters: Partial<IParameters> = {}, ind: number) {
+    super({ tag: 'div', classNames: ['group-account'], ...parameters });
 
     this.errorContainers = {};
     this.modalModel = new BillingAddressModalModel();
 
     this.streetLabel = new Label({
       classNames: ['label'],
-      for: 'street-billing-unsort',
+      for: `street-billing-unsort-${ind}`,
       textContent: 'Street:',
     });
     this.inputStreet = new CreateInput({
       classNames: ['street'],
       placeholder: 'your street',
-      id: 'street-billing-unsort',
-      name: 'street-billing-unsort',
+      id: `street-billing-unsort-${ind}`,
+      name: `street-billing-unsort-${ind}`,
     });
 
     if (this.inputStreet.getElement() instanceof HTMLInputElement) {
@@ -68,8 +68,8 @@ export class UnsortedAddressAccount extends CreateElement {
 
     const streetErrorDiv = document.createElement('div');
 
-    streetErrorDiv.className = 'error-message';
-
+    streetErrorDiv.className = `error-message-street-billing-unsort-${ind}`;
+    streetErrorDiv.style.minHeight = '50px';
     this.errorContainers['street'] = streetErrorDiv;
 
     const streetContainer = new CreateElement({
@@ -82,14 +82,14 @@ export class UnsortedAddressAccount extends CreateElement {
 
     this.cityLabel = new Label({
       classNames: ['label'],
-      for: 'city-billing-unsort',
+      for: `city-billing-unsort-${ind}`,
       textContent: 'City:',
     });
     this.inputCity = new CreateInput({
       classNames: ['city'],
       placeholder: 'your city',
-      id: 'city-billing-unsort',
-      name: 'city-billing-unsort',
+      id: `city-billing-unsort-${ind}`,
+      name: `city-billing-unsort-${ind}`,
     });
 
     if (this.inputCity.getElement() instanceof HTMLInputElement) {
@@ -98,7 +98,8 @@ export class UnsortedAddressAccount extends CreateElement {
 
     const cityErrorDiv = document.createElement('div');
 
-    cityErrorDiv.className = 'error-message';
+    cityErrorDiv.className = `error-message-city-billing-unsort-${ind}`;
+    cityErrorDiv.style.minHeight = '50px';
     this.errorContainers['city'] = cityErrorDiv;
 
     const cityContainer = new CreateElement({
@@ -111,14 +112,14 @@ export class UnsortedAddressAccount extends CreateElement {
 
     this.postalCodeLabel = new Label({
       classNames: ['label'],
-      for: 'postal-code-billing-unsort',
+      for: `postal-code-billing-unsort-${ind}`,
       textContent: 'Postal code:',
     });
     this.inputPostalCode = new CreateInput({
       classNames: ['postal-code-billing'],
       placeholder: 'your postal code',
-      id: 'postal-code-billing-unsort',
-      name: 'postal-code-billing-unsort',
+      id: `postal-code-billing-unsort-${ind}`,
+      name: `postal-code-billing-unsort-${ind}`,
     });
 
     if (this.inputPostalCode.getElement() instanceof HTMLInputElement) {
@@ -127,7 +128,8 @@ export class UnsortedAddressAccount extends CreateElement {
 
     const postalErrorDiv = document.createElement('div');
 
-    postalErrorDiv.className = 'error-message';
+    postalErrorDiv.className = `error-message-postal-code-billing-unsort-${ind}`;
+    postalErrorDiv.style.minHeight = '50px';
     this.errorContainers['postalCode'] = postalErrorDiv;
     const postalContainer = new CreateElement({
       tag: 'div',
@@ -139,14 +141,14 @@ export class UnsortedAddressAccount extends CreateElement {
 
     this.countryLabel = new Label({
       classNames: ['label'],
-      for: 'country-billing-unsort',
+      for: `country-billing-unsort-${ind}`,
       textContent: 'Country:',
     });
     this.countryList = new Element({
       tag: 'select',
       className: 'country-list',
-      name: 'country-billing-unsort',
-      id: 'country-billing-unsort',
+      name: `country-billing-unsort-${ind}`,
+      id: `country-billing-unsort-${ind}`,
       children: [
         new Element({
           tag: 'option',
@@ -172,7 +174,8 @@ export class UnsortedAddressAccount extends CreateElement {
 
     const countryErrorDiv = document.createElement('div');
 
-    countryErrorDiv.className = 'error-message';
+    countryErrorDiv.className = `error-message-country-billing-unsort-${ind}`;
+    countryErrorDiv.style.minHeight = '50px';
     this.errorContainers['country'] = countryErrorDiv;
     const countryContainer = new CreateElement({
       tag: 'div',
@@ -289,6 +292,7 @@ export class UnsortedAddressAccount extends CreateElement {
 
     if (errorContainer instanceof HTMLElement) {
       errorContainer.textContent = message;
+      errorContainer.style.color = 'darkred';
     }
   }
 
