@@ -69,15 +69,15 @@ export class Header {
 
           const item = event.target;
 
-          console.log(item);
-
           if (!(item instanceof HTMLElement)) return;
 
           item.closest('.header__menu-item')?.classList.add('header__menu-item-active');
         },
       });
 
-      if (item === 'Home') {
+      const path = window.location.pathname;
+
+      if (`/${item.toLocaleLowerCase()}` === path) {
         li.getElement().classList.add('header__menu-item-active');
       }
 
@@ -118,12 +118,12 @@ export class Header {
       },
     });
 
-    const isAuthenticated: boolean = !!localStorage.getItem('isLoggedPlants');
+    const isAuthenticated: boolean = !!localStorage.getItem('ct_user_credentials');
 
     const loginButton: CreateButton = new CreateButton({
       classNames: ['header__button', 'header__button--login', isAuthenticated ? 'logout' : 'login'],
       textContent: isAuthenticated ? 'Logout' : 'Login',
-      type: 'button',
+      //type: 'button',
       disabled: false,
       callback: (event: Event): void => {
         event.preventDefault();
@@ -134,10 +134,12 @@ export class Header {
             event.target.classList.add('login');
             event.target.textContent = 'Login';
             authService.logOutCustomer();
-            localStorage.clear();
+            //localStorage.removeItem('ct_user_token');
+            this.switchBtn();
             route.navigate('/login');
           }
         } else {
+          this.switchBtn();
           route.navigate('/login');
         }
       },
@@ -154,12 +156,14 @@ export class Header {
     return header.getElement();
   }
 
-  public static switchBtn(): void {
+  public static switchBtn(callAccount?: boolean): void {
     const headerReg = document.querySelector('.header__button');
 
     if (!headerReg) return;
 
-    if (headerReg && headerReg.classList.contains('header__button--reg')) {
+    const isLoggedIn = localStorage.getItem('ct_user_credentials');
+
+    if (isLoggedIn || callAccount) {
       headerReg.textContent = 'Account';
       headerReg.classList.add('header__button--cabinet');
       headerReg.classList.remove('header__button--reg');

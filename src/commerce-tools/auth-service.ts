@@ -11,16 +11,20 @@ import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
 import { type Client, ClientBuilder } from '@commercetools/ts-client';
 
+import { Header } from '../pages/layout/header';
 import { ErrorMessage, PRODUCTS_PER_PAGE } from '../shared/constants';
 import type { ProductPerPageResponse } from '../shared/models/type';
-import { TOKEN } from './models/constants';
+import { UserState } from '../state/customer-state';
+import { CustomerProfileService } from './customer-profile-service/customer-profile-service';
+//import { TOKEN } from './models/constants';
 import type { AuthState } from './models/types';
+import { isCredentials } from './models/utils/isCredentials';
 import { getToken, tokenCache } from './models/utils/token';
 
 export class AuthorizationService {
   private static instance: AuthorizationService;
 
-  public api: ByProjectKeyRequestBuilder;
+  public api!: ByProjectKeyRequestBuilder;
 
   public projectKey = import.meta.env.VITE_CTP_PROJECT_KEY;
   private authUrl = import.meta.env.VITE_CTP_AUTH_URL;
@@ -28,14 +32,15 @@ export class AuthorizationService {
   private clientSecret = import.meta.env.VITE_CTP_CLIENT_SECRET;
   private apiUrl = import.meta.env.VITE_CTP_API_URL;
   private scopes = import.meta.env.VITE_CTP_SCOPES;
-  private isAuthenticated = false;
+  public isAuthenticated = false;
   private token: string | null;
 
   private options: ExistingTokenMiddlewareOptions = { force: true };
 
   private constructor() {
     this.token = getToken();
-    this.api = this.initializeAnonymousSession();
+
+    void this.init();
   }
 
   public static getInstance(): AuthorizationService {
@@ -44,6 +49,14 @@ export class AuthorizationService {
     }
 
     return AuthorizationService.instance;
+  }
+
+  public async init(): Promise<void> {
+    const restored = await this.tryRestoreUserSession();
+
+    if (!restored) {
+      await this.refreshAnonymousToken();
+    }
   }
 
   public getAuthenticatedStatus(): boolean {
@@ -71,6 +84,11 @@ export class AuthorizationService {
     this.api = this.apiDefinition({ type: 'authenticated', email, password });
     this.isAuthenticated = true;
     localStorage.removeItem('ct_anon_token');
+    localStorage.setItem('ct_user_credentials', JSON.stringify({ email, password }));
+    Header.switchBtn(true);
+    const customer = await CustomerProfileService.fetchCustomerData();
+
+    UserState.getInstance().customer = customer;
   };
 
   public signInCustomer = async (
@@ -83,28 +101,46 @@ export class AuthorizationService {
       throw new Error(ErrorMessage.MISSING_PROJECT_KEY);
     }
 
-    const response = await this.api
-      .me()
-      .login()
-      .post({
-        body: {
-          email,
-          password,
-          ...(anonymousCartId && {
-            anonymousCart: {
-              id: anonymousCartId,
-              typeId: 'cart',
-            },
-          }),
-        },
-      })
-      .execute();
-
     this.api = this.apiDefinition({ type: 'authenticated', email, password });
-    this.isAuthenticated = true;
-    localStorage.removeItem('ct_anon_token');
 
-    return response.body;
+    try {
+      const response = await this.api
+        .me()
+        .login()
+        .post({
+          body: {
+            email,
+            password,
+            ...(anonymousCartId && {
+              anonymousCart: {
+                id: anonymousCartId,
+                typeId: 'cart',
+              },
+            }),
+          },
+        })
+        .execute();
+
+      this.isAuthenticated = true;
+      localStorage.removeItem('ct_anon_token');
+      localStorage.setItem('ct_user_credentials', JSON.stringify({ email, password }));
+      Header.switchBtn(true);
+
+      return response.body;
+    } catch (error) {
+      console.error('Login failed. Invalid credentials or token issue:', error);
+
+      localStorage.removeItem('ct_user_token');
+      localStorage.removeItem('ct_user_credentials');
+      localStorage.removeItem('ct_anon_token');
+
+      this.token = null;
+      this.isAuthenticated = false;
+
+      this.api = this.initializeAnonymousSession();
+
+      throw new Error('Login failed: Invalid credentials or expired session. Please try again.');
+    }
   };
 
   public getProductByKey = async (productKey: string): Promise<ClientResponse<ProductProjection>> => {
@@ -119,12 +155,14 @@ export class AuthorizationService {
   };
 
   public logOutCustomer = (): void => {
-    const cacheKey = TOKEN.USER;
+    //const cacheKey = TOKEN.USER;
 
-    if (!localStorage.getItem(cacheKey)) return;
+    //if (!localStorage.getItem(cacheKey)) return;
 
-    localStorage.removeItem(cacheKey);
+    this.api = this.initializeAnonymousSession();
 
+    localStorage.removeItem('ct_user_token');
+    localStorage.removeItem('ct_user_credentials');
     this.isAuthenticated = false;
   };
 
@@ -140,6 +178,11 @@ export class AuthorizationService {
   // }
 
   public getPlantSubCategories = async (): Promise<Record<string, Category[]>> => {
+    if (!this.api) {
+      console.warn('Initialization of the API client');
+      await this.refreshAnonymousToken();
+    }
+
     const response = await this.api
       .categories()
       .get({
@@ -251,8 +294,93 @@ export class AuthorizationService {
     }
   };
 
-  private initializeAnonymousSession(): ByProjectKeyRequestBuilder {
+  public initializeAnonymousSession(): ByProjectKeyRequestBuilder {
     return this.apiDefinition({ type: 'anonymous' });
+  }
+
+  public async refreshAnonymousToken(): Promise<void> {
+    const client = new ClientBuilder()
+      .withAnonymousSessionFlow({
+        host: this.authUrl,
+        projectKey: this.projectKey,
+        credentials: { clientId: this.clientId, clientSecret: this.clientSecret },
+        scopes: [
+          'manage_my_profile:plants',
+          'view_published_products:plants',
+          'view_categories:plants',
+          'create_anonymous_token:plants',
+        ],
+        httpClient: fetch,
+        tokenCache: tokenCache('ct_anon_token'),
+      })
+      .withHttpMiddleware({ host: this.apiUrl, httpClient: fetch })
+      .build();
+
+    await createApiBuilderFromCtpClient(client)
+      .withProjectKey({ projectKey: this.projectKey })
+      .categories()
+      .get({ queryArgs: { limit: 1 } })
+      .execute();
+
+    this.api = createApiBuilderFromCtpClient(client).withProjectKey({ projectKey: this.projectKey });
+  }
+
+  private async tryRestoreUserSession(): Promise<boolean> {
+    const userTokenStore = tokenCache('ct_user_token').get();
+    const credentialsRaw = localStorage.getItem('ct_user_credentials');
+
+    if (!credentialsRaw) return false;
+
+    try {
+      const parsed: unknown = JSON.parse(credentialsRaw);
+
+      if (!isCredentials(parsed)) return false;
+
+      if (userTokenStore?.token && userTokenStore.expirationTime > Date.now()) {
+        this.token = `Bearer ${userTokenStore.token}`;
+        this.api = this.apiDefinition({
+          type: 'authenticated',
+          email: parsed.email,
+          password: parsed.password,
+        });
+        this.isAuthenticated = true;
+
+        return true;
+      }
+
+      this.api = this.apiDefinition({
+        type: 'authenticated',
+        email: parsed.email,
+        password: parsed.password,
+      });
+
+      return this.api
+        .me()
+        .get()
+        .execute()
+        .then(() => {
+          this.isAuthenticated = true;
+
+          return true;
+        })
+        .catch((error) => {
+          console.warn('Re-authentication failed:', error);
+          this.clearUserSession();
+
+          return false;
+        });
+    } catch (e) {
+      console.error('Failed to parse credentials or restore session:', e);
+      this.clearUserSession();
+
+      return false;
+    }
+  }
+
+  private clearUserSession(): void {
+    localStorage.removeItem('ct_user_token');
+    localStorage.removeItem('ct_user_credentials');
+    this.isAuthenticated = false;
   }
 
   private apiDefinition = (auth: AuthState, projectKey = this.projectKey): ByProjectKeyRequestBuilder => {

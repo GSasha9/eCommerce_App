@@ -4,6 +4,7 @@ import { CustomerProfileService } from '../../commerce-tools/customer-profile-se
 import Element from '../../components/element/element.ts';
 import { CreateInput } from '../../components/input/create-input.ts';
 import { Label } from '../../components/label/label.ts';
+import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import { BillingAddressModalModel } from '../../model/account/billing-account/billing-account-model.ts';
 import { COUNTRIES, MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
 import type { IFormValues, IParameters } from '../../shared/models/interfaces';
@@ -51,14 +52,14 @@ export class UnsortedAddressAccount extends CreateElement {
 
     this.streetLabel = new Label({
       classNames: ['label'],
-      for: 'street-billing',
+      for: 'street-billing-unsort',
       textContent: 'Street:',
     });
     this.inputStreet = new CreateInput({
       classNames: ['street'],
       placeholder: 'your street',
-      id: 'street-billing',
-      name: 'street-billing',
+      id: 'street-billing-unsort',
+      name: 'street-billing-unsort',
     });
 
     if (this.inputStreet.getElement() instanceof HTMLInputElement) {
@@ -81,14 +82,14 @@ export class UnsortedAddressAccount extends CreateElement {
 
     this.cityLabel = new Label({
       classNames: ['label'],
-      for: 'city-billing',
+      for: 'city-billing-unsort',
       textContent: 'City:',
     });
     this.inputCity = new CreateInput({
       classNames: ['city'],
       placeholder: 'your city',
-      id: 'city-billing',
-      name: 'city-billing',
+      id: 'city-billing-unsort',
+      name: 'city-billing-unsort',
     });
 
     if (this.inputCity.getElement() instanceof HTMLInputElement) {
@@ -110,14 +111,14 @@ export class UnsortedAddressAccount extends CreateElement {
 
     this.postalCodeLabel = new Label({
       classNames: ['label'],
-      for: 'postal-code-billing',
+      for: 'postal-code-billing-unsort',
       textContent: 'Postal code:',
     });
     this.inputPostalCode = new CreateInput({
       classNames: ['postal-code-billing'],
       placeholder: 'your postal code',
-      id: 'postal-code-billing',
-      name: 'postal-code-billing',
+      id: 'postal-code-billing-unsort',
+      name: 'postal-code-billing-unsort',
     });
 
     if (this.inputPostalCode.getElement() instanceof HTMLInputElement) {
@@ -138,14 +139,14 @@ export class UnsortedAddressAccount extends CreateElement {
 
     this.countryLabel = new Label({
       classNames: ['label'],
-      for: 'country-billing',
+      for: 'country-billing-unsort',
       textContent: 'Country:',
     });
     this.countryList = new Element({
       tag: 'select',
       className: 'country-list',
-      name: 'country-billing',
-      id: 'country-billing',
+      name: 'country-billing-unsort',
+      id: 'country-billing-unsort',
       children: [
         new Element({
           tag: 'option',
@@ -502,6 +503,9 @@ export class UnsortedAddressAccount extends CreateElement {
 
       this.setEditable(false);
       this.isEdited = false;
+      const modal = new ModalGreeting('Your data was saved successfully');
+
+      void modal.open();
     } catch (error) {
       console.warn(error);
       this.isEdited = false;

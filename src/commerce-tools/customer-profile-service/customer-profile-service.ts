@@ -6,9 +6,9 @@ import type {
 } from '@commercetools/platform-sdk';
 import type { ClientResponse } from '@commercetools/ts-client';
 
-import { isCustomer } from '../../shared/models/typeguards.ts/account-type-guards.ts';
 import { UserState } from '../../state/customer-state.ts';
 import { authService } from '../auth-service';
+import { isCustomerRes } from './isCusromerForAcc';
 
 export class CustomerProfileService {
   public static async updateCustomerData(updatedData: {
@@ -186,7 +186,7 @@ export class CustomerProfileService {
         })
         .execute();
 
-      if (isCustomer(response.body)) {
+      if (isCustomerRes(response.body)) {
         return response.body;
       } else {
         throw new Error('Invalid customer data');

@@ -1,5 +1,6 @@
 import type { Address } from '@commercetools/platform-sdk';
 
+import { authService } from '../../commerce-tools/auth-service.ts';
 import { CustomerProfileService } from '../../commerce-tools/customer-profile-service/customer-profile-service.ts';
 import { AccountModel } from '../../model/account/account-model.ts';
 import AccountPage from '../../pages/account/account-page.ts';
@@ -30,10 +31,11 @@ export class AccountController {
 
     UserState.getInstance().subscribe(this.onCustomerUpdate);
 
-    if (localStorage.getItem('isLoggedPlants')) {
+    if (authService.isAuthenticated) {
       if (!isCustomer(UserState.getInstance().customer)) {
         void (async (): Promise<void> => {
           UserState.getInstance().customer = await CustomerProfileService.fetchCustomerData();
+          this.onCustomerUpdate();
         })();
       }
 

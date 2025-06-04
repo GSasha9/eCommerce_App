@@ -1,7 +1,9 @@
 import { authService } from '../../../commerce-tools/auth-service.ts';
 import { CustomerProfileService } from '../../../commerce-tools/customer-profile-service/customer-profile-service.ts';
 import { CreateInput } from '../../../components/input/create-input.ts';
+import { ModalGreeting } from '../../../components/modals/modal-greeting.ts';
 import { route } from '../../../router';
+import { MESSAGE_CONTENT } from '../../../shared/constants/messages-for-validator.ts';
 import type { IParameters } from '../../../shared/models/interfaces';
 import { CreateElement } from '../../../shared/utils/create-element.ts';
 import { UserState } from '../../../state/customer-state.ts';
@@ -54,6 +56,13 @@ export class ChangePasswordModal extends CreateElement {
       id: 'confirm-password',
       name: 'confirmPassword',
       type: 'password',
+      // callback: (event: InputEvent):void => {
+      //   const input = event.target;
+
+      //   if(input instanceof HTMLInputElement) {
+      //     Validator.isPassword(input.value)
+      //   }
+      // }
     });
 
     this.currentPwdToggle = new CreateElement({
@@ -146,6 +155,19 @@ export class ChangePasswordModal extends CreateElement {
     const newPwdEl = this.newPasswordInput.getElement();
     const confirmPwdEl = this.confirmPasswordInput.getElement();
 
+    const currPass = this.currentPasswordInput.getElement();
+
+    if (currPass instanceof HTMLInputElement) {
+      currPass.addEventListener('input', () => {
+        if (currPass.value.length < 8 || !/\d/.test(currPass.value)) {
+          this.errorContainer.getElement().textContent =
+            MESSAGE_CONTENT.password || 'New password must be at least 8 characters and contain a number.';
+
+          return;
+        }
+      });
+    }
+
     if (newPwdEl instanceof HTMLInputElement && confirmPwdEl instanceof HTMLInputElement) {
       newPwdEl.addEventListener('input', () => this.handleRealTimeValidation());
       confirmPwdEl.addEventListener('input', () => this.handleRealTimeValidation());
@@ -174,14 +196,15 @@ export class ChangePasswordModal extends CreateElement {
       return;
     }
 
-    if (newPwdEl.value !== confirmPwdEl.value) {
-      this.errorContainer.getElement().textContent = 'New passwords do not match.';
+    if (newPwdEl.value.length < 8 || !/\d/.test(newPwdEl.value)) {
+      this.errorContainer.getElement().textContent =
+        MESSAGE_CONTENT.password || 'New password must be at least 8 characters and contain a number.';
 
       return;
     }
 
-    if (newPwdEl.value.length < 8 || !/\d/.test(newPwdEl.value)) {
-      this.errorContainer.getElement().textContent = 'New password must be at least 8 characters and contain a number.';
+    if (newPwdEl.value !== confirmPwdEl.value) {
+      this.errorContainer.getElement().textContent = 'New passwords do not match.';
 
       return;
     }
@@ -210,19 +233,20 @@ export class ChangePasswordModal extends CreateElement {
       return;
     }
 
+    if (newPwdEl.value.length < 8 || !/\d/.test(newPwdEl.value)) {
+      this.errorContainer.getElement().textContent =
+        MESSAGE_CONTENT.password || 'New password must be at least 8 characters and contain a number.';
+
+      return;
+    }
+
     if (newPwdEl.value !== confirmPwdEl.value) {
       this.errorContainer.getElement().textContent = 'New passwords do not match.';
 
       return;
     }
 
-    if (newPwdEl.value.length < 8 || !/\d/.test(newPwdEl.value)) {
-      this.errorContainer.getElement().textContent = 'New password must be at least 8 characters and contain a number.';
-
-      return;
-    }
-
-    const id = localStorage.getItem('isLoggedPlants');
+    const id = localStorage.getItem('ct_user_token');
 
     if (!id) return;
 
@@ -240,21 +264,16 @@ export class ChangePasswordModal extends CreateElement {
       const response = await CustomerProfileService.changeMyPassword(payload);
 
       if (response) {
-        authService.logOutCustomer();
+        authService.isAuthenticated = false;
+        localStorage.removeItem('ct_user_token');
         localStorage.removeItem('ct_anon_token');
-        const signInResult = await authService.signInCustomer(user.email, newPwdEl.value);
+        localStorage.removeItem('ct_user_credentials');
 
-        if (signInResult) {
-          route.navigate('/home');
-          const auth = authService.getAuthenticatedStatus();
+        UserState.getInstance().customer = undefined;
 
-          if (auth) {
-            localStorage.setItem('isLoggedPlants', signInResult.customer.id);
-            UserState.getInstance().customer = signInResult.customer;
-            Header.switchBtn();
-            route.navigate('/account');
-          }
-        }
+        await authService.refreshAnonymousToken();
+
+        route.navigate('/login');
       }
     } catch (error) {
       this.errorContainer.getElement().textContent = `Password update failed: ${String(error)}`;
@@ -263,6 +282,14 @@ export class ChangePasswordModal extends CreateElement {
     }
 
     this.close();
+
+    const modal = new ModalGreeting('Password changed successfully. Please log in again with your new credentials.');
+
+    void (await modal.open());
+    Header.switchBtn();
+    const logout = document.querySelector<HTMLElement>('.header__button--login');
+
+    if (logout?.classList.contains('logout')) logout?.classList.remove('logout');
   }
 
   private onCancel(): void {

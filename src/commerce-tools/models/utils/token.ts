@@ -28,7 +28,7 @@ export const getToken = (): string | null => {
 
   const anonymToken = tokenCache('ct_anon_token').get().token;
 
-  if (userToken) return `Basic ${anonymToken}`;
+  if (anonymToken) return `Basic ${anonymToken}`;
 
   return null;
 };

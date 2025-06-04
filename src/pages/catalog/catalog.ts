@@ -250,13 +250,7 @@ export class CatalogPage extends View {
       tag: 'div',
       classNames: ['card-img'],
       textContent: '',
-      callback: (): void => {
-        const key = parameters.key;
-
-        if (key) {
-          route.navigate(`/detailed-product/${key}`);
-        }
-      },
+      callback: (): void => {},
     });
 
     if (typeof parameters.img === 'string') img.getElement().style.backgroundImage = `url("${parameters.img}")`;
@@ -341,7 +335,17 @@ export class CatalogPage extends View {
       tag: 'div',
       classNames: ['card'],
       textContent: '',
-      callback: (): void => {},
+      callback: (event: MouseEvent): void => {
+        const card = event.target;
+
+        if (!(card instanceof HTMLElement) || card.closest('.buttons-container')) return;
+
+        const key = parameters.key;
+
+        if (key) {
+          route.navigate(`/detailed-product/${key}`);
+        }
+      },
       children: [img, title, description, cardsFooter],
     });
 

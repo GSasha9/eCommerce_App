@@ -26,13 +26,13 @@ export default class CatalogController {
 
     this.allProductsResponse = undefined;
 
-    void this.showAllProductCards();
-
     this.initListeners();
   }
 
-  public render(): void {
+  public async render(): Promise<void> {
     const layout = Layout.getInstance();
+
+    await this.showAllProductCards();
 
     layout.setMainContent(this.catalogPage.getHtmlElement());
   }

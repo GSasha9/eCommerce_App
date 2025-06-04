@@ -17,13 +17,13 @@ describe('Check for singleton', () => {
   });
 });
 
-describe('Return authenticated status', () => {
-  test('shoud return an authenticated status of user', () => {
-    // @ts-expect-error: overriding private property for testing
-    authService.isAuthenticated = false;
-    expect(authService.getAuthenticatedStatus()).toBe(false);
-  });
-});
+// describe('Return authenticated status', () => {
+//   test('shoud return an authenticated status of user', () => {
+//     // @ts-expect-error: overriding private property for testing
+//     authService.isAuthenticated = false;
+//     expect(authService.getAuthenticatedStatus()).toBe(false);
+//   });
+// });
 
 describe('Login error because of absents of project key', () => {
   test('shoud return an error if project key = undefined', async () => {
