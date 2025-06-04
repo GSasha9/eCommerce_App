@@ -155,10 +155,6 @@ export class AuthorizationService {
   };
 
   public logOutCustomer = (): void => {
-    //const cacheKey = TOKEN.USER;
-
-    //if (!localStorage.getItem(cacheKey)) return;
-
     this.api = this.initializeAnonymousSession();
 
     localStorage.removeItem('ct_user_token');
@@ -224,6 +220,8 @@ export class AuthorizationService {
           },
         })
         .execute();
+
+      console.log(response.body.results);
 
       return {
         products: response.body.results,
