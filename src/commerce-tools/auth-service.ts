@@ -89,30 +89,43 @@ export class AuthorizationService {
 
     this.api = this.apiDefinition({ type: 'authenticated', email, password });
 
-    const response = await this.api
-      .me()
-      .login()
-      .post({
-        body: {
-          email,
-          password,
-          ...(anonymousCartId && {
-            anonymousCart: {
-              id: anonymousCartId,
-              typeId: 'cart',
-            },
-          }),
-        },
-      })
-      .execute();
+    try {
+      const response = await this.api
+        .me()
+        .login()
+        .post({
+          body: {
+            email,
+            password,
+            ...(anonymousCartId && {
+              anonymousCart: {
+                id: anonymousCartId,
+                typeId: 'cart',
+              },
+            }),
+          },
+        })
+        .execute();
 
-    this.isAuthenticated = true;
+      this.isAuthenticated = true;
+      localStorage.removeItem('ct_anon_token');
+      localStorage.setItem('ct_user_credentials', JSON.stringify({ email, password }));
 
-    if (localStorage.getItem('ct_anon_token')) localStorage.removeItem('ct_anon_token');
+      return response.body;
+    } catch (error) {
+      console.error('Login failed. Invalid credentials or token issue:', error);
 
-    localStorage.setItem('ct_user_credentials', JSON.stringify({ email, password }));
+      localStorage.removeItem('ct_user_token');
+      localStorage.removeItem('ct_user_credentials');
+      localStorage.removeItem('ct_anon_token');
 
-    return response.body;
+      this.token = null;
+      this.isAuthenticated = false;
+
+      this.api = this.initializeAnonymousSession();
+
+      throw new Error('Login failed: Invalid credentials or expired session. Please try again.');
+    }
   };
 
   public getProductByKey = async (productKey: string): Promise<ClientResponse<ProductProjection>> => {
@@ -296,18 +309,15 @@ export class AuthorizationService {
     const userTokenStore = tokenCache('ct_user_token').get();
     const credentialsRaw = localStorage.getItem('ct_user_credentials');
 
-    console.log('Try restore:', userTokenStore);
+    if (!credentialsRaw) return false;
 
-    if (userTokenStore?.token && userTokenStore?.expirationTime > Date.now() && credentialsRaw) {
-      try {
-        const parsed: unknown = JSON.parse(credentialsRaw);
+    try {
+      const parsed: unknown = JSON.parse(credentialsRaw);
 
-        if (!isCredentials(parsed)) {
-          return false;
-        }
+      if (!isCredentials(parsed)) return false;
 
+      if (userTokenStore?.token && userTokenStore.expirationTime > Date.now()) {
         this.token = `Bearer ${userTokenStore.token}`;
-        console.log(this.token, 'token');
         this.api = this.apiDefinition({
           type: 'authenticated',
           email: parsed.email,
@@ -316,14 +326,41 @@ export class AuthorizationService {
         this.isAuthenticated = true;
 
         return true;
-      } catch (e) {
-        console.error('Failed to parse stored credentials:', e);
-
-        return false;
       }
-    }
 
-    return false;
+      this.api = this.apiDefinition({
+        type: 'authenticated',
+        email: parsed.email,
+        password: parsed.password,
+      });
+
+      return this.api
+        .me()
+        .get()
+        .execute()
+        .then(() => {
+          this.isAuthenticated = true;
+
+          return true;
+        })
+        .catch((error) => {
+          console.warn('Re-authentication failed:', error);
+          this.clearUserSession();
+
+          return false;
+        });
+    } catch (e) {
+      console.error('Failed to parse credentials or restore session:', e);
+      this.clearUserSession();
+
+      return false;
+    }
+  }
+
+  private clearUserSession(): void {
+    localStorage.removeItem('ct_user_token');
+    localStorage.removeItem('ct_user_credentials');
+    this.isAuthenticated = false;
   }
 
   private apiDefinition = (auth: AuthState, projectKey = this.projectKey): ByProjectKeyRequestBuilder => {
