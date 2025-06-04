@@ -74,68 +74,89 @@ export default class CatalogController {
       addSearchTextToFilters(this);
     });
 
-    const productContainer = this.catalogPage.productsContainer.getElement();
-
-    productContainer.addEventListener('click', (event) => {
-      if (event.target instanceof HTMLElement && event.target.classList.contains('card-like')) {
-        this.onClickAddToFavourite(event);
-      }
-    });
-
     this.catalogPage.categoryList.getElement().addEventListener('click', (event) => {
-      const category = event.target;
+      const target = event.target;
 
-      if (category && category instanceof HTMLElement) {
-        const li = category.closest('li');
+      if (!(target instanceof HTMLElement)) return;
 
-        const name = li?.querySelector('.category__list_item-name')?.textContent;
+      const li = target.closest('li');
 
-        if (!name) return;
+      if (!li) return;
 
-        const categoryIndex = this.catalogModel.categories.get(name);
+      const name = li.querySelector('.category__list_item-name')?.textContent;
 
-        if (!categoryIndex) return;
+      if (!name) return;
 
-        if (li && li.classList.contains('selected-category')) {
-          li.classList.remove('selected-category');
-          this.catalogPage.removeBreadCrumb(name);
+      const categoryIndex = this.catalogModel.categories.get(name);
 
-          if (this.filters.categoriesId) {
-            const index = this.filters.categoriesId.indexOf(categoryIndex);
+      if (categoryIndex === undefined) return;
 
-            if (index !== -1) {
-              this.filters.categoriesId.splice(index, 1);
+      const isSelected = li.classList.contains('selected-category');
+      const saleFilterActive = Boolean(this.filters.discount);
 
-              if (this.filters.categoriesId.length === 0) {
-                delete this.filters.categoriesId;
-              }
-            }
-          }
-        } else {
-          const allSubCaregories = this.catalogPage.categoryList
+      if (isSelected) {
+        li.classList.remove('selected-category');
+        this.catalogPage.removeBreadCrumb(name);
+
+        if (this.filters.categoriesId) {
+          const index = this.filters.categoriesId.indexOf(categoryIndex);
+
+          if (index !== -1) this.filters.categoriesId.splice(index, 1);
+
+          if (this.filters.categoriesId.length === 0) delete this.filters.categoriesId;
+        }
+      } else {
+        if (saleFilterActive) {
+          const allItems = this.catalogPage.categoryList
             .getElement()
             .querySelectorAll<HTMLElement>('.category__list-item');
 
-          allSubCaregories.forEach((subCat) => {
-            const catName = subCat.getAttribute('data-key');
+          allItems.forEach((item) => {
+            item.classList.remove('selected-category');
+            const key = item.getAttribute('data-key');
 
-            if (catName !== name && subCat.classList.contains('selected-category')) {
-              subCat.classList.remove('selected-category');
-
-              if (catName) this.catalogPage.removeBreadCrumb(catName);
-            }
+            if (key) this.catalogPage.removeBreadCrumb(key);
           });
 
-          li?.classList.add('selected-category');
+          li.classList.add('selected-category');
 
-          if (this.catalogPage.breadCrumbPath.getElement().childNodes.length > 0) {
-            this.catalogPage.addBreadCrumb(name);
-          } else {
+          const key = li.getAttribute('data-key');
+
+          if (key) this.catalogPage.removeBreadCrumb(key);
+
+          const crumbs = Array.from(this.catalogPage.breadCrumbPath.getElement().childNodes).map((node) =>
+            (node.textContent || '').trim(),
+          );
+
+          if (!crumbs.includes('Plant')) {
             this.catalogPage.addBreadCrumb('Plant');
+          }
+
+          this.catalogPage.addBreadCrumb(name);
+
+          this.filters.categoriesId = [categoryIndex];
+        } else {
+          li.classList.add('selected-category');
+
+          const existingCrumbs = Array.from(this.catalogPage.breadCrumbPath.getElement().childNodes).map((node) =>
+            (node.textContent || '').trim(),
+          );
+
+          if (!existingCrumbs.includes('Plant')) {
+            this.catalogPage.addBreadCrumb('Plant');
+          }
+
+          if (!existingCrumbs.includes(name)) {
             this.catalogPage.addBreadCrumb(name);
           }
 
-          this.filters.categoriesId = [categoryIndex];
+          if (!this.filters.categoriesId) {
+            this.filters.categoriesId = [];
+          }
+
+          if (!this.filters.categoriesId.includes(categoryIndex)) {
+            this.filters.categoriesId.push(categoryIndex);
+          }
         }
       }
 

@@ -225,8 +225,6 @@ export class AuthorizationService {
         })
         .execute();
 
-      console.log(response.body.results);
-
       return {
         products: response.body.results,
         total: response.body.total,

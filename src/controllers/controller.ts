@@ -64,7 +64,7 @@ export class Controller {
     });
 
     this.router.addRoute(ROUTES_URL.CATALOG, () => {
-      this.catalogController.render();
+      void this.catalogController.render();
     });
 
     this.router.addRoute(ROUTES_URL.ACCOUNT, () => {
