@@ -147,7 +147,7 @@ export class AccountController {
     newAddresses: Address[],
     currentComponents: T[],
     containerEl: HTMLElement,
-    ComponentType: { new (parameters?: Partial<IParameters>, ind?: number | string): T },
+    ComponentType: { new (parameters: Partial<IParameters>, ind: number): T },
     unique: { commonIds: Address[]; uniqueBilling: Address[]; uniqueShipping: Address[] },
   ): void {
     if (containerEl.childElementCount === 1 && containerEl.firstElementChild?.textContent === 'Nothing here...') {

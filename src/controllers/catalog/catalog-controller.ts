@@ -31,9 +31,13 @@ export default class CatalogController {
 
   public async render(): Promise<void> {
     const layout = Layout.getInstance();
+    const msg = document.createElement('h1');
 
+    msg.textContent = 'Loading..Please wait!';
+    msg.className = 'header__logo';
+    layout.setMainContent(msg);
+    layout.setMainContent(msg);
     await this.showAllProductCards();
-
     layout.setMainContent(this.catalogPage.getHtmlElement());
   }
 
