@@ -47,21 +47,21 @@ export class ShippingAddressAccount extends CreateElement {
   private checkboxInitialClick: boolean = false;
   private state: UserState = UserState.getInstance();
 
-  constructor(parameters: Partial<IParameters> = {}) {
-    super({ tag: 'div', classNames: ['group'], ...parameters });
+  constructor(parameters: Partial<IParameters> = {}, ind: number) {
+    super({ tag: 'div', classNames: ['group-account'], ...parameters });
     this.modalModel = new BillingAddressModalModel();
     this.errorContainers = {};
 
     this.streetLabel = new Label({
       classNames: ['label'],
-      for: 'street',
+      for: `street-${ind}`,
       textContent: 'Street:',
     });
     this.inputStreet = new CreateInput({
       classNames: ['street'],
       placeholder: 'your street',
-      id: 'street',
-      name: 'street',
+      id: `street-${ind}`,
+      name: `street-${ind}`,
     });
 
     if (this.inputStreet.getElement() instanceof HTMLInputElement) {
@@ -70,7 +70,8 @@ export class ShippingAddressAccount extends CreateElement {
 
     const streetErrorDiv = document.createElement('div');
 
-    streetErrorDiv.className = 'error-message';
+    streetErrorDiv.className = `error-message-street-${ind}`;
+    streetErrorDiv.style.minHeight = '50px';
     this.errorContainers['street'] = streetErrorDiv;
 
     const streetContainer = new CreateElement({
@@ -83,14 +84,14 @@ export class ShippingAddressAccount extends CreateElement {
 
     this.cityLabel = new Label({
       classNames: ['label'],
-      for: 'city',
+      for: `city-${ind}`,
       textContent: 'City:',
     });
     this.inputCity = new CreateInput({
       classNames: ['city'],
       placeholder: 'your city',
-      id: 'city',
-      name: 'city',
+      id: `city-${ind}`,
+      name: `city-${ind}`,
     });
 
     if (this.inputCity.getElement() instanceof HTMLInputElement) {
@@ -99,7 +100,8 @@ export class ShippingAddressAccount extends CreateElement {
 
     const cityErrorDiv = document.createElement('div');
 
-    cityErrorDiv.className = 'error-message';
+    cityErrorDiv.className = `error-message-city-${ind}`;
+    cityErrorDiv.style.minHeight = '50px';
     this.errorContainers['city'] = cityErrorDiv;
 
     const cityContainer = new CreateElement({
@@ -112,14 +114,14 @@ export class ShippingAddressAccount extends CreateElement {
 
     this.postalCodeLabel = new Label({
       classNames: ['label'],
-      for: 'postal-code',
+      for: `postal-code-${ind}`,
       textContent: 'Postal code:',
     });
     this.inputPostalCode = new CreateInput({
       classNames: ['postal-code'],
       placeholder: 'your postal code',
-      id: 'postal-code',
-      name: 'postal-code',
+      id: `postal-code-${ind}`,
+      name: `postal-code-${ind}`,
       value: '',
     });
 
@@ -129,7 +131,8 @@ export class ShippingAddressAccount extends CreateElement {
 
     const postalErrorDiv = document.createElement('div');
 
-    postalErrorDiv.className = 'error-message';
+    postalErrorDiv.className = `error-message-postal-code-${ind}`;
+    postalErrorDiv.style.minHeight = '50px';
     this.errorContainers['postalCode'] = postalErrorDiv;
 
     const postalContainer = new CreateElement({
@@ -142,14 +145,14 @@ export class ShippingAddressAccount extends CreateElement {
 
     this.countryLabel = new Label({
       classNames: ['label'],
-      for: 'country',
+      for: `country-${ind}`,
       textContent: 'Country:',
     });
     this.countryList = new Element({
       tag: 'select',
       className: 'country-list',
-      name: 'country',
-      id: 'country',
+      name: `country-${ind}`,
+      id: `country-${ind}`,
       children: [
         new Element({
           tag: 'option',
@@ -175,7 +178,8 @@ export class ShippingAddressAccount extends CreateElement {
 
     const countryErrorDiv = document.createElement('div');
 
-    countryErrorDiv.className = 'error-message';
+    countryErrorDiv.className = `error-message-country-${ind}`;
+    countryErrorDiv.style.minHeight = '50px';
     this.errorContainers['country'] = countryErrorDiv;
     const countryContainer = new CreateElement({
       tag: 'div',
@@ -187,14 +191,14 @@ export class ShippingAddressAccount extends CreateElement {
 
     this.defaultLabel = new Label({
       classNames: ['label'],
-      for: 'is-default-shipping',
+      for: `is-default-shipping-${ind}`,
       textContent: 'Set as default address',
     });
     this.checkboxDefault = new CreateInput({
       classNames: ['default-shipping'],
       type: 'checkbox',
-      id: 'is-default-shipping',
-      name: 'is-default-shipping',
+      id: `is-default-shipping-${ind}`,
+      name: `is-default-shipping-${ind}`,
     });
 
     if (this.checkboxDefault.getElement() instanceof HTMLInputElement) {
@@ -448,6 +452,7 @@ export class ShippingAddressAccount extends CreateElement {
 
     if (errorContainer instanceof HTMLElement) {
       errorContainer.textContent = message;
+      errorContainer.style.color = 'darkred';
     }
   }
 

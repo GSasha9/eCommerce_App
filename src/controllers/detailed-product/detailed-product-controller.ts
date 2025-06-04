@@ -39,10 +39,17 @@ export class DetailedProductController {
   };
 
   public async render(): Promise<void> {
+    const layout = Layout.getInstance();
+
+    const msg = document.createElement('h1');
+
+    msg.textContent = 'Loading..Please wait!';
+    msg.className = 'header__logo';
+    layout.setMainContent(msg);
+
     this.model.clearQueryResults();
     this.model.getProductKeyByUrl();
     await this.model.getDetailedInformation();
-    const layout = Layout.getInstance();
 
     layout.setMainContent(this.page.renderPage());
 

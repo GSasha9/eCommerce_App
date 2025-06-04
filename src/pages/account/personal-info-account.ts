@@ -28,7 +28,7 @@ export class PersonalInfoElementsAccount extends CreateElement {
   private readonly errorBirthday: CreateElement;
 
   constructor(parameters: Partial<IParameters> = {}) {
-    super({ tag: 'div', classNames: ['group'], ...parameters });
+    super({ tag: 'div', classNames: ['group-info'], ...parameters });
 
     this.model = AccountModel.getInstance();
 

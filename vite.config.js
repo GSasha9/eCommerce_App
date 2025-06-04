@@ -1,7 +1,7 @@
 import { build, defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '',
+  base: '/',
   test: {
     globals: true,
     environment: 'jsdom',
