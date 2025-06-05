@@ -40,7 +40,6 @@ export class DetailedProductController {
 
   public async render(): Promise<void> {
     const layout = Layout.getInstance();
-
     const msg = document.createElement('h1');
 
     msg.textContent = 'Loading..Please wait!';
@@ -50,7 +49,6 @@ export class DetailedProductController {
     this.model.clearQueryResults();
     this.model.getProductKeyByUrl();
     await this.model.getDetailedInformation();
-
     layout.setMainContent(this.page.renderPage());
 
     if (this.model.response && this.model.response.img) {

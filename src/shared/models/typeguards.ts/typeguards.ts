@@ -75,3 +75,5 @@ export const isStringFormName = (
   value === 'cityBilling' ||
   value === 'postalCodeBilling' ||
   value === 'countryBilling';
+
+export const isString = (value: unknown): value is string => typeof value === 'string';
