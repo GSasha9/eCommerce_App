@@ -7,4 +7,5 @@ export type IParametersCard = {
   price: string;
   discount?: string;
   key: string;
+  attr: string;
 };

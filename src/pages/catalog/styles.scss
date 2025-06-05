@@ -39,6 +39,27 @@
   display: none;
 }
 
+.card-attribute-height-low,
+.card-attribute-height-medium,
+.card-attribute-height-tall {
+  width: 50px;
+  height: 35px;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.card-attribute-height-low {
+  background-image: url('../../../public/images/low.svg');
+}
+
+.card-attribute-height-medium {
+  background-image: url('../../../public/images/med.svg');
+}
+
+.card-attribute-height-tall {
+  background-image: url('../../../public/images/tall.svg');
+}
+
 @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
   .filters {
     position: absolute;
@@ -278,7 +299,7 @@
 
     display: flex;
     flex-direction: column;
-    gap: $spacing-sm;
+    gap: $spacing-lg;
 
     width: 300px;
     height: 360px;

@@ -9,6 +9,7 @@ import type { ProductPerPageResponse } from '../../shared/models/type';
 import type { Filters } from './filters';
 import { addSearchTextToFilters } from './utils/add-search-text-to-filters';
 import { findKeyByValue } from './utils/find-key-by-value';
+import { isAttrHeightValue } from './utils/is-attr-height-value';
 import { updateSortAndFilter } from './utils/update-sort-select';
 
 export default class CatalogController {
@@ -295,6 +296,14 @@ export default class CatalogController {
     }
 
     cards.forEach((el) => {
+      const attributeHeight = el.masterVariant.attributes?.find((el) => el.name === 'height');
+
+      let attrValue: string = '';
+
+      if (attributeHeight && isAttrHeightValue(attributeHeight)) {
+        attrValue = attributeHeight.value.key;
+      }
+
       const parameters: IParametersCard = {
         name: el.name.en,
         description: el.description?.['en'] ?? el.description?.['en-US'] ?? 'No description available',
@@ -302,6 +311,7 @@ export default class CatalogController {
         price: `${el.masterVariant.prices?.[0].value.centAmount !== undefined ? el.masterVariant.prices?.[0].value.centAmount / 100 : 0}$`,
         discount: `${el.masterVariant.prices?.[0].discounted?.value.centAmount !== undefined ? el.masterVariant.prices?.[0].discounted?.value.centAmount / 100 : ''}$`,
         key: el.key ?? '',
+        attr: attrValue,
       };
 
       this.catalogPage.addCard(parameters);
