@@ -312,7 +312,13 @@ export class CatalogPage extends View {
       tag: 'div',
       classNames: ['card-like'],
       textContent: '',
-      callback: (): void => {},
+      callback: (event: Event): void => {
+        const card = event.target;
+
+        if (!(card instanceof HTMLElement) || !card.classList.contains('card-like')) return;
+
+        this.catalogController.onClickAddToFavourite(event);
+      },
     });
 
     const button = new CreateButton({
@@ -345,7 +351,15 @@ export class CatalogPage extends View {
       callback: (event: MouseEvent): void => {
         const card = event.target;
 
-        if (!(card instanceof HTMLElement) || card.closest('.buttons-container')) return;
+        console.log(card);
+
+        if (!(card instanceof HTMLElement) || card.classList.contains('card-button')) return;
+
+        if (card.closest('.card-like')) {
+          event.preventDefault();
+
+          return;
+        }
 
         const key = parameters.key;
 
