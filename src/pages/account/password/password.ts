@@ -56,13 +56,6 @@ export class ChangePasswordModal extends CreateElement {
       id: 'confirm-password',
       name: 'confirmPassword',
       type: 'password',
-      // callback: (event: InputEvent):void => {
-      //   const input = event.target;
-
-      //   if(input instanceof HTMLInputElement) {
-      //     Validator.isPassword(input.value)
-      //   }
-      // }
     });
 
     this.currentPwdToggle = new CreateElement({

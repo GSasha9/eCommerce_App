@@ -17,7 +17,7 @@ import type { ProductPerPageResponse } from '../shared/models/type';
 import { UserState } from '../state/customer-state';
 import { CustomerProfileService } from './customer-profile-service/customer-profile-service';
 import type { AuthState } from './models/types';
-import { isCredentials } from './models/utils/isCredentials';
+import { isCredentials } from './models/utils/is-credentials';
 import { getToken, tokenCache } from './models/utils/token';
 
 export class AuthorizationService {
@@ -165,17 +165,6 @@ export class AuthorizationService {
     localStorage.removeItem('ct_user_credentials');
     this.isAuthenticated = false;
   };
-
-  // public getCustomerByEmail(email: string): Promise<ClientResponse<CustomerPagedQueryResponse>> {
-  //   return this.api
-  //     .customers()
-  //     .get({
-  //       queryArgs: {
-  //         where: `email="${email}"`,
-  //       },
-  //     })
-  //     .execute();
-  // }
 
   public getPlantSubCategories = async (): Promise<Record<string, Category[]>> => {
     if (!this.api) {
