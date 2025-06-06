@@ -127,7 +127,7 @@ export class AuthorizationService {
 
       return response.body;
     } catch (error) {
-      console.error('Login failed. Invalid credentials or token issue:', error);
+      console.error(ErrorMessage.LOGIN_FAILED, error);
 
       localStorage.removeItem('ct_user_token');
       localStorage.removeItem('ct_user_credentials');
@@ -138,7 +138,7 @@ export class AuthorizationService {
 
       this.api = this.initializeAnonymousSession();
 
-      throw new Error('Login failed: Invalid credentials or expired session. Please try again.');
+      throw new Error(ErrorMessage.LOGIN_FAILED);
     }
   };
 
@@ -153,7 +153,7 @@ export class AuthorizationService {
 
       return res;
     } catch (error) {
-      console.error('Failed to retrieve product information', error);
+      console.error(ErrorMessage.UNABLE_TO_GET_INFO_PRODUCT, error);
       throw error;
     }
   };
@@ -278,16 +278,12 @@ export class AuthorizationService {
 
       return response;
     } catch (error) {
-      console.error('Unable to get products by category and price', error);
+      console.error(ErrorMessage.UNABLE_TO_GET_PRODUCT_BY_CATEGORY, error);
       throw error;
     }
   };
 
-  public initializeAnonymousSession(): ByProjectKeyRequestBuilder {
-    return this.apiDefinition({ type: 'anonymous' });
-  }
-
-  public async refreshAnonymousToken(): Promise<void> {
+  private buildAnonymousClient(): ByProjectKeyRequestBuilder {
     const client = new ClientBuilder()
       .withAnonymousSessionFlow({
         host: this.authUrl,
@@ -305,13 +301,22 @@ export class AuthorizationService {
       .withHttpMiddleware({ host: this.apiUrl, httpClient: fetch })
       .build();
 
-    await createApiBuilderFromCtpClient(client)
-      .withProjectKey({ projectKey: this.projectKey })
+    return createApiBuilderFromCtpClient(client).withProjectKey({ projectKey: this.projectKey });
+  }
+
+  public initializeAnonymousSession(): ByProjectKeyRequestBuilder {
+    return this.buildAnonymousClient();
+  }
+
+  public async refreshAnonymousToken(): Promise<void> {
+    const apiClient = this.buildAnonymousClient();
+
+    await apiClient
       .categories()
       .get({ queryArgs: { limit: 1 } })
       .execute();
 
-    this.api = createApiBuilderFromCtpClient(client).withProjectKey({ projectKey: this.projectKey });
+    this.api = apiClient;
   }
 
   private async tryRestoreUserSession(): Promise<boolean> {
@@ -353,13 +358,13 @@ export class AuthorizationService {
           return true;
         })
         .catch((error) => {
-          console.warn('Re-authentication failed:', error);
+          console.warn(ErrorMessage.RE_AUTHENTICATION_FAILED, error);
           this.clearUserSession();
 
           return false;
         });
     } catch (e) {
-      console.error('Failed to parse credentials or restore session:', e);
+      console.error(ErrorMessage.FAILED_TO_RESTORE_SESSION, e);
       this.clearUserSession();
 
       return false;

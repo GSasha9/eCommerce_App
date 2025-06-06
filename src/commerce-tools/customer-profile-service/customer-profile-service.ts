@@ -8,7 +8,7 @@ import type { ClientResponse } from '@commercetools/ts-client';
 
 import { UserState } from '../../state/customer-state.ts';
 import { authService } from '../auth-service';
-import { isCustomerRes } from './isCusromerForAcc';
+import { isCustomerRes } from './is-customer-for-account.ts';
 
 export class CustomerProfileService {
   public static async updateCustomerData(updatedData: {

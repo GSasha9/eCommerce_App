@@ -1,18 +1,12 @@
-type CategoryId = string[];
-type RangeOfPrice = {
-  from: number | string;
-  to: number | '*';
-};
-type Sort = {
-  parameter: string;
-  method: string;
-};
+import type { Sort } from './models/interfaces';
+import type { RangeOfPrice } from './models/interfaces';
+import type { CategoryId } from './models/types';
 
-export type Filters = {
+export interface Filters {
   categoriesId?: CategoryId;
   range?: RangeOfPrice;
   sort?: Sort;
   discount?: boolean;
   text?: string;
   height?: string[];
-};
+}
