@@ -15,7 +15,6 @@ class DetailedProductPage {
     this.model = model;
     this.wrapperContent = genElement('div', { className: 'wrapper-content' });
     this.page = genElement('div', { className: 'detailed-product-page wrapper' }, [this.wrapperContent]);
-
     this.error = genElement('div', { className: 'error' }, ['Sorry, something went wrong.']);
   }
 

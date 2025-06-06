@@ -1,12 +1,8 @@
 import Swiper from 'swiper/bundle';
 import type { SwiperOptions } from 'swiper/types';
 
+import type { IInitSliderProperties } from '../models/interfaces/init-slider-properties.ts';
 import { isHTMLElement } from '../models/typeguards.ts';
-
-export interface IInitSliderProperties {
-  images: string[];
-  name: string;
-}
 
 export function initSlider(properties: IInitSliderProperties): void {
   const { images, name } = properties;

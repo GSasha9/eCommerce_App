@@ -1,9 +1,8 @@
 import { authService } from '../../commerce-tools/auth-service';
 import type { IResponseDetailedProduct } from '../../shared/models/interfaces/response-detailed-product.ts';
-import { isCommercetoolsApiError } from '../../shared/models/typeguards.ts';
+import { isCommercetoolsApiError, isString } from '../../shared/models/typeguards.ts';
 
 import 'swiper/css/bundle';
-const isString = (value: unknown): value is string => typeof value === 'string';
 
 class DetailedProductModel {
   private static instance: DetailedProductModel;
@@ -36,9 +35,6 @@ class DetailedProductModel {
     try {
       if (this.key) {
         const response = await authService.getProductByKey(this.key);
-
-        //console.log('response-----', response);
-
         const name = response.body.name.en;
         const img = response.body.masterVariant.images?.map((img) => img.url);
         const description = response.body.description?.['en-US'];
