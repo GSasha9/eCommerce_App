@@ -123,7 +123,6 @@ export class Header {
     const loginButton: CreateButton = new CreateButton({
       classNames: ['header__button', 'header__button--login', isAuthenticated ? 'logout' : 'login'],
       textContent: isAuthenticated ? 'Logout' : 'Login',
-      //type: 'button',
       disabled: false,
       callback: (event: Event): void => {
         event.preventDefault();
@@ -134,7 +133,6 @@ export class Header {
             event.target.classList.add('login');
             event.target.textContent = 'Login';
             authService.logOutCustomer();
-            //localStorage.removeItem('ct_user_token');
             this.switchBtn();
             route.navigate('/login');
           }

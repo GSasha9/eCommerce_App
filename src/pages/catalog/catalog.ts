@@ -129,8 +129,6 @@ export class CatalogPage extends View {
       },
     });
 
-    //this.addBreadCrumb(title);
-
     this.categoryList.addInnerElement(li);
   }
 

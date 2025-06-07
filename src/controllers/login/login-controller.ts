@@ -2,7 +2,6 @@ import { authService } from '../../commerce-tools/auth-service.ts';
 import ConfirmModal from '../../components/modals/confirm-modal/confirm-modal.ts';
 import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import { LoginModel } from '../../model/login/login-model.ts';
-//import { Header } from '../../pages/layout/header.ts';
 import { Layout } from '../../pages/layout/layout.ts';
 import { LoginPage } from '../../pages/login/login.ts';
 import { route } from '../../router';
@@ -77,9 +76,7 @@ export class LoginController {
             const auth = authService.getAuthenticatedStatus();
 
             if (auth) {
-              //localStorage.setItem('isLoggedPlants', response.customer.id);
               UserState.getInstance().customer = response.customer;
-              //Header.switchBtn();
               route.navigate('/home');
             }
 

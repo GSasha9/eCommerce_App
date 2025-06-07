@@ -1,5 +1,4 @@
 import { HomePage } from '../../pages/home/home.ts';
-//import { Header } from '../../pages/layout/header.ts';
 import { Layout } from '../../pages/layout/layout.ts';
 
 export class HomeController {
@@ -10,8 +9,6 @@ export class HomeController {
       tag: 'section',
       classNames: ['home-page'],
     });
-
-    //Header.switchBtn();
   }
 
   public render(): void {

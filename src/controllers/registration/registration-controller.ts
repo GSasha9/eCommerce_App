@@ -81,11 +81,7 @@ export class RegistrationController {
         await new ModalGreeting('The account was created successfully').open();
         route.navigate('/home');
         LoginController.configureLogoutButton();
-        const auth = authService.getAuthenticatedStatus();
-
-        if (auth) {
-          //localStorage.setItem('isLoggedPlants', 'true');
-        }
+        authService.getAuthenticatedStatus();
       } catch (error) {
         if (isCommercetoolsApiError(error)) {
           handleApiError(error);
