@@ -7,4 +7,6 @@ export interface IParametersCard {
   price: string;
   discount?: string;
   key: string;
+  id: string;
+  variantId: number;
 }

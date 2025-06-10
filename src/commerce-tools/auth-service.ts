@@ -7,10 +7,12 @@ import type {
   ProductProjection,
   ProductProjectionPagedSearchResponse,
 } from '@commercetools/platform-sdk';
+import type { Cart } from '@commercetools/platform-sdk';
 import { createApiBuilderFromCtpClient } from '@commercetools/platform-sdk';
 import type { ExistingTokenMiddlewareOptions } from '@commercetools/ts-client';
 import { type Client, ClientBuilder } from '@commercetools/ts-client';
 
+import type { ProductParameters } from '../pages/catalog/models/interfaces/product-paameters';
 import { Header } from '../pages/layout/header';
 import { ErrorMessage, PRODUCTS_PER_PAGE } from '../shared/constants';
 import type { ProductPerPageResponse } from '../shared/models/type';
@@ -32,6 +34,8 @@ export class AuthorizationService {
   private apiUrl = import.meta.env.VITE_CTP_API_URL;
   private scopes = import.meta.env.VITE_CTP_SCOPES;
   public isAuthenticated = false;
+  public anonymusId = crypto.randomUUID();
+  public cartId = '';
   private token: string | null;
 
   private options: ExistingTokenMiddlewareOptions = { force: true };
@@ -283,6 +287,80 @@ export class AuthorizationService {
     }
   };
 
+  //ask for existing cart
+  public getCart = async (): Promise<ClientResponse<Cart>> => {
+    return this.api.me().activeCart().get().execute();
+  };
+
+  //create cart
+  public createCart = async (): Promise<ClientResponse<Cart> | undefined> => {
+    let cart;
+
+    if (this.isAuthenticated) {
+      try {
+        cart = await this.api
+          .me()
+          .carts()
+          .post({
+            body: {
+              currency: 'USD',
+            },
+          })
+          .execute();
+
+        if (cart) this.cartId = cart.body.id;
+      } catch (err) {
+        console.warn(err);
+      }
+    } else {
+      try {
+        cart = await this.api
+          .carts()
+          .post({
+            body: {
+              currency: 'USD',
+              anonymousId: this.anonymusId,
+            },
+          })
+          .execute();
+
+        if (cart) this.cartId = cart.body.id;
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+
+    return cart;
+  };
+
+  public addProductToCart = async (product: ProductParameters): Promise<void> => {
+    try {
+      const cartResponse = await this.api.carts().withId({ ID: this.cartId }).get().execute();
+      const currentVersion = cartResponse.body.version;
+      const response = await this.api
+        .carts()
+        .withId({ ID: this.cartId })
+        .post({
+          body: {
+            version: currentVersion,
+            actions: [
+              {
+                action: 'addLineItem',
+                productId: product.productId,
+                variantId: product.varId,
+                quantity: product.quantity,
+              },
+            ],
+          },
+        })
+        .execute();
+
+      console.log('Товар добавлен в корзину:', response.body);
+    } catch (err) {
+      console.error('Ошибка при добавлении товара:', err);
+    }
+  };
+
   private buildAnonymousClient(): ByProjectKeyRequestBuilder {
     const client = new ClientBuilder()
       .withAnonymousSessionFlow({
@@ -294,6 +372,7 @@ export class AuthorizationService {
           'view_published_products:plants',
           'view_categories:plants',
           'create_anonymous_token:plants',
+          'manage_orders:plants',
         ],
         httpClient: fetch,
         tokenCache: tokenCache('ct_anon_token'),
