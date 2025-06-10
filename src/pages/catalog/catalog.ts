@@ -1,3 +1,4 @@
+import { authService } from '../../commerce-tools/auth-service';
 import { CreateButton } from '../../components/button/create-button';
 import { CreateInput } from '../../components/input/create-input';
 import type CatalogController from '../../controllers/catalog/catalog-controller';
@@ -7,6 +8,7 @@ import type { IParameters } from '../../shared/models/interfaces';
 import { CreateElement } from '../../shared/utils/create-element';
 import { View } from '../view';
 import type { IParametersCard } from './models/interfaces';
+import type { ProductParameters } from './models/interfaces/product-paameters';
 import { resetCallback } from './models/utils/reset-callback';
 
 import './styles.scss';
@@ -26,6 +28,7 @@ export class CatalogPage extends View {
   public sortSelect: CreateElement;
   public searchInput: CreateInput;
   public breadCrumbPath: CreateElement;
+  public imageWrappers: HTMLElement[] = [];
 
   private constructor(parameters: Partial<IParameters> = {}, controller: CatalogController) {
     super({ tag: 'div', classNames: ['catalog-page'], ...parameters });
@@ -245,13 +248,21 @@ export class CatalogPage extends View {
 
   public addCard(parameters: IParametersCard): void {
     const img = new CreateElement({
-      tag: 'div',
-      classNames: ['card-img'],
+      tag: 'img',
+      classNames: ['spinner'],
       textContent: '',
       callback: (): void => {},
     });
 
-    if (typeof parameters.img === 'string') img.getElement().style.backgroundImage = `url("${parameters.img}")`;
+    const imgContainer = new CreateElement({
+      tag: 'div',
+      classNames: ['card-img-container'],
+      textContent: '',
+      callback: (): void => {},
+      children: [img],
+    });
+
+    if (typeof parameters.img === 'string') imgContainer.getElement().setAttribute('data-src', parameters.img);
 
     const title = new CreateElement({
       tag: 'h4',
@@ -309,8 +320,31 @@ export class CatalogPage extends View {
     const button = new CreateButton({
       type: 'button',
       disabled: false,
-      textContent: 'Buy',
+      textContent: 'Add to cart',
       classNames: ['card-button'],
+      callback: (event): void => {
+        const button = event.target;
+
+        if (!(button instanceof HTMLButtonElement)) return;
+
+        const card = button.closest('.card');
+
+        const productId = card?.getAttribute('data-id');
+
+        const prodVariantId = card?.getAttribute('data-varId');
+
+        if (!productId || !prodVariantId) return;
+
+        const product: ProductParameters = {
+          productId: productId,
+          varId: Number(prodVariantId),
+          quantity: 1,
+        };
+
+        console.log(product);
+
+        void authService.addProductToCart(product);
+      },
     });
 
     const buttonsContainer = new CreateElement({
@@ -344,8 +378,11 @@ export class CatalogPage extends View {
           route.navigate(`/detailed-product/${key}`);
         }
       },
-      children: [img, title, description, cardsFooter],
+      children: [imgContainer, title, description, cardsFooter],
     });
+
+    card.getElement().setAttribute('data-id', parameters.id);
+    card.getElement().setAttribute('data-varId', String(parameters.variantId));
 
     if (parameters.discount && parameters.discount !== '$') {
       const currentPrice = parseFloat(parameters.discount);
@@ -366,6 +403,8 @@ export class CatalogPage extends View {
     }
 
     this.productsContainer.addInnerElement(card);
+
+    this.imageWrappers.push(imgContainer.getElement());
   }
 
   public addPage(number: number): CreateElement {

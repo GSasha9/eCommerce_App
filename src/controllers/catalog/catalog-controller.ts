@@ -1,8 +1,12 @@
 import type { ProductProjection } from '@commercetools/platform-sdk';
+import type { Cart } from '@commercetools/platform-sdk';
+import type { ClientResponse } from '@commercetools/ts-client';
 
+import { authService } from '../../commerce-tools/auth-service';
 import { CatalogModel } from '../../model/catalog/catalog-model';
 import { CatalogPage } from '../../pages/catalog/catalog';
 import type { IParametersCard } from '../../pages/catalog/models/interfaces';
+import { observer } from '../../pages/catalog/models/utils/observer';
 import { Layout } from '../../pages/layout/layout';
 import { PRODUCTS_PER_PAGE } from '../../shared/constants';
 import type { ProductPerPageResponse } from '../../shared/models/type';
@@ -17,6 +21,7 @@ export default class CatalogController {
   public allProductsResponse: ProductPerPageResponse | undefined;
   public filters: Filters;
   public isFiltered: boolean;
+  public cart: ClientResponse<Cart> | undefined;
 
   constructor() {
     this.catalogPage = CatalogPage.getInstance({}, this);
@@ -211,6 +216,17 @@ export default class CatalogController {
     this.addPagination(response.totalPages);
 
     this.renderPage(1, response.products);
+
+    if (authService.cartId === '') {
+      try {
+        this.cart = await authService.createCart();
+
+        console.log(authService.cartId, 'is auth', authService.isAuthenticated);
+        console.log(this.cart);
+      } catch (error) {
+        console.warn(error);
+      }
+    }
   }
 
   public addPagination(productsAmount: number): void {
@@ -302,9 +318,15 @@ export default class CatalogController {
         price: `${el.masterVariant.prices?.[0].value.centAmount !== undefined ? el.masterVariant.prices?.[0].value.centAmount / 100 : 0}$`,
         discount: `${el.masterVariant.prices?.[0].discounted?.value.centAmount !== undefined ? el.masterVariant.prices?.[0].discounted?.value.centAmount / 100 : ''}$`,
         key: el.key ?? '',
+        id: el.id,
+        variantId: el.masterVariant.id,
       };
 
       this.catalogPage.addCard(parameters);
+    });
+
+    this.catalogPage.imageWrappers.forEach((wrapper) => {
+      observer.observe(wrapper);
     });
   }
 
