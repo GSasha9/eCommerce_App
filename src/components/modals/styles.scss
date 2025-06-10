@@ -1,0 +1,71 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/fonts';
+
+.wrapper-modal {
+  position: fixed;
+  z-index: 30;
+  inset: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: #00000090;
+}
+
+.no-scroll {
+  overflow: hidden;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: flex-end;
+
+  padding: 24px;
+  border-radius: $spacing-xs;
+
+  font-family: 'Cera Pro', sans-serif;
+
+  background-color: #fff;
+}
+
+.content {
+  font-size: medium;
+
+  &.info {
+    align-self: center;
+    color: green;
+  }
+
+  &.error {
+    color: rgb(195 0 0);
+  }
+}
+
+.button-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: $spacing-sm;
+  border: none;
+  border-radius: $border-radius-input;
+
+  color: white;
+
+  background-color: $primary-button;
+
+  &:disabled {
+    cursor: not-allowed;
+    color: rgb(37 37 32);
+    background-color: rgb(83 83 83);
+  }
+
+  &:not(:disabled):hover {
+    cursor: pointer;
+    color: rgb(224 229 211);
+    background-color: rgb(88 168 70);
+  }
+}
