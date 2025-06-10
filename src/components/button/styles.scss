@@ -14,7 +14,6 @@
   border-radius: $border-radius-input;
 
   font-family: 'Cera Pro', sans-serif;
-  color: white;
 
   &:disabled {
     cursor: not-allowed;
@@ -24,7 +23,7 @@
 
   &:not(:disabled):hover {
     color: white;
-    background-color: lightgreen;
+    background-color: $primary-button-hover;
   }
 
   @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
@@ -32,4 +31,8 @@
     height: 25px;
     padding: 3px;
   }
+}
+
+.secondary-button {
+  color: rgb(143 143 143);
 }

@@ -27,20 +27,29 @@ export class Router implements IRouter {
 
   public navigate(path: string, pushState: boolean = true): void {
     let normalizedPath: string = path !== '/' && path.endsWith('/') ? path.slice(0, -1) : path;
+    let dynamicPath;
 
-    const token = localStorage.getItem('isLoggedPlants');
+    if (normalizedPath.split('/').length > 2) {
+      dynamicPath = `/${normalizedPath.split('/')[1]}`;
+    }
 
-    if (token === 'true' && (normalizedPath === '/login' || normalizedPath === '/registration')) {
+    const token = localStorage.getItem('ct_user_credentials');
+
+    if (token && (normalizedPath === '/login' || normalizedPath === '/registration')) {
       normalizedPath = '/home';
       window.history.replaceState({}, '', normalizedPath);
     } else if (pushState) {
       window.history.pushState({}, '', normalizedPath);
+    } else if (!token && normalizedPath === '/account') {
+      normalizedPath = '/login';
+      window.history.replaceState({}, '', normalizedPath);
     }
 
-    const controller = this.routes.get(normalizedPath);
+    const controller = dynamicPath ? this.routes.get(dynamicPath) : this.routes.get(normalizedPath);
 
     if (controller) {
-      this.currentPath = normalizedPath;
+      this.currentPath = dynamicPath ? dynamicPath : normalizedPath;
+
       controller();
     } else {
       this.currentPath = '/404';

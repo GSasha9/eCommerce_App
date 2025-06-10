@@ -31,7 +31,7 @@ export class HomePage extends View {
       callback: (): void => {},
     });
 
-    header.addInnerElement(title.getElement());
+    header.addInnerElement([title]);
     this.viewElementCreator.addInnerElement(header.getElement());
   }
 }

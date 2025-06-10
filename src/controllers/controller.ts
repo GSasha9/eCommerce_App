@@ -1,11 +1,13 @@
 import { route, ROUTES_URL } from '../router';
 import type { Router } from '../router/router.ts';
 import { AboutController } from './about/about-controller.ts';
+import { AccountController } from './account/account-controller.ts';
+import CatalogController from './catalog/catalog-controller.ts';
+import { DetailedProductController } from './detailed-product/detailed-product-controller.ts';
 import { HomeController } from './home/home-controller.ts';
 import { LoginController } from './login/login-controller.ts';
 import { NotFoundController } from './not-found/notfound-controller.ts';
 import { RegistrationController } from './registration/registration-controller.ts';
-import { ShopController } from './shop/shop-controller.ts';
 
 export class Controller {
   private router: Router;
@@ -13,16 +15,20 @@ export class Controller {
   private notFoundController: NotFoundController;
   private loginPageController: LoginController;
   private registrationController: RegistrationController;
-  private shopController: ShopController;
   private aboutController: AboutController;
+  private catalogController: CatalogController;
+  private detailedProductController: DetailedProductController;
+  private accountController: AccountController;
 
   constructor() {
     this.homeController = new HomeController();
     this.notFoundController = new NotFoundController();
     this.loginPageController = new LoginController();
     this.registrationController = new RegistrationController();
-    this.shopController = new ShopController();
     this.aboutController = new AboutController();
+    this.catalogController = new CatalogController();
+    this.detailedProductController = new DetailedProductController();
+    this.accountController = new AccountController();
     this.router = route;
     this.setupRoutes();
     this.router.init();
@@ -49,11 +55,20 @@ export class Controller {
       this.notFoundController.render();
     });
 
-    this.router.addRoute(ROUTES_URL.PRODUCTS, () => {
-      this.shopController.render();
+    this.router.addRoute(ROUTES_URL.PRODUCT, () => {
+      void this.detailedProductController.render();
     });
+
     this.router.addRoute(ROUTES_URL.ABOUT, () => {
       this.aboutController.render();
+    });
+
+    this.router.addRoute(ROUTES_URL.CATALOG, () => {
+      void this.catalogController.render();
+    });
+
+    this.router.addRoute(ROUTES_URL.ACCOUNT, () => {
+      this.accountController.render();
     });
   }
 }

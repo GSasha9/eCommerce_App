@@ -24,6 +24,7 @@ export class Layout {
     appContainer.appendChild(this.mainContainer);
     appContainer.appendChild(this.footerComponent.getElement());
     document.body.appendChild(appContainer);
+    Header.switchBtn();
   }
 
   public static getInstance(): Layout {

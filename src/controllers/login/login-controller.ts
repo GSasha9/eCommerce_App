@@ -7,6 +7,7 @@ import { LoginPage } from '../../pages/login/login.ts';
 import { route } from '../../router';
 import { MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
 import { isFormName, isHTMLInputElement, isHTMLSelectElement } from '../../shared/models/typeguards.ts';
+import { UserState } from '../../state/customer-state.ts';
 
 export class LoginController {
   private readonly loginPage: LoginPage;
@@ -34,7 +35,6 @@ export class LoginController {
         loginButton.classList.remove('logout');
         loginButton.classList.add('login');
         loginButton.textContent = 'Login';
-        localStorage.clear();
         route.navigate('/login');
       });
     }
@@ -76,7 +76,8 @@ export class LoginController {
             const auth = authService.getAuthenticatedStatus();
 
             if (auth) {
-              localStorage.setItem('isLoggedPlants', 'true');
+              UserState.getInstance().customer = response.customer;
+              route.navigate('/home');
             }
 
             LoginController.configureLogoutButton();

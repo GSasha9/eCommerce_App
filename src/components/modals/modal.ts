@@ -5,7 +5,7 @@ import './styles.scss';
 
 export class Modal {
   protected modal: Element<'div'>;
-  private wrapper: Element<'div'>;
+  protected wrapper: Element<'div'>;
   private root = document.body;
   private resolver?: () => void;
 

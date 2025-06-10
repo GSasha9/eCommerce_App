@@ -1,8 +1,8 @@
 import type { CustomerSignInResult } from '@commercetools/platform-sdk';
 import { describe, expect, test, vi } from 'vitest';
 
-import { AuthorizationService, authService } from '../commerce-tools/auth-service';
-import { ErrorMessage } from '../shared/constants';
+import { AuthorizationService, authService } from '../../commerce-tools/auth-service';
+import { ErrorMessage } from '../../shared/constants';
 
 describe('Check for singleton', () => {
   test('should return instance if this instance doesn`t exist', () => {
@@ -19,7 +19,6 @@ describe('Check for singleton', () => {
 
 describe('Return authenticated status', () => {
   test('shoud return an authenticated status of user', () => {
-    // @ts-expect-error: overriding private property for testing
     authService.isAuthenticated = false;
     expect(authService.getAuthenticatedStatus()).toBe(false);
   });
@@ -27,7 +26,6 @@ describe('Return authenticated status', () => {
 
 describe('Login error because of absents of project key', () => {
   test('shoud return an error if project key = undefined', async () => {
-    // @ts-expect-error: overriding private property for testing
     authService.projectKey = '';
 
     await expect(authService.signInCustomer('email@test.com', 'password')).rejects.toThrow(
@@ -61,4 +59,12 @@ describe('Login response type test', () => {
 
     expect(result?.customer.email).toBe('test@example.com');
   });
+});
+
+test('tryRestoreUserSession returns false if credentials invalid', async () => {
+  localStorage.setItem('ct_user_credentials', JSON.stringify({ email: 'bad', password: 'wrong' }));
+
+  const result = await authService['tryRestoreUserSession']();
+
+  expect(result).toBe(false);
 });

@@ -2,6 +2,19 @@
 @use './scss/_variables.scss' as *;
 @use 'normalize.css';
 
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -13,16 +26,6 @@
   place-items: center;
   justify-content: center;
   box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
-  font-size: 16px;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
 }
 
 .not-found__message {
