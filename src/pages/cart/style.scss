@@ -1,2 +1,19 @@
 @use '../../styles/scss/fonts';
 @use '../../styles/scss/variables' as *;
+
+.line-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.line-item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.line-item-img {
+  width: 100px;
+  height: 100px;
+}

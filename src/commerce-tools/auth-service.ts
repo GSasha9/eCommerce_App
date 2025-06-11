@@ -1,7 +1,9 @@
 import type {
   ByProjectKeyRequestBuilder,
+  CartPagedQueryResponse,
   Category,
   ClientResponse,
+  Customer,
   CustomerSignInResult,
   MyCustomerDraft,
   ProductProjection,
@@ -35,6 +37,7 @@ export class AuthorizationService {
   private scopes = import.meta.env.VITE_CTP_SCOPES;
   public isAuthenticated = false;
   public anonymusId = crypto.randomUUID();
+  public customer: Customer | null = null;
   public cartId = '';
   private token: string | null;
 
@@ -144,6 +147,19 @@ export class AuthorizationService {
 
       throw new Error(ErrorMessage.LOGIN_FAILED);
     }
+  };
+
+  public getMe = async (): Promise<ClientResponse<Customer>> => {
+    const result = await this.api
+      .me()
+      .get({
+        headers: { 'Content-Type': 'application/json' },
+      })
+      .execute();
+
+    this.customer = result.body;
+
+    return result;
   };
 
   public getProductByKey = async (productKey: string): Promise<ClientResponse<ProductProjection>> => {
@@ -287,13 +303,33 @@ export class AuthorizationService {
   };
 
   //ask for existing cart
-  public getCart = async (): Promise<ClientResponse<Cart>> => {
-    return this.api.carts().withId({ ID: this.cartId }).get().execute();
+  public getCart = async (): Promise<ClientResponse<CartPagedQueryResponse>> => {
+    if (!this.api) {
+      console.warn('Initialization of the API client');
+      await this.refreshAnonymousToken();
+    }
+
+    return this.api
+      .carts()
+      .get({
+        queryArgs: {
+          ...(this.customer?.id ? { customerId: this.customer?.id } : { anonymousId: this.anonymusId }),
+          sort: 'lastModifiedAt desc',
+          limit: 1,
+        },
+      })
+      .execute();
+    // return this.api.me().activeCart().get().execute();
   };
 
   //create cart
   public createCart = async (): Promise<ClientResponse<Cart> | undefined> => {
+    // debugger;
     let cart;
+    const existingСart = await this.api.me().activeCart().get().execute();
+
+    console.log('existingСart---', existingСart);
+    console.log('cartId---', this.cartId);
 
     if (this.isAuthenticated) {
       try {

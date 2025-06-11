@@ -1,6 +1,8 @@
+import { authService } from '../../commerce-tools/auth-service.ts';
 import CartModel from '../../model/cart/cart-model';
 import CartPage from '../../pages/cart/cart-page';
 import { Layout } from '../../pages/layout/layout';
+import { isHTMLElement } from '../../shared/models/typeguards.ts';
 
 export class CartController {
   private readonly page: CartPage;
@@ -9,33 +11,51 @@ export class CartController {
   constructor() {
     this.model = CartModel.getInstance();
     this.page = CartPage.getInstance(this.model);
+    this.initListeners();
   }
 
-  // public initListeners(): void {
-  //   this.page.wrapperContent.addEventListener('click', this.onClick);
-  // }
+  public initListeners(): void {
+    this.page.wrapperContent.addEventListener('click', this.onClick);
+  }
 
-  // public onClick = (event: Event): void => {
-  //   if (!isHTMLElement(event.target)) return;
+  public onClick = (event: Event): void => {
+    if (!isHTMLElement(event.target)) return;
 
-  //   const value = event.target.id;
+    if (event.target.dataset.count === 'minus') {
+      const value = event.target.dataset.count;
+      const lineItemId = event.target.dataset.lineItemId;
 
-  //   if (value === 'modal-image detailed') {
-  //     if (this.model.response && this.model.response.img && this.model.response.name) {
-  //       const props = {
-  //         images: this.model.response.img,
-  //         width: 150,
-  //         alt: this.model.response.name,
-  //         name: 'big',
-  //       };
+      if (this.model.cart?.id) {
+        void authService.api
+          .carts()
+          .withId({ ID: this.model.cart.id })
+          .post({
+            body: {
+              version: this.model.cart.version,
+              actions: [
+                {
+                  action: 'changeLineItemQuantity',
+                  lineItemId: lineItemId,
+                  quantity: 3,
+                },
+              ],
+            },
+          })
+          .execute()
+          .then((res) => console.log(res));
 
-  //       void new ImageModal(props).open();
-  //     }
-  //   }
-  // };
+        console.log(value);
+      }
+    }
+
+    if (event.target.dataset.count === 'plus') {
+      const value = event.target.dataset.count;
+
+      console.log(value);
+    }
+  };
 
   public async render(): Promise<void> {
-    console.log('render в CartController');
     const layout = Layout.getInstance();
     // const msg = document.createElement('h1');
 
