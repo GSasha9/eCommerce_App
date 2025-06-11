@@ -1,8 +1,5 @@
 import type { ProductProjection } from '@commercetools/platform-sdk';
-import type { Cart } from '@commercetools/platform-sdk';
-import type { ClientResponse } from '@commercetools/ts-client';
 
-import { authService } from '../../commerce-tools/auth-service';
 import { CatalogModel } from '../../model/catalog/catalog-model';
 import { CatalogPage } from '../../pages/catalog/catalog';
 import type { IParametersCard } from '../../pages/catalog/models/interfaces';
@@ -21,7 +18,6 @@ export default class CatalogController {
   public allProductsResponse: ProductPerPageResponse | undefined;
   public filters: Filters;
   public isFiltered: boolean;
-  public cart: ClientResponse<Cart> | undefined;
 
   constructor() {
     this.catalogPage = CatalogPage.getInstance({}, this);
@@ -216,17 +212,6 @@ export default class CatalogController {
     this.addPagination(response.totalPages);
 
     this.renderPage(1, response.products);
-
-    if (authService.cartId === '') {
-      try {
-        this.cart = await authService.createCart();
-
-        console.log(authService.cartId, 'is auth', authService.isAuthenticated);
-        console.log(this.cart);
-      } catch (error) {
-        console.warn(error);
-      }
-    }
   }
 
   public addPagination(productsAmount: number): void {

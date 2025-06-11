@@ -289,7 +289,7 @@ export class AuthorizationService {
 
   //ask for existing cart
   public getCart = async (): Promise<ClientResponse<Cart>> => {
-    return this.api.me().activeCart().get().execute();
+    return this.api.carts().withId({ ID: this.cartId }).get().execute();
   };
 
   //create cart
@@ -334,6 +334,21 @@ export class AuthorizationService {
   };
 
   public addProductToCart = async (product: ProductParameters): Promise<void> => {
+    const existingCartId = localStorage.getItem('plant-cart-id');
+
+    if (existingCartId) this.cartId = existingCartId;
+
+    if (this.cartId === '') {
+      try {
+        await this.createCart();
+
+        console.log(this.cartId, 'is auth', this.isAuthenticated);
+        localStorage.setItem('plant-cart-id', this.cartId);
+      } catch (error) {
+        console.warn(error);
+      }
+    }
+
     try {
       const cartResponse = await this.api.carts().withId({ ID: this.cartId }).get().execute();
       const currentVersion = cartResponse.body.version;
