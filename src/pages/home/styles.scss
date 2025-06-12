@@ -4,6 +4,103 @@
   display: flex;
 }
 
+.home-text-content {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+
+  width: 46%;
+  padding: 20px;
+
+  font-family: 'Cera Pro', sans-serif;
+  font-size: 1.2rem;
+
+  background-color: rgb(255 255 255 / 50%);
+
+  .home-title {
+    margin: 0;
+    font-size: $font-size-h1;
+    font-weight: $font-weight-black;
+    color: $primary-button;
+
+    @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-md) {
+      font-size: $font-size-h3;
+    }
+
+    @media screen and (min-width: $breakpoint-md) and (max-width: $breakpoint-lg) {
+      font-size: $font-size-h2;
+    }
+  }
+
+  .home-text {
+    line-height: 2rem;
+
+    @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
+      width: 100%;
+      line-height: 1rem;
+    }
+  }
+
+  .text-content__buttons-container {
+    display: flex;
+    gap: 20%;
+
+    .home-button {
+      width: 40%;
+      height: fit-content;
+      padding: 12px 8px;
+      border: 1px solid transparent;
+
+      &:hover {
+        background-color: $primary-button;
+      }
+    }
+
+    .green {
+      color: white;
+      background-color: $primary-button;
+
+      &:hover {
+        border: 1px solid $primary-button;
+        color: black;
+        background-color: $light-background;
+      }
+    }
+  }
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-md) {
+    font-size: 0.8rem;
+  }
+
+  @media screen and (min-width: $breakpoint-md) and (max-width: $breakpoint-lg) {
+    font-size: 0.99rem;
+  }
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
+    width: 100%;
+    background-color: transparent;
+  }
+}
+
+.home-image {
+  position: absolute;
+  z-index: -2;
+  right: 0;
+
+  width: 67%;
+  height: 100%;
+
+  background-image: url('../../../public/images/home.jpg');
+  background-size: cover;
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
+    width: 100%;
+    background-image:
+      linear-gradient(rgb(255 255 255 / 50%), rgb(255 255 255 / 50%)), url('../../../public/images/home.jpg');
+    filter: blur(6px);
+  }
+}
+
 .app {
   overflow-y: auto;
   display: flex;
@@ -12,6 +109,7 @@
 }
 
 .wrapper {
+  position: relative;
   display: flex;
   width: 1380px;
 
@@ -78,7 +176,7 @@
 .home__wrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
+  min-height: 65vh;
 }
 
 .header__menu-item,

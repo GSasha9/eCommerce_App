@@ -47,12 +47,16 @@ export class CatalogPage extends View {
       callback: (): void => updateSortAndFilter(this.catalogController),
     });
 
+    this.sortSelectArrow.getElement().setAttribute('name', 'type');
+
     this.sortSelect = new CreateElement({
       tag: 'select',
       classNames: ['catalog-header__select'],
       textContent: '',
       callback: (): void => updateSortAndFilter(this.catalogController),
     });
+
+    this.sortSelect.getElement().setAttribute('name', 'direction');
 
     this.breadCrumbPath = new CreateElement({
       tag: 'div',
@@ -67,6 +71,8 @@ export class CatalogPage extends View {
       placeholder: 'What do you like to find?',
       callback: (): void => {},
     });
+
+    this.searchInput.getElement().setAttribute('name', 'search');
 
     this.productsContainer = new CreateElement({
       tag: 'div',
@@ -310,13 +316,11 @@ export class CatalogPage extends View {
       prices.addInnerElement(discountPrice);
     }
 
-    const like = new CreateElement({
+    const attr = new CreateElement({
       tag: 'div',
-      classNames: ['card-like'],
+      classNames: [`card-attribute-height-${parameters.attr}`],
       textContent: '',
-      callback: (event): void => {
-        this.catalogController.onClickAddToFavourite(event);
-      },
+      callback: (): void => {},
     });
 
     const button = new CreateButton({
@@ -362,7 +366,7 @@ export class CatalogPage extends View {
       classNames: ['buttons-container'],
       textContent: '',
       callback: (): void => {},
-      children: [like, button],
+      children: [button],
     });
 
     const cardsFooter = new CreateElement({
@@ -370,7 +374,7 @@ export class CatalogPage extends View {
       classNames: ['card-footer'],
       textContent: '',
       callback: (): void => {},
-      children: [prices, buttonsContainer],
+      children: [prices, attr, buttonsContainer],
     });
 
     const card = new CreateElement({
@@ -379,8 +383,6 @@ export class CatalogPage extends View {
       textContent: '',
       callback: (event: MouseEvent): void => {
         const card = event.target;
-
-        console.log(card);
 
         if (!(card instanceof HTMLElement) || card.closest('.buttons-container')) return;
 
@@ -417,6 +419,38 @@ export class CatalogPage extends View {
     this.productsContainer.addInnerElement(card);
 
     this.imageWrappers.push(imgContainer.getElement());
+  }
+
+  public async handleCardsButton(): Promise<void> {
+    const cart = await authService.getCart();
+
+    if (!cart) return;
+
+    const products = cart.body.lineItems;
+
+    if (!products || products.length === 0) return;
+
+    const productsId = Array.from(products).map((el) => {
+      return el.productId;
+    });
+
+    const allCards = Array.from(this.productsContainer.getElement().querySelectorAll<HTMLElement>('.card'));
+
+    allCards.forEach((el) => {
+      const id = el.getAttribute('data-id');
+
+      if (!id) return;
+
+      if (productsId.indexOf(id) !== -1) {
+        const button = el.querySelector<HTMLButtonElement>('.card-button');
+
+        if (!(button instanceof HTMLButtonElement)) return;
+
+        button.textContent = 'In cart';
+
+        button.setAttribute('disabled', 'true');
+      }
+    });
   }
 
   public addPage(number: number): CreateElement {
@@ -505,6 +539,8 @@ export class CatalogPage extends View {
         this.filterPriceTo = input;
       }
 
+      input.getElement().setAttribute('name', 'prica-range');
+
       this.priceInputs.push(input.getElement());
 
       priceFilter.addInnerElement(input);
@@ -576,7 +612,7 @@ export class CatalogPage extends View {
     const promotion = new CreateElement({
       tag: 'div',
       classNames: ['promotion'],
-      textContent: 'promotion',
+      textContent: '',
       callback: (): void => {},
     });
 
@@ -661,7 +697,7 @@ export class CatalogPage extends View {
     });
 
     const headerSortLabel = new CreateElement({
-      tag: 'label',
+      tag: 'span',
       classNames: ['catalog-header__sort-label'],
       textContent: 'Sort by:',
       callback: (): void => {},

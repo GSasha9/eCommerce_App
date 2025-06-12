@@ -172,7 +172,6 @@ export class AuthorizationService {
 
   public getPlantSubCategories = async (): Promise<Record<string, Category[]>> => {
     if (!this.api) {
-      console.warn('Initialization of the API client');
       await this.refreshAnonymousToken();
     }
 

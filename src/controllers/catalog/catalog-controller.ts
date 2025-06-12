@@ -1,13 +1,15 @@
 import type { ProductProjection } from '@commercetools/platform-sdk';
 
+import { authService } from '../../commerce-tools/auth-service';
 import { CatalogModel } from '../../model/catalog/catalog-model';
 import { CatalogPage } from '../../pages/catalog/catalog';
 import type { IParametersCard } from '../../pages/catalog/models/interfaces';
+import { isAttrHeightValue } from '../../pages/catalog/models/utils/is-attr-height-value';
 import { observer } from '../../pages/catalog/models/utils/observer';
 import { Layout } from '../../pages/layout/layout';
 import { PRODUCTS_PER_PAGE } from '../../shared/constants';
 import type { ProductPerPageResponse } from '../../shared/models/type';
-import type { Filters } from './filters';
+import type { Filters } from './models/interfaces/filters';
 import { addSearchTextToFilters } from './utils/add-search-text-to-filters';
 import { findKeyByValue } from './utils/find-key-by-value';
 import { updateSortAndFilter } from './utils/update-sort-select';
@@ -212,6 +214,14 @@ export default class CatalogController {
     this.addPagination(response.totalPages);
 
     this.renderPage(1, response.products);
+
+    const cartId = localStorage.getItem('plant-cart-id');
+
+    if (cartId) {
+      authService.cartId = cartId;
+
+      await this.catalogPage.handleCardsButton();
+    }
   }
 
   public addPagination(productsAmount: number): void {
@@ -268,6 +278,8 @@ export default class CatalogController {
       } else {
         productsByCategory[categoryName].push(product);
       }
+
+      void this.catalogPage.handleCardsButton();
     });
 
     const categoryElements = this.catalogPage.categoryList.getElement().querySelectorAll('.category__list-item');
@@ -296,6 +308,14 @@ export default class CatalogController {
     }
 
     cards.forEach((el) => {
+      const attributeHeight = el.masterVariant.attributes?.find((el) => el.name === 'height');
+
+      let attrValue: string = '';
+
+      if (attributeHeight && isAttrHeightValue(attributeHeight)) {
+        attrValue = attributeHeight.value.key;
+      }
+
       const parameters: IParametersCard = {
         name: el.name.en,
         description: el.description?.['en'] ?? el.description?.['en-US'] ?? 'No description available',
@@ -305,6 +325,7 @@ export default class CatalogController {
         key: el.key ?? '',
         id: el.id,
         variantId: el.masterVariant.id,
+        attr: attrValue,
       };
 
       this.catalogPage.addCard(parameters);
@@ -313,19 +334,5 @@ export default class CatalogController {
     this.catalogPage.imageWrappers.forEach((wrapper) => {
       observer.observe(wrapper);
     });
-  }
-
-  public onClickAddToFavourite(event: Event): void {
-    const like = event.target;
-
-    if (like instanceof HTMLElement) {
-      if (like.classList.contains('card-like-filled')) {
-        like.classList.remove('card-like-filled');
-      } else {
-        like.classList.add('card-like-filled');
-      }
-    }
-
-    console.log(this.catalogModel);
   }
 }
