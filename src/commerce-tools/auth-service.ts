@@ -289,6 +289,8 @@ export class AuthorizationService {
 
   //ask for existing cart
   public getCart = async (): Promise<ClientResponse<Cart>> => {
+    console.log(this.cartId);
+
     return this.api.carts().withId({ ID: this.cartId }).get().execute();
   };
 

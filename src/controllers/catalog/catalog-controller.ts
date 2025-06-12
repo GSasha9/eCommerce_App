@@ -1,5 +1,6 @@
 import type { ProductProjection } from '@commercetools/platform-sdk';
 
+import { authService } from '../../commerce-tools/auth-service';
 import { CatalogModel } from '../../model/catalog/catalog-model';
 import { CatalogPage } from '../../pages/catalog/catalog';
 import type { IParametersCard } from '../../pages/catalog/models/interfaces';
@@ -7,7 +8,7 @@ import { observer } from '../../pages/catalog/models/utils/observer';
 import { Layout } from '../../pages/layout/layout';
 import { PRODUCTS_PER_PAGE } from '../../shared/constants';
 import type { ProductPerPageResponse } from '../../shared/models/type';
-import type { Filters } from './filters';
+import type { Filters } from './models/interfaces/filters';
 import { addSearchTextToFilters } from './utils/add-search-text-to-filters';
 import { findKeyByValue } from './utils/find-key-by-value';
 import { updateSortAndFilter } from './utils/update-sort-select';
@@ -212,6 +213,14 @@ export default class CatalogController {
     this.addPagination(response.totalPages);
 
     this.renderPage(1, response.products);
+
+    const cartId = localStorage.getItem('plant-cart-id');
+
+    if (cartId) {
+      authService.cartId = cartId;
+
+      await this.catalogPage.handleCardsButton();
+    }
   }
 
   public addPagination(productsAmount: number): void {
@@ -268,6 +277,8 @@ export default class CatalogController {
       } else {
         productsByCategory[categoryName].push(product);
       }
+
+      void this.catalogPage.handleCardsButton();
     });
 
     const categoryElements = this.catalogPage.categoryList.getElement().querySelectorAll('.category__list-item');

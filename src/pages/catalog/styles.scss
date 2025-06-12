@@ -131,6 +131,16 @@
       max-width: 140px;
     }
   }
+
+  .promotion {
+    width: 100%;
+    height: 12%;
+
+    background-image: url('../../../public/images/promo.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100%;
+  }
 }
 
 @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {

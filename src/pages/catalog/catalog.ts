@@ -419,6 +419,38 @@ export class CatalogPage extends View {
     this.imageWrappers.push(imgContainer.getElement());
   }
 
+  public async handleCardsButton(): Promise<void> {
+    const cart = await authService.getCart();
+
+    if (!cart) return;
+
+    const products = cart.body.lineItems;
+
+    if (!products || products.length === 0) return;
+
+    const productsId = Array.from(products).map((el) => {
+      return el.productId;
+    });
+
+    const allCards = Array.from(this.productsContainer.getElement().querySelectorAll<HTMLElement>('.card'));
+
+    allCards.forEach((el) => {
+      const id = el.getAttribute('data-id');
+
+      if (!id) return;
+
+      if (productsId.indexOf(id) !== -1) {
+        const button = el.querySelector<HTMLButtonElement>('.card-button');
+
+        if (!(button instanceof HTMLButtonElement)) return;
+
+        button.textContent = 'In cart';
+
+        button.setAttribute('disabled', 'true');
+      }
+    });
+  }
+
   public addPage(number: number): CreateElement {
     const page = new CreateElement({
       tag: 'p',
@@ -576,7 +608,7 @@ export class CatalogPage extends View {
     const promotion = new CreateElement({
       tag: 'div',
       classNames: ['promotion'],
-      textContent: 'promotion',
+      textContent: '',
       callback: (): void => {},
     });
 
