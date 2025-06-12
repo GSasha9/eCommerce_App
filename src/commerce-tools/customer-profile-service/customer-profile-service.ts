@@ -179,12 +179,7 @@ export class CustomerProfileService {
 
   public static async fetchCustomerData(): Promise<Customer | undefined> {
     try {
-      const response: ClientResponse<Customer> = await authService.api
-        .me()
-        .get({
-          headers: { 'Content-Type': 'application/json' },
-        })
-        .execute();
+      const response: ClientResponse<Customer> = await authService.getMe();
 
       if (isCustomerRes(response.body)) {
         return response.body;

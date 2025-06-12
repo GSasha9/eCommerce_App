@@ -1,0 +1,193 @@
+@use '../../styles/scss/fonts';
+@use '../../styles/scss/variables' as *;
+
+.wrapper-content-cart {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+
+  height: 100%;
+
+  font-family: 'Cera Pro', sans-serif;
+  color: $text-secondary;
+}
+
+.cart {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-end;
+
+  width: 100%;
+  padding-top: 20px;
+}
+
+.wrapper-quantity {
+  display: flex;
+  flex-direction: row;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+.wrapper {
+  display: flex;
+  width: 1380px;
+
+  @include respond-xs {
+    width: 320px;
+  }
+
+  @include respond-sm {
+    width: 550px;
+  }
+
+  @include respond-md {
+    width: 750px;
+  }
+
+  @include respond-lg {
+    width: 970px;
+  }
+
+  @include respond-xl {
+    width: 1180px;
+  }
+
+  @include respond-xxl {
+    width: 1380px;
+  }
+}
+
+.discount-cart {
+  position: relative;
+  height: auto;
+  font-size: 14px;
+  color: rgb(189 189 189);
+
+  &::after {
+    content: '';
+
+    position: absolute;
+    top: 50%;
+    left: 0;
+
+    width: 100%;
+    height: 1px;
+
+    background-color: rgb(189 189 189);
+  }
+}
+
+.line-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.line-item {
+  display: flex;
+  gap: 26px;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 8px 22px;
+
+  background-color: rgb(249 247 247);
+}
+
+.line-item-img {
+  width: 100px;
+  height: 100px;
+}
+
+.cart-button {
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+
+  height: 35px;
+  padding: $spacing-sm;
+  border: none;
+  border-radius: $border-radius-input;
+
+  font-family: 'Cera Pro', sans-serif;
+  color: $text-secondary;
+
+  background-color: rgb(222 221 219);
+
+  &:disabled {
+    cursor: not-allowed;
+    color: rgb(96 96 96);
+    background-color: rgb(137 137 137);
+  }
+
+  &:not(:disabled):hover {
+    background-color: rgb(201 199 193);
+  }
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
+    width: 75px;
+    height: 25px;
+    padding: 3px;
+  }
+}
+
+.button-remove-all {
+  width: 100px;
+  border: 1px solid rgb(201 199 193);
+  text-align: right;
+  background-color: transparent;
+}
+
+.button-quantity {
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+  border-radius: 50%;
+}
+
+.line-item-attr {
+  display: flex;
+  flex-grow: 1;
+}
+
+.wrapper-coupon {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wrapper-input {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+.input-coupon {
+  padding: $spacing-sm;
+  border: 1px solid $input-border;
+  border-radius: $border-radius-input;
+  color: $text-primary;
+
+  &::placeholder {
+    color: $text-placeholder;
+  }
+}
+
+.wrapper-prices {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-end;
+
+  font-size: large;
+}
+
+.wrapper-total-price {
+  font-weight: 600;
+}

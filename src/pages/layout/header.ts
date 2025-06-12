@@ -143,12 +143,22 @@ export class Header {
       },
     });
 
+    const cart: CreateElement = new CreateElement({
+      tag: 'button',
+      classNames: ['cart-logo'],
+      textContent: 'cart',
+      callback: (): void => {
+        route.navigate('/basket');
+      },
+    });
+
     authContainer.addInnerElement(regButton.getElement());
     authContainer.addInnerElement(loginButton.getElement());
 
     header.addInnerElement(headerWrapper.getElement());
     headerWrapper.addInnerElement(logo.getElement());
     headerWrapper.addInnerElement(navContainer.getElement());
+    headerWrapper.addInnerElement(cart.getElement());
     headerWrapper.addInnerElement(authContainer.getElement());
 
     return header.getElement();
