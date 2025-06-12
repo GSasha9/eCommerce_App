@@ -1,3 +1,6 @@
+@use '../../styles/scss/fonts';
+@use '../../styles/scss/variables' as *;
+
 .footer-logo__img {
   width: 32px;
   height: 32px;
@@ -6,4 +9,37 @@
 
 .footer-logo__link {
   cursor: pointer;
+}
+
+.cart-logo {
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+
+  height: 35px;
+  padding: $spacing-sm;
+  border: none;
+  border-radius: $border-radius-input;
+
+  font-family: 'Cera Pro', sans-serif;
+  color: $text-secondary;
+
+  background-color: rgb(222 221 219);
+
+  &:disabled {
+    cursor: not-allowed;
+    color: rgb(96 96 96);
+    background-color: rgb(137 137 137);
+  }
+
+  &:not(:disabled):hover {
+    background-color: rgb(201 199 193);
+  }
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
+    width: 75px;
+    height: 25px;
+    padding: 3px;
+  }
 }
