@@ -2,7 +2,7 @@ import { authService } from '../../commerce-tools/auth-service.ts';
 import CartModel from '../../model/cart/cart-model';
 import CartPage from '../../pages/cart/cart-page';
 import { Layout } from '../../pages/layout/layout';
-import { isHTMLButtonElement, isHTMLElement } from '../../shared/models/typeguards.ts';
+import { isHTMLButtonElement, isHTMLElement, isHTMLInputElement } from '../../shared/models/typeguards.ts';
 
 export class CartController {
   private readonly page: CartPage;
@@ -114,6 +114,46 @@ export class CartController {
                 lineItemId: lineItem.id,
                 quantity: 0,
               })),
+            },
+          })
+          .execute();
+
+        this.model.cart = updatedCart.body;
+        this.page.renderPage();
+      }
+    }
+
+    if (isHTMLButtonElement(target) && target.name === 'applyCoupon') {
+      const couponInput = this.page.coupon.querySelector('input[name="coupon"]');
+
+      if (isHTMLInputElement(couponInput) && this.model.cart?.id) {
+        const updatedCart = await authService.api
+          .carts()
+          .withId({ ID: this.model.cart.id })
+          .post({
+            body: {
+              version: this.model.cart.version,
+              actions: [{ action: 'addDiscountCode', code: couponInput.value }],
+            },
+          })
+          .execute();
+
+        this.model.cart = updatedCart.body;
+        this.page.renderPage();
+      }
+    }
+
+    if (isHTMLButtonElement(target) && target.name === 'removeCode') {
+      const { codeId } = target.dataset;
+
+      if (codeId && this.model.cart?.id) {
+        const updatedCart = await authService.api
+          .carts()
+          .withId({ ID: this.model.cart.id })
+          .post({
+            body: {
+              version: this.model.cart.version,
+              actions: [{ action: 'removeDiscountCode', discountCode: { id: codeId, typeId: 'discount-code' } }],
             },
           })
           .execute();

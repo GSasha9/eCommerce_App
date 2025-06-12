@@ -29,11 +29,45 @@ class CartPage {
     this.cart.append(clearAllButton, lineItems);
   }
 
+  private renderCoupon(): void {
+    const couponElement = genElement('div', { className: 'wrapper-coupon' }, [
+      genElement('div', { className: 'wrapper-input' }, [
+        genElement('input', { className: 'input-coupon', name: 'coupon' }),
+        genElement('button', { className: 'cart-button', name: 'applyCoupon' }, ['Apply']),
+      ]),
+      genElement('div', { className: 'wrapper-prices' }, [
+        genElement('div', {}, [
+          genElement('span', {}, ['SubTotal: ']),
+          genElement('span', {}, [
+            String(this.model.cart?.lineItems.reduce((acc, cur) => acc + cur.price.value.centAmount * cur.quantity, 0)),
+          ]),
+        ]),
+        genElement(
+          'div',
+          {},
+          this.model.cart?.discountCodes.map((code) =>
+            genElement('span', {}, [
+              code.discountCode.id,
+              genElement('button', { name: 'removeCode', dataset: { codeId: code.discountCode.id } }, ['X']),
+            ]),
+          ),
+        ),
+        genElement('div', { className: 'wrapper-total-price' }, [
+          genElement('span', {}, ['TotalPrice: ']),
+          genElement('span', {}, [String(this.model.cart?.totalPrice.centAmount)]),
+        ]),
+      ]),
+    ]);
+
+    this.coupon.innerHTML = '';
+    this.coupon.append(couponElement);
+  }
+
   public renderPage(): HTMLElement {
     this.wrapperContent.innerHTML = '';
     this.wrapperContent.append(this.cart, this.coupon);
     this.renderLineItems();
-    // this.renderCoupon();
+    this.renderCoupon();
 
     return this.wrapperContent;
   }
