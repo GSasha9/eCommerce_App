@@ -59,8 +59,6 @@
 .card-attribute-height-tall {
   width: 50px;
   height: 35px;
-  margin-right: 15px;
-
   background-repeat: no-repeat;
   background-size: contain;
 }
@@ -158,6 +156,7 @@
   .promotion {
     width: 100%;
     height: 12%;
+    min-height: 211px;
 
     background-image: url('../../../public/images/promo.png');
     background-repeat: no-repeat;

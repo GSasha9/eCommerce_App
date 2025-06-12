@@ -47,12 +47,16 @@ export class CatalogPage extends View {
       callback: (): void => updateSortAndFilter(this.catalogController),
     });
 
+    this.sortSelectArrow.getElement().setAttribute('name', 'type');
+
     this.sortSelect = new CreateElement({
       tag: 'select',
       classNames: ['catalog-header__select'],
       textContent: '',
       callback: (): void => updateSortAndFilter(this.catalogController),
     });
+
+    this.sortSelect.getElement().setAttribute('name', 'direction');
 
     this.breadCrumbPath = new CreateElement({
       tag: 'div',
@@ -67,6 +71,8 @@ export class CatalogPage extends View {
       placeholder: 'What do you like to find?',
       callback: (): void => {},
     });
+
+    this.searchInput.getElement().setAttribute('name', 'search');
 
     this.productsContainer = new CreateElement({
       tag: 'div',
@@ -317,15 +323,6 @@ export class CatalogPage extends View {
       callback: (): void => {},
     });
 
-    const like = new CreateElement({
-      tag: 'div',
-      classNames: ['card-like'],
-      textContent: '',
-      callback: (event): void => {
-        this.catalogController.onClickAddToFavourite(event);
-      },
-    });
-
     const button = new CreateButton({
       type: 'button',
       disabled: false,
@@ -369,7 +366,7 @@ export class CatalogPage extends View {
       classNames: ['buttons-container'],
       textContent: '',
       callback: (): void => {},
-      children: [like, button],
+      children: [button],
     });
 
     const cardsFooter = new CreateElement({
@@ -542,6 +539,8 @@ export class CatalogPage extends View {
         this.filterPriceTo = input;
       }
 
+      input.getElement().setAttribute('name', 'prica-range');
+
       this.priceInputs.push(input.getElement());
 
       priceFilter.addInnerElement(input);
@@ -698,7 +697,7 @@ export class CatalogPage extends View {
     });
 
     const headerSortLabel = new CreateElement({
-      tag: 'label',
+      tag: 'span',
       classNames: ['catalog-header__sort-label'],
       textContent: 'Sort by:',
       callback: (): void => {},

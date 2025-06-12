@@ -335,18 +335,4 @@ export default class CatalogController {
       observer.observe(wrapper);
     });
   }
-
-  public onClickAddToFavourite(event: Event): void {
-    const like = event.target;
-
-    if (like instanceof HTMLElement) {
-      if (like.classList.contains('card-like-filled')) {
-        like.classList.remove('card-like-filled');
-      } else {
-        like.classList.add('card-like-filled');
-      }
-    }
-
-    console.log(this.catalogModel);
-  }
 }
