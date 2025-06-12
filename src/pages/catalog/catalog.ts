@@ -314,7 +314,9 @@ export class CatalogPage extends View {
       tag: 'div',
       classNames: ['card-like'],
       textContent: '',
-      callback: (): void => {},
+      callback: (event): void => {
+        this.catalogController.onClickAddToFavourite(event);
+      },
     });
 
     const button = new CreateButton({
@@ -341,9 +343,17 @@ export class CatalogPage extends View {
           quantity: 1,
         };
 
-        console.log(product);
+        button.setAttribute('disabled', 'true');
 
-        void authService.addProductToCart(product);
+        void (async function (): Promise<void> {
+          try {
+            button.textContent = 'Processing...';
+            await authService.addProductToCart(product);
+            button.textContent = 'In cart';
+          } catch (error) {
+            console.warn(error);
+          }
+        })();
       },
     });
 
@@ -369,6 +379,8 @@ export class CatalogPage extends View {
       textContent: '',
       callback: (event: MouseEvent): void => {
         const card = event.target;
+
+        console.log(card);
 
         if (!(card instanceof HTMLElement) || card.closest('.buttons-container')) return;
 
