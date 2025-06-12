@@ -9,4 +9,5 @@ export interface IParametersCard {
   key: string;
   id: string;
   variantId: number;
+  attr: string;
 }

@@ -310,6 +310,13 @@ export class CatalogPage extends View {
       prices.addInnerElement(discountPrice);
     }
 
+    const attr = new CreateElement({
+      tag: 'div',
+      classNames: [`card-attribute-height-${parameters.attr}`],
+      textContent: '',
+      callback: (): void => {},
+    });
+
     const like = new CreateElement({
       tag: 'div',
       classNames: ['card-like'],
@@ -370,7 +377,7 @@ export class CatalogPage extends View {
       classNames: ['card-footer'],
       textContent: '',
       callback: (): void => {},
-      children: [prices, buttonsContainer],
+      children: [prices, attr, buttonsContainer],
     });
 
     const card = new CreateElement({
@@ -379,8 +386,6 @@ export class CatalogPage extends View {
       textContent: '',
       callback: (event: MouseEvent): void => {
         const card = event.target;
-
-        console.log(card);
 
         if (!(card instanceof HTMLElement) || card.closest('.buttons-container')) return;
 

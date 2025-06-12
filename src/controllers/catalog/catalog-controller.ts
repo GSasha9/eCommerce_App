@@ -4,6 +4,7 @@ import { authService } from '../../commerce-tools/auth-service';
 import { CatalogModel } from '../../model/catalog/catalog-model';
 import { CatalogPage } from '../../pages/catalog/catalog';
 import type { IParametersCard } from '../../pages/catalog/models/interfaces';
+import { isAttrHeightValue } from '../../pages/catalog/models/utils/is-attr-height-value';
 import { observer } from '../../pages/catalog/models/utils/observer';
 import { Layout } from '../../pages/layout/layout';
 import { PRODUCTS_PER_PAGE } from '../../shared/constants';
@@ -307,6 +308,14 @@ export default class CatalogController {
     }
 
     cards.forEach((el) => {
+      const attributeHeight = el.masterVariant.attributes?.find((el) => el.name === 'height');
+
+      let attrValue: string = '';
+
+      if (attributeHeight && isAttrHeightValue(attributeHeight)) {
+        attrValue = attributeHeight.value.key;
+      }
+
       const parameters: IParametersCard = {
         name: el.name.en,
         description: el.description?.['en'] ?? el.description?.['en-US'] ?? 'No description available',
@@ -316,6 +325,7 @@ export default class CatalogController {
         key: el.key ?? '',
         id: el.id,
         variantId: el.masterVariant.id,
+        attr: attrValue,
       };
 
       this.catalogPage.addCard(parameters);
