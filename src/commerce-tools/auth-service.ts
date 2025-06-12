@@ -1,6 +1,5 @@
 import type {
   ByProjectKeyRequestBuilder,
-  CartPagedQueryResponse,
   Category,
   ClientResponse,
   Customer,
@@ -38,7 +37,7 @@ export class AuthorizationService {
   public isAuthenticated = false;
   public anonymusId = crypto.randomUUID();
   public customer: Customer | null = null;
-  public cartId = '';
+  public cartId = localStorage.getItem('plant-cart-id') || '';
   private token: string | null;
 
   private options: ExistingTokenMiddlewareOptions = { force: true };
@@ -303,35 +302,34 @@ export class AuthorizationService {
   };
 
   //ask for existing cart
-  public getCart = async (): Promise<ClientResponse<CartPagedQueryResponse>> => {
+  public getCart = async (): Promise<ClientResponse<Cart>> => {
     if (!this.api) {
       console.warn('Initialization of the API client');
       await this.refreshAnonymousToken();
     }
 
-    return this.api
-      .carts()
-      .get({
-        queryArgs: {
-          ...(this.customer?.id ? { customerId: this.customer?.id } : { anonymousId: this.anonymusId }),
-          sort: 'lastModifiedAt desc',
-          limit: 1,
-        },
-      })
-      .execute();
-    // return this.api.me().activeCart().get().execute();
+    if (!this.cartId) {
+      return this.createCart();
+    }
+
+    const resp = await this.api.carts().withId({ ID: this.cartId }).get().execute();
+
+    return resp;
   };
 
   //create cart
-  public createCart = async (): Promise<ClientResponse<Cart> | undefined> => {
-    // debugger;
+  public createCart = async (): Promise<ClientResponse<Cart>> => {
     let cart;
-    const existingСart = await this.api.me().activeCart().get().execute();
 
-    console.log('existingСart---', existingСart);
-    console.log('cartId---', this.cartId);
+    try {
+      cart = await this.api.me().activeCart().get().execute();
+    } catch (error) {
+      console.warn('No cart', error);
+    }
 
-    if (this.isAuthenticated) {
+    if (cart) {
+      localStorage.setItem('plant-cart-id', cart.body.id);
+    } else if (this.isAuthenticated) {
       try {
         cart = await this.api
           .me()
@@ -343,7 +341,7 @@ export class AuthorizationService {
           })
           .execute();
 
-        if (cart) this.cartId = cart.body.id;
+        if (cart) localStorage.setItem('plant-cart-id', cart.body.id);
       } catch (err) {
         console.warn(err);
       }
@@ -359,19 +357,21 @@ export class AuthorizationService {
           })
           .execute();
 
-        if (cart) this.cartId = cart.body.id;
+        if (cart) localStorage.setItem('plant-cart-id', cart.body.id);
       } catch (err) {
         console.warn(err);
       }
     }
 
-    return cart;
+    if (cart) return cart;
+
+    throw new Error('No Cart');
   };
 
   public addProductToCart = async (product: ProductParameters): Promise<void> => {
-    const existingCartId = localStorage.getItem('plant-cart-id');
+    // const existingCartId = localStorage.getItem('plant-cart-id');
 
-    if (existingCartId) this.cartId = existingCartId;
+    // if (existingCartId) this.cartId = existingCartId;
 
     if (this.cartId === '') {
       try {
@@ -407,7 +407,7 @@ export class AuthorizationService {
 
       console.log('Товар добавлен в корзину:', response.body);
     } catch (err) {
-      console.error('Ошибка при добавлении товара:', err);
+      console.error('Error adding product:', err);
     }
   };
 
@@ -423,6 +423,7 @@ export class AuthorizationService {
           'view_categories:plants',
           'create_anonymous_token:plants',
           'manage_orders:plants',
+          'manage_my_orders:plants',
         ],
         httpClient: fetch,
         tokenCache: tokenCache('ct_anon_token'),
@@ -565,6 +566,7 @@ export class AuthorizationService {
           projectKey,
           credentials: { clientId, clientSecret },
           scopes: [
+            'manage_my_orders:plants',
             'manage_my_profile:plants',
             'view_published_products:plants',
             'view_categories:plants',
