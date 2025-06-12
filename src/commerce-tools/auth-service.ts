@@ -369,10 +369,6 @@ export class AuthorizationService {
   };
 
   public addProductToCart = async (product: ProductParameters): Promise<void> => {
-    // const existingCartId = localStorage.getItem('plant-cart-id');
-
-    // if (existingCartId) this.cartId = existingCartId;
-
     if (this.cartId === '') {
       try {
         await this.createCart();
