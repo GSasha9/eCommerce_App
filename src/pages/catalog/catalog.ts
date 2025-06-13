@@ -395,7 +395,7 @@ export class CatalogPage extends View {
       children: [imgContainer, title, description, cardsFooter],
     });
 
-    card.getElement().setAttribute('data-id', parameters.id);
+    card.getElement().setAttribute('data-id', String(parameters.id));
     card.getElement().setAttribute('data-varId', String(parameters.variantId));
 
     if (parameters.discount && parameters.discount !== '$') {

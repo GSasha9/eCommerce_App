@@ -41,7 +41,10 @@ export default class CatalogController {
     layout.setMainContent(msg);
     layout.setMainContent(msg);
     await this.showAllProductCards();
-    layout.setMainContent(this.catalogPage.getHtmlElement());
+
+    if (window.location.pathname.slice(1) === 'catalog') {
+      layout.setMainContent(this.catalogPage.getHtmlElement());
+    }
   }
 
   public initListeners(): void {
