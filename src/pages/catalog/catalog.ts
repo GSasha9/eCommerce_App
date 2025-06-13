@@ -31,7 +31,7 @@ export class CatalogPage extends View {
   public imageWrappers: HTMLElement[] = [];
 
   private constructor(parameters: Partial<IParameters> = {}, controller: CatalogController) {
-    super({ tag: 'div', classNames: ['catalog-page'], ...parameters });
+    super({ tag: 'div', classNames: ['catalog-page', 'wrapper'], ...parameters });
     this.catalogController = controller;
     this.categoryList = new CreateElement({
       tag: 'ul',
@@ -395,8 +395,8 @@ export class CatalogPage extends View {
       children: [imgContainer, title, description, cardsFooter],
     });
 
-    card.getElement().setAttribute('data-id', parameters.id);
-    card.getElement().setAttribute('data-varId', String(parameters.variantId));
+    card.getElement().setAttribute('data-id', `${parameters.id}`);
+    card.getElement().setAttribute('data-varId', `${parameters.variantId}`);
 
     if (parameters.discount && parameters.discount !== '$') {
       const currentPrice = parseFloat(parameters.discount);

@@ -62,24 +62,22 @@ export class Header {
         tag: 'li',
         classNames: ['header__menu-item'],
         textContent: '',
-        callback: (event: MouseEvent): void => {
-          const menuItems = navList.getElement().querySelectorAll<HTMLElement>('.header__menu-item');
-
-          menuItems.forEach((el) => el.classList.remove('header__menu-item-active'));
-
+        callback: (event): void => {
           const item = event.target;
 
-          if (!(item instanceof HTMLElement)) return;
+          if (!item || !(item instanceof HTMLElement)) return;
 
-          item.closest('.header__menu-item')?.classList.add('header__menu-item-active');
+          const li = item.closest('li');
+
+          if (!li) return;
+
+          const link = li.querySelector('a');
+
+          if (!link) return;
+
+          link.dispatchEvent(new Event('click', { bubbles: false }));
         },
       });
-
-      const path = window.location.pathname;
-
-      if (`/${item.toLocaleLowerCase()}` === path) {
-        li.getElement().classList.add('header__menu-item-active');
-      }
 
       const link: CreateElement = new CreateElement({
         tag: 'a',

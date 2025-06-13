@@ -39,9 +39,11 @@ export default class CatalogController {
     msg.textContent = 'Loading..Please wait!';
     msg.className = 'header__logo';
     layout.setMainContent(msg);
-    layout.setMainContent(msg);
     await this.showAllProductCards();
-    layout.setMainContent(this.catalogPage.getHtmlElement());
+
+    if (window.location.pathname.slice(1) === 'catalog') {
+      layout.setMainContent(this.catalogPage.getHtmlElement());
+    }
   }
 
   public initListeners(): void {
