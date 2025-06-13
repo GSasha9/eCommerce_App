@@ -87,10 +87,52 @@ export class HomePage extends View {
       classNames: ['home-image'],
       textContent: '',
       callback: (): void => {},
-      children: [],
     });
 
-    header.addInnerElement([textContent, homeImg]);
+    const codesContainer = new CreateElement({
+      tag: 'div',
+      classNames: ['codes-container'],
+      textContent: '',
+      callback: (): void => {},
+    });
+
+    const codes = ['leto', 'birthday'];
+
+    codes.forEach((el) => {
+      const item = new CreateElement({
+        tag: 'div',
+        classNames: ['promocode', el, 'shine-effect'],
+        textContent: `code ${el} - 10% off`,
+        callback: (): void => {},
+      });
+
+      const itemWindow = new CreateElement({
+        tag: 'div',
+        classNames: ['promocode-window', `promocode-window-${el}`],
+        textContent: ``,
+        callback: (): void => {},
+      });
+
+      const itemWrapper = new CreateElement({
+        tag: 'div',
+        classNames: ['promocode-wrapper'],
+        textContent: ``,
+        callback: (): void => {},
+        children: [item, itemWindow],
+      });
+
+      codesContainer.addInnerElement(itemWrapper);
+    });
+
+    const mainContent = new CreateElement({
+      tag: 'div',
+      classNames: ['home-main-content'],
+      textContent: '',
+      callback: (): void => {},
+      children: [textContent, homeImg, codesContainer],
+    });
+
+    header.addInnerElement([mainContent]);
     this.viewElementCreator.addInnerElement(header.getElement());
   }
 }
