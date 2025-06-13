@@ -31,7 +31,7 @@ export class CatalogPage extends View {
   public imageWrappers: HTMLElement[] = [];
 
   private constructor(parameters: Partial<IParameters> = {}, controller: CatalogController) {
-    super({ tag: 'div', classNames: ['catalog-page'], ...parameters });
+    super({ tag: 'div', classNames: ['catalog-page', 'wrapper'], ...parameters });
     this.catalogController = controller;
     this.categoryList = new CreateElement({
       tag: 'ul',
