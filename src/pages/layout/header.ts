@@ -63,9 +63,13 @@ export class Header {
         classNames: ['header__menu-item'],
         textContent: '',
         callback: (event): void => {
-          const li = event.target;
+          const item = event.target;
 
-          if (!li || !(li instanceof HTMLLIElement)) return;
+          if (!item || !(item instanceof HTMLElement)) return;
+
+          const li = item.closest('li');
+
+          if (!li) return;
 
           const link = li.querySelector('a');
 

@@ -39,7 +39,6 @@ export default class CatalogController {
     msg.textContent = 'Loading..Please wait!';
     msg.className = 'header__logo';
     layout.setMainContent(msg);
-    layout.setMainContent(msg);
     await this.showAllProductCards();
 
     if (window.location.pathname.slice(1) === 'catalog') {
