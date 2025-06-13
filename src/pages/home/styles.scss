@@ -101,6 +101,91 @@
   }
 }
 
+.codes-container {
+  position: absolute;
+  right: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+
+  font-family: 'Cera Pro', sans-serif;
+  text-align: right;
+
+  .promocode-wrapper {
+    position: relative;
+
+    .promocode {
+      padding: 10px;
+      background-color: rgb(255 255 255 / 50%);
+    }
+
+    .promocode-window {
+      position: absolute;
+      z-index: 99;
+      right: -500px;
+
+      width: 148%;
+      height: 523%;
+
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+
+      transition: right 0.8s ease;
+    }
+
+    .promocode-window-leto {
+      bottom: 0;
+      background-image: url('../../../public/images/promo-leto-gor.png');
+    }
+
+    .promocode-window-birthday {
+      top: 0;
+      background-image: url('../../../public/images/promo-birth-gor.png');
+    }
+
+    &:hover {
+      cursor: pointer;
+
+      .promocode-window {
+        right: 0;
+      }
+    }
+  }
+}
+
+.shine-effect {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine-effect::before {
+  content: '';
+
+  position: absolute;
+  top: 0;
+  left: -75%;
+  transform: skewX(-20deg);
+
+  width: 50%;
+  height: 100%;
+
+  background: linear-gradient(120deg, rgb(255 255 255 / 0%) 0%, rgb(255 255 255 / 60%) 50%, rgb(255 255 255 / 0%) 100%);
+
+  animation: shine 2s infinite;
+}
+
+@keyframes shine {
+  0% {
+    left: -75%;
+  }
+
+  100% {
+    left: 125%;
+  }
+}
+
 .app {
   overflow-y: auto;
   display: flex;
@@ -177,9 +262,16 @@
 }
 
 .home__wrapper {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.home-main-content {
   display: flex;
   align-items: center;
-  min-height: 65vh;
+  padding: 50px 0;
 }
 
 .header__menu-item,
