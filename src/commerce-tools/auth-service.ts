@@ -368,7 +368,7 @@ export class AuthorizationService {
     throw new Error('No Cart');
   };
 
-  public addProductToCart = async (product: ProductParameters): Promise<void> => {
+  public addProductToCart = async (product: ProductParameters): Promise<ClientResponse<Cart> | void> => {
     if (this.cartId === '') {
       try {
         await this.createCart();
@@ -392,9 +392,9 @@ export class AuthorizationService {
             actions: [
               {
                 action: 'addLineItem',
-                productId: product.productId,
-                variantId: product.varId,
-                quantity: product.quantity,
+                productId: product.id,
+                // variantId: product.varId,
+                // quantity: product.quantity,
               },
             ],
           },
@@ -402,6 +402,42 @@ export class AuthorizationService {
         .execute();
 
       console.log('Товар добавлен в корзину:', response.body);
+
+      return response;
+    } catch (err) {
+      console.error('Error adding product:', err);
+    }
+  };
+
+  public removeProductFromCart = async (id: string): Promise<ClientResponse<Cart> | void> => {
+    if (this.cartId === '') {
+      try {
+        await this.createCart();
+
+        console.log(this.cartId, 'is auth', this.isAuthenticated);
+        localStorage.setItem('plant-cart-id', this.cartId);
+      } catch (error) {
+        console.warn(error);
+      }
+    }
+
+    try {
+      const cartResponse = await this.api.carts().withId({ ID: this.cartId }).get().execute();
+      const currentVersion = cartResponse.body.version;
+      const response = await this.api
+        .carts()
+        .withId({ ID: this.cartId })
+        .post({
+          body: {
+            version: currentVersion,
+            actions: [{ action: 'removeLineItem', lineItemId: id }],
+          },
+        })
+        .execute();
+
+      console.log('Товар добавлен в корзину:', response.body);
+
+      return response;
     } catch (err) {
       console.error('Error adding product:', err);
     }

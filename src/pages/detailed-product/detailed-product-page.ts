@@ -88,11 +88,16 @@ class DetailedProductPage {
       fullDescription,
       fullDescriptionValue,
     ]);
+
+    const buttonCart = genElement('button', { className: 'add-remove-element', name: 'cart' }, [
+      this.model.isInCart ? 'Remove from cart' : 'Add to cart',
+    ]);
     const wrapperInformation = genElement('div', { className: 'wrapper-information' }, [
       name,
       price,
       wrapperDescription,
       wrapperFullDescription,
+      buttonCart,
     ]);
 
     return wrapperInformation;
