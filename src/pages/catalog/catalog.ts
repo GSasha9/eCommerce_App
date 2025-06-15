@@ -6,6 +6,7 @@ import { updateSortAndFilter } from '../../controllers/catalog/utils/update-sort
 import { route } from '../../router';
 import type { IParameters } from '../../shared/models/interfaces';
 import { CreateElement } from '../../shared/utils/create-element';
+import { updateCountItemsCart } from '../../shared/utils/update-countItems-cart';
 import { View } from '../view';
 import type { IParametersCard } from './models/interfaces';
 import type { ProductParameters } from './models/interfaces/product-paameters';
@@ -342,7 +343,7 @@ export class CatalogPage extends View {
         if (!productId || !prodVariantId) return;
 
         const product: ProductParameters = {
-          productId: productId,
+          id: productId,
           varId: Number(prodVariantId),
           quantity: 1,
         };
@@ -354,6 +355,7 @@ export class CatalogPage extends View {
             button.textContent = 'Processing...';
             await authService.addProductToCart(product);
             button.textContent = 'In cart';
+            void updateCountItemsCart();
           } catch (error) {
             console.warn(error);
           }

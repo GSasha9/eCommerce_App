@@ -1,5 +1,5 @@
 export interface ProductParameters {
-  productId: string;
-  varId: number;
-  quantity: number;
+  id: string;
+  varId?: number;
+  quantity?: number;
 }
