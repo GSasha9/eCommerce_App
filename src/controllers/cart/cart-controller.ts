@@ -49,6 +49,7 @@ export class CartController {
         this.model.cart = updatedCart.body;
         this.page.renderPage();
         void updateCountItemsCart();
+        this.checkForEmptyBasket();
       }
     }
 
@@ -101,13 +102,7 @@ export class CartController {
 
         this.model.cart = updatedCart.body;
         this.page.renderPage();
-
-        if (this.model.cart.lineItems.length) {
-          this.page.renderPage();
-        } else {
-          this.page.renderEmptyCart();
-        }
-
+        this.checkForEmptyBasket();
         void updateCountItemsCart();
       }
     }
@@ -132,6 +127,7 @@ export class CartController {
         this.model.cart = updatedCart.body;
         this.page.renderPage();
         void updateCountItemsCart();
+        this.checkForEmptyBasket();
       }
     }
 
@@ -186,11 +182,6 @@ export class CartController {
 
   public async render(): Promise<void> {
     const layout = Layout.getInstance();
-    // const msg = document.createElement('h1');
-
-    // msg.textContent = 'Loading..Please wait!';
-    // msg.className = 'header__logo';
-    // layout.setMainContent(msg);
 
     await this.model.getCartInformation();
 
@@ -198,6 +189,14 @@ export class CartController {
       layout.setMainContent(this.page.renderPage());
     } else {
       layout.setMainContent(this.page.renderEmptyCart());
+    }
+  }
+
+  public checkForEmptyBasket(): void {
+    if (this.model.cart && this.model.cart.lineItems.length) {
+      this.page.renderPage();
+    } else {
+      this.page.renderEmptyCart();
     }
   }
 }

@@ -232,8 +232,18 @@
 
 @media (width <= 575px) {
   .add-remove-element {
-    // width: 75px;
     height: 25px;
     padding: 3px;
+  }
+}
+
+.message-successful-add {
+  color: $primary-button;
+}
+
+.link-empty-cart {
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
   }
 }

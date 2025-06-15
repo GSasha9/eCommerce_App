@@ -1,6 +1,7 @@
 import type { LineItem } from '@commercetools/platform-sdk';
 
 import type CartModel from '../../model/cart/cart-model';
+import { formatPrice } from '../../model/cart/cart-model';
 import { route } from '../../router';
 import { genElement } from '../../shared/utils/gen-element';
 
@@ -26,7 +27,7 @@ class CartPage {
     ]);
 
     this.emptyCart = genElement('div', { className: 'empty-cart-wrapper' }, [
-      genElement('div', { className: 'coupon-error-message' }, [
+      genElement('div', { className: 'empty-cart-message' }, [
         'There are no products in the cart. You can continue shopping:',
       ]),
       genElement(
@@ -47,7 +48,9 @@ class CartPage {
         genElement('div', {}, [
           genElement('span', {}, ['Original price: ']),
           genElement('span', {}, [
-            String(this.model.cart?.lineItems.reduce((acc, cur) => acc + cur.price.value.centAmount * cur.quantity, 0)),
+            formatPrice(
+              this.model.cart?.lineItems.reduce((acc, cur) => acc + cur.price.value.centAmount * cur.quantity, 0) || 0,
+            ),
           ]),
         ]),
         genElement(
@@ -66,7 +69,7 @@ class CartPage {
         ),
         genElement('div', { className: 'wrapper-total-price' }, [
           genElement('span', {}, ['Discounted price: ']),
-          genElement('span', { className: 'total-price' }, [String(this.model.cart?.totalPrice.centAmount)]),
+          genElement('span', { className: 'total-price' }, [formatPrice(this.model.cart?.totalPrice.centAmount || 0)]),
         ]),
       ]),
     ]);
@@ -130,9 +133,9 @@ const genLineItem = (item: LineItem): HTMLElement => {
       genElement('div', {}),
     ]),
     genElement('div', { className: 'wrapper-price' }, [
-      genElement('div', {}, [...(item.price.discounted ? String(item.price.discounted?.value.centAmount) : '')]),
+      genElement('div', {}, [...(item.price.discounted ? formatPrice(item.price.discounted?.value.centAmount) : '')]),
       genElement('div', { className: `${item.price.discounted ? 'discount-cart' : ''}` }, [
-        String(item.price.value.centAmount),
+        formatPrice(item.price.value.centAmount),
       ]),
     ]),
     genElement('div', { className: 'wrapper-quantity' }, [

@@ -1,7 +1,10 @@
 import { authService } from '../../commerce-tools/auth-service.ts';
 import { ImageModal } from '../../components/modals/image-modal/image-modal.ts';
 import DetailedProductModel from '../../model/detailed-product/detailed-product-model.ts';
-import DetailedProductPage from '../../pages/detailed-product/detailed-product-page.ts';
+import DetailedProductPage, {
+  renderAddProductMessage,
+  renderRemoveProductMessage,
+} from '../../pages/detailed-product/detailed-product-page.ts';
 import { Layout } from '../../pages/layout/layout.ts';
 import { isHTMLButtonElement, isHTMLElement } from '../../shared/models/typeguards.ts/typeguards.ts';
 import { initSlider } from '../../shared/utils/init-slider.ts';
@@ -45,6 +48,7 @@ export class DetailedProductController {
         this.model.isInCart = false;
         this.page.renderPage();
         void updateCountItemsCart();
+        renderRemoveProductMessage();
       } else {
         const cartResponse = await authService.addProductToCart({ id: this.model.response.id });
 
@@ -54,6 +58,7 @@ export class DetailedProductController {
         )?.id;
         this.page.renderPage();
         void updateCountItemsCart();
+        renderAddProductMessage();
       }
     }
   };
