@@ -101,10 +101,19 @@ export class Header {
       callback: (): void => {},
     });
 
+    const isAuthenticated: boolean = !!localStorage.getItem('ct_user_credentials');
+
+    console.log(isAuthenticated);
+
     const regButton: CreateElement = new CreateElement({
       tag: 'div',
-      classNames: ['header__button', 'header__button--reg', 'root-button'],
-      textContent: 'Register',
+      classNames: [
+        'header__button',
+        'header__button--acc',
+        'root-button',
+        isAuthenticated ? 'header__button--cabinet' : 'header__button--reg',
+      ],
+      textContent: isAuthenticated ? 'Account' : 'Register',
       callback: (event): void => {
         event.preventDefault();
 
@@ -116,29 +125,34 @@ export class Header {
       },
     });
 
-    const isAuthenticated: boolean = !!localStorage.getItem('ct_user_credentials');
-
     const loginButton: CreateButton = new CreateButton({
       classNames: ['header__button', 'header__button--login', isAuthenticated ? 'logout' : 'login'],
       textContent: isAuthenticated ? 'Logout' : 'Login',
       disabled: false,
-      callback: (event: Event): void => {
-        event.preventDefault();
+      type: 'button',
+      callback: (): void => {},
+    });
 
-        if (isAuthenticated) {
-          if (event.target instanceof HTMLButtonElement) {
-            event.target.classList.remove('logout');
-            event.target.classList.add('login');
-            event.target.textContent = 'Login';
-            authService.logOutCustomer();
-            this.switchBtn();
-            route.navigate('/login');
-          }
-        } else {
-          this.switchBtn();
+    loginButton.getElement().addEventListener('click', (event): void => {
+      event.preventDefault();
+
+      const currentAuth = !!localStorage.getItem('ct_user_credentials');
+
+      console.log(currentAuth);
+
+      if (currentAuth) {
+        if (event.target instanceof HTMLButtonElement) {
+          event.target.classList.remove('logout');
+          event.target.classList.add('login');
+          event.target.textContent = 'Login';
+          authService.logOutCustomer();
+          Header.switchBtn(false);
           route.navigate('/login');
         }
-      },
+      } else {
+        route.navigate('/login');
+        Header.switchBtn(true);
+      }
     });
 
     const cart: CreateElement = new CreateElement({
@@ -163,17 +177,17 @@ export class Header {
   }
 
   public static switchBtn(callAccount?: boolean): void {
-    const headerReg = document.querySelector('.header__button');
+    const headerReg = document.querySelector('.header__button--acc');
 
     if (!headerReg) return;
 
-    const isLoggedIn = localStorage.getItem('ct_user_credentials');
-
-    if (isLoggedIn || callAccount) {
+    if (callAccount) {
+      console.log('Switching to Account');
       headerReg.textContent = 'Account';
       headerReg.classList.add('header__button--cabinet');
       headerReg.classList.remove('header__button--reg');
     } else {
+      console.log('Switching to Register');
       headerReg.textContent = 'Register';
       headerReg.classList.remove('header__button--cabinet');
       headerReg.classList.add('header__button--reg');
