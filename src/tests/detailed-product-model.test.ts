@@ -115,6 +115,7 @@ describe('DetailedProductModel (safe, no assertions)', () => {
 
   it('formats prices correctly', () => {
     model.response = {
+      id: 'product-id-123',
       name: 'Test',
       img: [],
       description: '',
@@ -128,6 +129,7 @@ describe('DetailedProductModel (safe, no assertions)', () => {
 
   it('formats discounted prices correctly', () => {
     model.response = {
+      id: 'product-id-123',
       name: 'Test',
       img: [],
       description: '',
@@ -144,6 +146,7 @@ describe('DetailedProductModel (safe, no assertions)', () => {
   it('clears query results', () => {
     model.key = 'x';
     model.response = {
+      id: 'product-id-123',
       name: 'X',
       img: [],
       description: '',
