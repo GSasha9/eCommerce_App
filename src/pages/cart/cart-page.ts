@@ -1,8 +1,8 @@
 import type { LineItem } from '@commercetools/platform-sdk';
 
 import type CartModel from '../../model/cart/cart-model';
-import { formatPrice } from '../../model/cart/cart-model';
 import { route } from '../../router';
+import { formatPrice } from '../../shared/utils/format-price';
 import { genElement } from '../../shared/utils/gen-element';
 
 import './style.scss';

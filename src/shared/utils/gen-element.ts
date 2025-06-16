@@ -1,6 +1,4 @@
-interface Handlers {
-  onClick?: (event: Event) => void;
-}
+import type { Handlers } from '../models/interfaces';
 
 export const genElement = <T extends keyof HTMLElementTagNameMap>(
   tag: T,
