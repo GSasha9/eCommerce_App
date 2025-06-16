@@ -9,6 +9,8 @@ class DetailedProductModel {
   public key?: string;
   public response?: IResponseDetailedProduct | undefined;
   public isSuccess?: boolean;
+  public isInCart?: boolean;
+  public lineItemId?: string;
 
   private constructor() {}
 
@@ -34,22 +36,28 @@ class DetailedProductModel {
   public async getDetailedInformation(): Promise<void> {
     try {
       if (this.key) {
-        const response = await authService.getProductByKey(this.key);
-        const name = response.body.name.en;
-        const img = response.body.masterVariant.images?.map((img) => img.url);
-        const description = response.body.description?.['en-US'];
-        const fullDescription = isString(response.body.masterVariant.attributes?.[3].value)
-          ? response.body.masterVariant.attributes?.[3].value
+        const requests = [authService.getProductByKey(this.key), authService.getCart()] as const;
+        const [productResponse, cartResponse] = await Promise.all(requests);
+
+        this.isInCart = cartResponse.body.lineItems.some((item) => productResponse.body.id === item.productId);
+        this.lineItemId = cartResponse.body.lineItems.find((item) => productResponse.body.id === item.productId)?.id;
+        const name = productResponse.body.name.en;
+        const img = productResponse.body.masterVariant.images?.map((img) => img.url);
+        const description = productResponse.body.description?.['en-US'];
+        const fullDescription = isString(productResponse.body.masterVariant.attributes?.[3].value)
+          ? productResponse.body.masterVariant.attributes?.[3].value
           : '';
-        const prices = response.body.masterVariant.prices?.[0].value.centAmount;
-        const pricesFractionDigits = response.body.masterVariant.prices?.[0].value.fractionDigits;
-        const discounted = response.body.masterVariant.prices?.[0].discounted?.value.centAmount;
-        const discountedFractionDigits = response.body.masterVariant.prices?.[0].discounted?.value.fractionDigits;
+        const prices = productResponse.body.masterVariant.prices?.[0].value.centAmount;
+        const pricesFractionDigits = productResponse.body.masterVariant.prices?.[0].value.fractionDigits;
+        const discounted = productResponse.body.masterVariant.prices?.[0].discounted?.value.centAmount;
+        const discountedFractionDigits =
+          productResponse.body.masterVariant.prices?.[0].discounted?.value.fractionDigits;
 
         this.isSuccess = true;
 
         if (name && img && description && fullDescription && prices && pricesFractionDigits) {
           this.response = {
+            id: productResponse.body.id,
             name,
             img,
             description,

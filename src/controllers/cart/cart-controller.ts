@@ -1,8 +1,10 @@
 import { authService } from '../../commerce-tools/auth-service.ts';
+import { CartService } from '../../commerce-tools/cart/cart-service.ts';
 import CartModel from '../../model/cart/cart-model';
 import CartPage from '../../pages/cart/cart-page';
 import { Layout } from '../../pages/layout/layout';
 import { isHTMLButtonElement, isHTMLElement, isHTMLInputElement } from '../../shared/models/typeguards.ts';
+import { updateCountItemsCart } from '../../shared/utils/update-countItems-cart.ts';
 
 export class CartController {
   private readonly page: CartPage;
@@ -46,6 +48,8 @@ export class CartController {
 
         this.model.cart = updatedCart.body;
         this.page.renderPage();
+        void updateCountItemsCart();
+        this.checkForEmptyBasket();
       }
     }
 
@@ -98,10 +102,12 @@ export class CartController {
 
         this.model.cart = updatedCart.body;
         this.page.renderPage();
+        this.checkForEmptyBasket();
+        void updateCountItemsCart();
       }
     }
 
-    if (isHTMLButtonElement(target) && target.name === 'removeAll') {
+    if (isHTMLButtonElement(target) && target.name === 'remove-all') {
       if (this.model.cart?.id) {
         const updatedCart = await authService.api
           .carts()
@@ -120,30 +126,34 @@ export class CartController {
 
         this.model.cart = updatedCart.body;
         this.page.renderPage();
+        void updateCountItemsCart();
+        this.checkForEmptyBasket();
       }
     }
 
-    if (isHTMLButtonElement(target) && target.name === 'applyCoupon') {
+    if (isHTMLButtonElement(target) && target.name === 'apply-coupon') {
       const couponInput = this.page.coupon.querySelector('input[name="coupon"]');
 
       if (isHTMLInputElement(couponInput) && this.model.cart?.id) {
-        const updatedCart = await authService.api
-          .carts()
-          .withId({ ID: this.model.cart.id })
-          .post({
-            body: {
-              version: this.model.cart.version,
-              actions: [{ action: 'addDiscountCode', code: couponInput.value }],
-            },
-          })
-          .execute();
+        try {
+          const param = {
+            ID: this.model.cart.id,
+            version: this.model.cart.version,
+            code: couponInput.value,
+          };
+          const updatedCart = await CartService.getDiscount(param);
 
-        this.model.cart = updatedCart.body;
-        this.page.renderPage();
+          this.model.cart = updatedCart.body;
+          this.page.renderPage();
+        } catch (e) {
+          console.warn('Discount code not found:', e);
+          this.page.renderErrorMessage();
+          couponInput.value = '';
+        }
       }
     }
 
-    if (isHTMLButtonElement(target) && target.name === 'removeCode') {
+    if (isHTMLButtonElement(target) && target.name === 'remove-code') {
       const { codeId } = target.dataset;
 
       if (codeId && this.model.cart?.id) {
@@ -162,19 +172,31 @@ export class CartController {
         this.page.renderPage();
       }
     }
+
+    if (isHTMLButtonElement(target) && target.name === 'coupon-error-button') {
+      const message = document.querySelector('.coupon-error-wrapper');
+
+      message?.remove();
+    }
   };
 
   public async render(): Promise<void> {
     const layout = Layout.getInstance();
-    // const msg = document.createElement('h1');
 
-    // msg.textContent = 'Loading..Please wait!';
-    // msg.className = 'header__logo';
-    // layout.setMainContent(msg);
-
-    // this.model.clearQueryResults();
-    // this.model.getProductKeyByUrl();
     await this.model.getCartInformation();
-    layout.setMainContent(this.page.renderPage());
+
+    if (this.model.cart && this.model.cart.lineItems.length) {
+      layout.setMainContent(this.page.renderPage());
+    } else {
+      layout.setMainContent(this.page.renderEmptyCart());
+    }
+  }
+
+  public checkForEmptyBasket(): void {
+    if (this.model.cart && this.model.cart.lineItems.length) {
+      this.page.renderPage();
+    } else {
+      this.page.renderEmptyCart();
+    }
   }
 }
