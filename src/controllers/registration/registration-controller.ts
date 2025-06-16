@@ -76,8 +76,10 @@ export class RegistrationController {
         }),
       };
 
+      const id = localStorage.getItem('plant-cart-id') || '';
+
       try {
-        await authService.registerCustomer(data);
+        await authService.registerCustomer(data, id);
         await new ModalGreeting('The account was created successfully').open();
         route.navigate('/home');
         LoginController.configureLogoutButton();
