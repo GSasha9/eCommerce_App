@@ -214,9 +214,7 @@ export default class CatalogController {
     if (!response) return;
 
     this.addPagination(response.totalPages);
-
     this.renderPage(1, response.products);
-
     const cartId = localStorage.getItem('plant-cart-id');
 
     if (cartId) {

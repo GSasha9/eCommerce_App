@@ -158,6 +158,7 @@
 
 .delete-cart-item {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   justify-content: center;
 
@@ -295,9 +296,14 @@
   color: $primary-button;
 }
 
+.button-basket-items {
+  display: flex;
+  gap: 26px;
+  align-items: center;
+}
+
 @media (width <= 575px) {
   .add-remove-element {
-    // width: 75px;
     height: 25px;
     padding: 3px;
   }
@@ -309,5 +315,21 @@
   .line-item {
     gap: 6px;
     padding: 8px;
+  }
+
+  .button-basket-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .wrapper-quantity {
+    gap: 3px;
+  }
+
+  .button-quantity {
+    width: 24px;
+    height: 24px;
+    padding: 4px;
   }
 }

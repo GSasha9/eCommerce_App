@@ -63,10 +63,11 @@ export class LoginController {
         email: this.loginModel.currentFormValues.email,
         password: this.loginModel.currentFormValues.password,
       };
+      const id = localStorage.getItem('plant-cart-id') || '';
 
       if (data.email && data.password)
         try {
-          const response = await authService.signInCustomer(data.email, data.password);
+          const response = await authService.signInCustomer(data.email, data.password, id);
 
           if (response) {
             const modal = new ModalGreeting(`Hello, ${response.customer.firstName}`);

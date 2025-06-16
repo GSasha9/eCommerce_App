@@ -1,8 +1,8 @@
 import type { LineItem } from '@commercetools/platform-sdk';
 
 import type CartModel from '../../model/cart/cart-model';
-import { formatPrice } from '../../model/cart/cart-model';
 import { route } from '../../router';
+import { formatPrice } from '../../shared/utils/format-price';
 import { genElement } from '../../shared/utils/gen-element';
 
 import './style.scss';
@@ -138,28 +138,30 @@ const genLineItem = (item: LineItem): HTMLElement => {
         formatPrice(item.price.value.centAmount),
       ]),
     ]),
-    genElement('div', { className: 'wrapper-quantity' }, [
-      genElement(
-        'button',
-        {
-          className: 'quantity-button button-quantity',
-          name: 'minus',
-          dataset: { lineItemId: item.id, quantity: String(item.quantity) },
-        },
-        ['-'],
-      ),
-      genElement('div', {}, [String(item.quantity)]),
-      genElement(
-        'button',
-        {
-          className: 'quantity-button button-quantity',
-          name: 'plus',
-          dataset: { lineItemId: item.id, quantity: String(item.quantity) },
-        },
-        ['+'],
-      ),
+    genElement('div', { className: 'button-basket-items' }, [
+      genElement('div', { className: 'wrapper-quantity' }, [
+        genElement(
+          'button',
+          {
+            className: 'quantity-button button-quantity',
+            name: 'minus',
+            dataset: { lineItemId: item.id, quantity: String(item.quantity) },
+          },
+          ['-'],
+        ),
+        genElement('div', {}, [String(item.quantity)]),
+        genElement(
+          'button',
+          {
+            className: 'quantity-button button-quantity',
+            name: 'plus',
+            dataset: { lineItemId: item.id, quantity: String(item.quantity) },
+          },
+          ['+'],
+        ),
+      ]),
+      genElement('button', { className: 'delete-cart-item', name: 'remove', dataset: { lineItemId: item.id } }),
     ]),
-    genElement('button', { className: 'delete-cart-item', name: 'remove', dataset: { lineItemId: item.id } }),
   ]);
 };
 

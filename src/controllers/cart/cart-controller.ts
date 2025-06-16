@@ -20,7 +20,7 @@ export class CartController {
     this.page.wrapperContent.addEventListener('click', (e) => void this.onClick(e));
   }
 
-  public onClick = async (event: Event): Promise<void> => {
+  public onClick = (event: Event): void => {
     const target = event.target;
 
     if (!isHTMLElement(target)) return;
@@ -28,148 +28,44 @@ export class CartController {
     if (isHTMLButtonElement(target) && target.name === 'minus') {
       const { lineItemId, quantity } = target.dataset;
 
-      if (this.model.cart?.id) {
-        const updatedCart = await authService.api
-          .carts()
-          .withId({ ID: this.model.cart.id })
-          .post({
-            body: {
-              version: this.model.cart.version,
-              actions: [
-                {
-                  action: 'changeLineItemQuantity',
-                  lineItemId: lineItemId,
-                  quantity: (Number(quantity) || 1) - 1,
-                },
-              ],
-            },
-          })
-          .execute();
-
-        this.model.cart = updatedCart.body;
-        this.page.renderPage();
-        void updateCountItemsCart();
-        this.checkForEmptyBasket();
+      if (lineItemId && quantity) {
+        void this.decreaseQuantityProduct(lineItemId, quantity);
       }
     }
 
     if (isHTMLButtonElement(target) && target.name === 'plus') {
       const { lineItemId, quantity } = target.dataset;
 
-      if (this.model.cart?.id) {
-        const updatedCart = await authService.api
-          .carts()
-          .withId({ ID: this.model.cart.id })
-          .post({
-            body: {
-              version: this.model.cart.version,
-              actions: [
-                {
-                  action: 'changeLineItemQuantity',
-                  lineItemId: lineItemId,
-                  quantity: (Number(quantity) || 1) + 1,
-                },
-              ],
-            },
-          })
-          .execute();
-
-        this.model.cart = updatedCart.body;
-        this.page.renderPage();
+      if (lineItemId && quantity) {
+        void this.increaseQuantityProduct(lineItemId, quantity);
       }
     }
 
     if (isHTMLButtonElement(target) && target.name === 'remove') {
       const { lineItemId } = target.dataset;
 
-      if (this.model.cart?.id) {
-        const updatedCart = await authService.api
-          .carts()
-          .withId({ ID: this.model.cart.id })
-          .post({
-            body: {
-              version: this.model.cart.version,
-              actions: [
-                {
-                  action: 'changeLineItemQuantity',
-                  lineItemId: lineItemId,
-                  quantity: 0,
-                },
-              ],
-            },
-          })
-          .execute();
-
-        this.model.cart = updatedCart.body;
-        this.page.renderPage();
-        this.checkForEmptyBasket();
-        void updateCountItemsCart();
+      if (lineItemId) {
+        void this.removeProductFromCart(lineItemId);
       }
     }
 
     if (isHTMLButtonElement(target) && target.name === 'remove-all') {
-      if (this.model.cart?.id) {
-        const updatedCart = await authService.api
-          .carts()
-          .withId({ ID: this.model.cart.id })
-          .post({
-            body: {
-              version: this.model.cart.version,
-              actions: this.model.cart.lineItems.map((lineItem) => ({
-                action: 'changeLineItemQuantity',
-                lineItemId: lineItem.id,
-                quantity: 0,
-              })),
-            },
-          })
-          .execute();
-
-        this.model.cart = updatedCart.body;
-        this.page.renderPage();
-        void updateCountItemsCart();
-        this.checkForEmptyBasket();
-      }
+      void this.removeAll();
     }
 
     if (isHTMLButtonElement(target) && target.name === 'apply-coupon') {
       const couponInput = this.page.coupon.querySelector('input[name="coupon"]');
 
-      if (isHTMLInputElement(couponInput) && this.model.cart?.id) {
-        try {
-          const param = {
-            ID: this.model.cart.id,
-            version: this.model.cart.version,
-            code: couponInput.value,
-          };
-          const updatedCart = await CartService.getDiscount(param);
-
-          this.model.cart = updatedCart.body;
-          this.page.renderPage();
-        } catch (e) {
-          console.warn('Discount code not found:', e);
-          this.page.renderErrorMessage();
-          couponInput.value = '';
-        }
+      if (couponInput) {
+        void this.applyCoupon(couponInput);
       }
     }
 
     if (isHTMLButtonElement(target) && target.name === 'remove-code') {
       const { codeId } = target.dataset;
 
-      if (codeId && this.model.cart?.id) {
-        const updatedCart = await authService.api
-          .carts()
-          .withId({ ID: this.model.cart.id })
-          .post({
-            body: {
-              version: this.model.cart.version,
-              actions: [{ action: 'removeDiscountCode', discountCode: { id: codeId, typeId: 'discount-code' } }],
-            },
-          })
-          .execute();
-
-        this.model.cart = updatedCart.body;
-        this.page.renderPage();
+      if (codeId) {
+        void this.removeCode(codeId);
       }
     }
 
@@ -179,6 +75,144 @@ export class CartController {
       message?.remove();
     }
   };
+
+  public async decreaseQuantityProduct(lineItemId: string, quantity: string): Promise<void> {
+    if (this.model.cart?.id) {
+      const updatedCart = await authService.api
+        .carts()
+        .withId({ ID: this.model.cart.id })
+        .post({
+          body: {
+            version: this.model.cart.version,
+            actions: [
+              {
+                action: 'changeLineItemQuantity',
+                lineItemId: lineItemId,
+                quantity: (Number(quantity) || 1) - 1,
+              },
+            ],
+          },
+        })
+        .execute();
+
+      this.model.cart = updatedCart.body;
+      this.page.renderPage();
+      void updateCountItemsCart();
+      this.checkForEmptyBasket();
+    }
+  }
+
+  public async increaseQuantityProduct(lineItemId: string, quantity: string): Promise<void> {
+    if (this.model.cart?.id) {
+      const updatedCart = await authService.api
+        .carts()
+        .withId({ ID: this.model.cart.id })
+        .post({
+          body: {
+            version: this.model.cart.version,
+            actions: [
+              {
+                action: 'changeLineItemQuantity',
+                lineItemId: lineItemId,
+                quantity: (Number(quantity) || 1) + 1,
+              },
+            ],
+          },
+        })
+        .execute();
+
+      this.model.cart = updatedCart.body;
+      this.page.renderPage();
+    }
+  }
+
+  public async removeProductFromCart(lineItemId: string): Promise<void> {
+    if (this.model.cart?.id) {
+      const updatedCart = await authService.api
+        .carts()
+        .withId({ ID: this.model.cart.id })
+        .post({
+          body: {
+            version: this.model.cart.version,
+            actions: [
+              {
+                action: 'changeLineItemQuantity',
+                lineItemId: lineItemId,
+                quantity: 0,
+              },
+            ],
+          },
+        })
+        .execute();
+
+      this.model.cart = updatedCart.body;
+      this.page.renderPage();
+      this.checkForEmptyBasket();
+      void updateCountItemsCart();
+    }
+  }
+
+  public async removeAll(): Promise<void> {
+    if (this.model.cart?.id) {
+      const updatedCart = await authService.api
+        .carts()
+        .withId({ ID: this.model.cart.id })
+        .post({
+          body: {
+            version: this.model.cart.version,
+            actions: this.model.cart.lineItems.map((lineItem) => ({
+              action: 'changeLineItemQuantity',
+              lineItemId: lineItem.id,
+              quantity: 0,
+            })),
+          },
+        })
+        .execute();
+
+      this.model.cart = updatedCart.body;
+      this.page.renderPage();
+      void updateCountItemsCart();
+      this.checkForEmptyBasket();
+    }
+  }
+
+  public async applyCoupon(couponInput: Element): Promise<void> {
+    if (isHTMLInputElement(couponInput) && this.model.cart?.id) {
+      try {
+        const param = {
+          ID: this.model.cart.id,
+          version: this.model.cart.version,
+          code: couponInput.value,
+        };
+        const updatedCart = await CartService.getDiscount(param);
+
+        this.model.cart = updatedCart.body;
+        this.page.renderPage();
+      } catch (e) {
+        console.warn('Discount code not found:', e);
+        this.page.renderErrorMessage();
+        couponInput.value = '';
+      }
+    }
+  }
+
+  public async removeCode(codeId: string): Promise<void> {
+    if (codeId && this.model.cart?.id) {
+      const updatedCart = await authService.api
+        .carts()
+        .withId({ ID: this.model.cart.id })
+        .post({
+          body: {
+            version: this.model.cart.version,
+            actions: [{ action: 'removeDiscountCode', discountCode: { id: codeId, typeId: 'discount-code' } }],
+          },
+        })
+        .execute();
+
+      this.model.cart = updatedCart.body;
+      this.page.renderPage();
+    }
+  }
 
   public async render(): Promise<void> {
     const layout = Layout.getInstance();

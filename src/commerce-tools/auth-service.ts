@@ -75,6 +75,7 @@ export class AuthorizationService {
 
     const bodySignUp = {
       ...body,
+
       ...(anonymousCartId && {
         anonymousCart: {
           id: anonymousCartId,
@@ -99,8 +100,8 @@ export class AuthorizationService {
   public signInCustomer = async (
     email: string,
     password: string,
-    _accessToken?: string,
     anonymousCartId?: string,
+    // _accessToken?: string,
   ): Promise<CustomerSignInResult | undefined> => {
     if (!this.projectKey) {
       throw new Error(ErrorMessage.MISSING_PROJECT_KEY);
@@ -116,6 +117,7 @@ export class AuthorizationService {
           body: {
             email,
             password,
+
             ...(anonymousCartId && {
               anonymousCart: {
                 id: anonymousCartId,
