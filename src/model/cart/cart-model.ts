@@ -1,4 +1,4 @@
-import type { Cart } from '@commercetools/platform-sdk';
+import type { Cart, DiscountCode } from '@commercetools/platform-sdk';
 
 import { authService } from '../../commerce-tools/auth-service';
 import { isCommercetoolsApiError } from '../../shared/models/typeguards.ts';
@@ -8,6 +8,8 @@ import 'swiper/css/bundle';
 class CartModel {
   private static instance: CartModel;
   public cart?: Cart;
+  public couponName?: string;
+  public codes?: DiscountCode[];
 
   private constructor() {}
 
@@ -23,6 +25,8 @@ class CartModel {
     try {
       const response = await authService.getCart();
 
+      this.codes = (await authService.api.discountCodes().get().execute()).body.results;
+
       console.log('response+++', response.body);
       const data = response.body;
 
@@ -33,6 +37,17 @@ class CartModel {
       }
     }
   }
+}
+
+export function formatPrice(price: number): string {
+  const formatPrice = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(price / 100);
+
+  return formatPrice;
 }
 
 export default CartModel;

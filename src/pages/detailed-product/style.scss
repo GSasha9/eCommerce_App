@@ -199,3 +199,51 @@
     background-color: rgb(189 189 189);
   }
 }
+
+.add-remove-element {
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+
+  width: 200px;
+  height: 35px;
+  padding: $spacing-sm;
+  border: none;
+  border-radius: $border-radius-input;
+
+  font-family: 'Cera Pro', sans-serif;
+  color: $text-secondary;
+
+  background-color: rgb(222 221 219);
+
+  transition: all 0.1s ease-out;
+
+  &:disabled {
+    cursor: not-allowed;
+    color: rgb(96 96 96);
+    background-color: rgb(137 137 137);
+  }
+
+  &:not(:disabled):hover {
+    background-color: rgb(201 199 193);
+  }
+}
+
+@media (width <= 575px) {
+  .add-remove-element {
+    height: 25px;
+    padding: 3px;
+  }
+}
+
+.message-successful-add {
+  color: $primary-button;
+}
+
+.link-empty-cart {
+  &:hover {
+    cursor: pointer;
+    text-decoration: underline;
+  }
+}

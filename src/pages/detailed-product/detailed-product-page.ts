@@ -10,12 +10,14 @@ class DetailedProductPage {
   public page: HTMLElement;
   public error: HTMLElement;
   public wrapperContent: HTMLElement;
+  public successMessage: HTMLElement;
 
   private constructor(model: DetailedProductModel) {
     this.model = model;
     this.wrapperContent = genElement('div', { className: 'wrapper-content' });
     this.page = genElement('div', { className: 'detailed-product-page wrapper' }, [this.wrapperContent]);
     this.error = genElement('div', { className: 'error' }, ['Sorry, something went wrong.']);
+    this.successMessage = genElement('div', { className: 'message-successful-add' }, ['Product added to cart']);
   }
 
   public static getInstance(model: DetailedProductModel): DetailedProductPage {
@@ -88,15 +90,37 @@ class DetailedProductPage {
       fullDescription,
       fullDescriptionValue,
     ]);
+
+    const buttonCart = genElement('button', { className: 'add-remove-element', name: 'cart' }, [
+      this.model.isInCart ? 'Remove from cart' : 'Add to cart',
+    ]);
     const wrapperInformation = genElement('div', { className: 'wrapper-information' }, [
       name,
       price,
       wrapperDescription,
       wrapperFullDescription,
+      buttonCart,
     ]);
 
     return wrapperInformation;
   }
+}
+export function renderAddProductMessage(): void {
+  const successMessage = genElement('div', { className: 'message-successful-add' }, ['Product added to cart']);
+  const root = document.querySelector('.wrapper-information');
+
+  root?.append(successMessage);
+
+  setTimeout(() => successMessage.remove(), 3000);
+}
+
+export function renderRemoveProductMessage(): void {
+  const successMessage = genElement('div', { className: 'message-successful-add' }, ['Product removed from cart']);
+  const root = document.querySelector('.wrapper-information');
+
+  root?.append(successMessage);
+
+  setTimeout(() => successMessage.remove(), 3000);
 }
 
 export default DetailedProductPage;

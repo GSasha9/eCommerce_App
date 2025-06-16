@@ -2,6 +2,7 @@ import { authService } from '../../commerce-tools/auth-service.ts';
 import { CreateButton } from '../../components/button/create-button.ts';
 import { route } from '../../router';
 import { CreateElement } from '../../shared/utils/create-element.ts';
+import { genElement } from '../../shared/utils/gen-element.ts';
 
 export class Header {
   private readonly headerElement: HTMLElement;
@@ -155,14 +156,16 @@ export class Header {
       }
     });
 
-    const cart: CreateElement = new CreateElement({
-      tag: 'button',
-      classNames: ['cart-logo'],
-      textContent: 'cart',
-      callback: (): void => {
-        route.navigate('/basket');
-      },
-    });
+    const cartIconWrapper = genElement('div', { className: 'cart-icon-wrapper' }, [
+      new CreateElement({
+        tag: 'button',
+        classNames: ['cart-logo'],
+        callback: (): void => {
+          route.navigate('/basket');
+        },
+      }).getElement(),
+      genElement('div', { className: 'count-item-icon', id: 'cart-count-icon' }, ['']),
+    ]);
 
     authContainer.addInnerElement(regButton.getElement());
     authContainer.addInnerElement(loginButton.getElement());
@@ -170,7 +173,7 @@ export class Header {
     header.addInnerElement(headerWrapper.getElement());
     headerWrapper.addInnerElement(logo.getElement());
     headerWrapper.addInnerElement(navContainer.getElement());
-    headerWrapper.addInnerElement(cart.getElement());
+    headerWrapper.addInnerElement(cartIconWrapper);
     headerWrapper.addInnerElement(authContainer.getElement());
 
     return header.getElement();

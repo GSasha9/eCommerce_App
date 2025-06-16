@@ -125,7 +125,7 @@
       z-index: 99;
       right: -500px;
 
-      width: 148%;
+      width: 185%;
       height: 523%;
 
       background-repeat: no-repeat;
@@ -140,7 +140,7 @@
       background-image: url('../../../public/images/promo-leto-gor.png');
     }
 
-    .promocode-window-birthday {
+    .promocode-window-sale {
       top: 0;
       background-image: url('../../../public/images/promo-birth-gor.png');
     }
@@ -162,6 +162,8 @@
     flex-direction: row;
     gap: 0.5rem;
     justify-content: space-between;
+
+    width: 100%;
 
     font-size: 0.85rem;
 

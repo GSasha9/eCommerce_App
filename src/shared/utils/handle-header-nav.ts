@@ -10,6 +10,8 @@ export const handleHeaderNav = (path: string): void => {
 
     if (text === path.slice(1)) {
       item.classList.add('header__menu-item-active');
+    } else if (path.slice(1) === '' && text === 'home') {
+      item.classList.add('header__menu-item-active');
     }
   });
 };
