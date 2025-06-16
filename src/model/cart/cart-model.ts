@@ -26,8 +26,6 @@ class CartModel {
       const response = await authService.getCart();
 
       this.codes = (await authService.api.discountCodes().get().execute()).body.results;
-
-      console.log('response+++', response.body);
       const data = response.body;
 
       this.cart = data;
