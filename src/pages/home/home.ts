@@ -96,7 +96,7 @@ export class HomePage extends View {
       callback: (): void => {},
     });
 
-    const codes = ['leto', 'birthday'];
+    const codes = ['leto', 'sale'];
 
     codes.forEach((el) => {
       const item = new CreateElement({

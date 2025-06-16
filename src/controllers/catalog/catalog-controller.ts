@@ -280,9 +280,9 @@ export default class CatalogController {
       } else {
         productsByCategory[categoryName].push(product);
       }
-
-      void this.catalogPage.handleCardsButton();
     });
+
+    void this.catalogPage.handleCardsButton();
 
     const categoryElements = this.catalogPage.categoryList.getElement().querySelectorAll('.category__list-item');
 

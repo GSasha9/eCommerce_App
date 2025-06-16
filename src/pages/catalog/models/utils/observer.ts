@@ -20,6 +20,7 @@ export const observer = new IntersectionObserver((entries, obs) => {
         bgDiv.classList.add('card-img');
         bgDiv.style.backgroundImage = `url(${src})`;
 
+        wrapper.replaceChildren();
         wrapper.appendChild(bgDiv);
         obs.unobserve(wrapper);
       };

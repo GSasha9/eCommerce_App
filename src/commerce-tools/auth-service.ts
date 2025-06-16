@@ -183,6 +183,8 @@ export class AuthorizationService {
     localStorage.removeItem('ct_user_token');
     localStorage.removeItem('ct_user_credentials');
     this.isAuthenticated = false;
+
+    Header.switchBtn();
   };
 
   public getPlantSubCategories = async (): Promise<Record<string, Category[]>> => {
@@ -308,7 +310,7 @@ export class AuthorizationService {
       await this.refreshAnonymousToken();
     }
 
-    if (!this.cartId) {
+    if (!this.cartId && !localStorage.getItem('plant-cart-id')) {
       return this.createCart();
     }
 
@@ -321,15 +323,17 @@ export class AuthorizationService {
   public createCart = async (): Promise<ClientResponse<Cart>> => {
     let cart;
 
-    try {
-      cart = await this.api.me().activeCart().get().execute();
-    } catch (error) {
-      console.warn('No cart', error);
-    }
+    // try {
+    //   cart = await this.api.me().activeCart().get().execute();
+    // } catch (error) {
+    //   console.warn('No cart', error);
+    // }
 
-    if (cart) {
-      localStorage.setItem('plant-cart-id', cart.body.id);
-    } else if (this.isAuthenticated) {
+    // if (cart) {
+    //  localStorage.setItem('plant-cart-id', cart.body.id);
+    // } else
+
+    if (this.isAuthenticated) {
       try {
         cart = await this.api
           .me()
@@ -373,7 +377,6 @@ export class AuthorizationService {
       try {
         await this.createCart();
 
-        console.log(this.cartId, 'is auth', this.isAuthenticated);
         localStorage.setItem('plant-cart-id', this.cartId);
       } catch (error) {
         console.warn(error);
@@ -401,8 +404,6 @@ export class AuthorizationService {
         })
         .execute();
 
-      console.log('Товар добавлен в корзину:', response.body);
-
       return response;
     } catch (err) {
       console.error('Error adding product:', err);
@@ -414,7 +415,6 @@ export class AuthorizationService {
       try {
         await this.createCart();
 
-        console.log(this.cartId, 'is auth', this.isAuthenticated);
         localStorage.setItem('plant-cart-id', this.cartId);
       } catch (error) {
         console.warn(error);
@@ -434,8 +434,6 @@ export class AuthorizationService {
           },
         })
         .execute();
-
-      console.log('Товар добавлен в корзину:', response.body);
 
       return response;
     } catch (err) {
