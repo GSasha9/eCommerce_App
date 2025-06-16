@@ -147,12 +147,11 @@ export class Header {
           event.target.classList.add('login');
           event.target.textContent = 'Login';
           authService.logOutCustomer();
-          Header.switchBtn(false);
+          //Header.switchBtn(false);
           route.navigate('/login');
         }
       } else {
         route.navigate('/login');
-        Header.switchBtn(true);
       }
     });
 
