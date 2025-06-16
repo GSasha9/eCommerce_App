@@ -217,7 +217,11 @@
   width: 1380px;
 
   @include respond-xs {
-    width: 320px;
+    width: 360px;
+  }
+
+  @include respond-s {
+    width: 450px;
   }
 
   @include respond-sm {
@@ -328,7 +332,8 @@
 .button-close,
 .form__button,
 .found__button,
-.not-found__button {
+.not-found__button,
+.header__button--cabinet {
   display: flex;
   align-items: center;
   justify-content: center;
