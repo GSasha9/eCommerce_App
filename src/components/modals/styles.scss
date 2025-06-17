@@ -69,3 +69,35 @@
     background-color: rgb(88 168 70);
   }
 }
+
+.modal-button-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.modal-close-button,
+.modal-confirm-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: $spacing-sm;
+  border: none;
+  border-radius: $border-radius-input;
+
+  color: white;
+
+  background-color: $primary-button;
+
+  &:disabled {
+    cursor: not-allowed;
+    color: rgb(37 37 32);
+    background-color: rgb(83 83 83);
+  }
+
+  &:not(:disabled):hover {
+    cursor: pointer;
+    color: rgb(224 229 211);
+    background-color: $primary-button-hover;
+  }
+}

@@ -1,5 +1,6 @@
 import { authService } from '../../commerce-tools/auth-service.ts';
 import { CartService } from '../../commerce-tools/cart/cart-service.ts';
+import { ModalConfirm } from '../../components/modals/modal-confirm.ts';
 import CartModel from '../../model/cart/cart-model';
 import CartPage from '../../pages/cart/cart-page';
 import { Layout } from '../../pages/layout/layout';
@@ -154,6 +155,12 @@ export class CartController {
 
   public async removeAll(): Promise<void> {
     if (this.model.cart?.id) {
+      const modal = new ModalConfirm();
+
+      const confirmed = await modal.open();
+
+      if (!confirmed) return;
+
       const updatedCart = await authService.api
         .carts()
         .withId({ ID: this.model.cart.id })
