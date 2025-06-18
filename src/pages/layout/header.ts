@@ -104,8 +104,6 @@ export class Header {
 
     const isAuthenticated: boolean = !!localStorage.getItem('ct_user_credentials');
 
-    console.log(isAuthenticated);
-
     const regButton: CreateElement = new CreateElement({
       tag: 'div',
       classNames: [
@@ -138,8 +136,6 @@ export class Header {
       event.preventDefault();
 
       const currentAuth = !!localStorage.getItem('ct_user_credentials');
-
-      console.log(currentAuth);
 
       if (currentAuth) {
         if (event.target instanceof HTMLButtonElement) {
@@ -184,12 +180,10 @@ export class Header {
     if (!headerReg) return;
 
     if (callAccount) {
-      console.log('Switching to Account');
       headerReg.textContent = 'Account';
       headerReg.classList.add('header__button--cabinet');
       headerReg.classList.remove('header__button--reg');
     } else {
-      console.log('Switching to Register');
       headerReg.textContent = 'Register';
       headerReg.classList.remove('header__button--cabinet');
       headerReg.classList.add('header__button--reg');
