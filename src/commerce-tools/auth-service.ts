@@ -190,14 +190,21 @@ export class AuthorizationService {
     }
   };
 
-  public logOutCustomer = (): void => {
+  public logOutCustomer = async (): Promise<void> => {
     this.api = this.initializeAnonymousSession();
 
     localStorage.removeItem('ct_user_token');
     localStorage.removeItem('ct_user_credentials');
     localStorage.removeItem('plant-cart-id');
-    //this.cartId = '';
+    const newCart = await this.createCart();
+
+    if (newCart) {
+      this.cartId = newCart.body.id;
+    }
+
     this.isAuthenticated = false;
+
+    await updateCountItemsCart();
 
     Header.switchBtn();
   };
