@@ -8,8 +8,8 @@ import { isHTMLButtonElement, isHTMLElement, isHTMLInputElement } from '../../sh
 import { updateCountItemsCart } from '../../shared/utils/update-countItems-cart.ts';
 
 export class CartController {
-  private readonly page: CartPage;
-  private readonly model: CartModel;
+  public readonly page: CartPage;
+  public readonly model: CartModel;
 
   constructor() {
     this.model = CartModel.getInstance();
