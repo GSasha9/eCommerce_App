@@ -10,6 +10,13 @@ import type { Filters } from '../controllers/catalog/models/interfaces/filters';
 import { CatalogModel } from '../model/catalog/catalog-model';
 import type { ProductPerPageResponse } from '../shared/models/type';
 
+vi.mock('../pages/catalog/models/utils/observer.ts', () => ({
+  constructor(): void {},
+  observe(): void {},
+  unobserve(): void {},
+  disconnect(): void {},
+}));
+
 const mockProducts: ProductProjection[] = [
   {
     id: '1',
