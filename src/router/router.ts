@@ -1,4 +1,5 @@
 import type { IRouter } from '../shared/models/interfaces';
+import { handleHeaderNav } from '../shared/utils/handle-header-nav';
 
 export class Router implements IRouter {
   private routes: Map<string, () => void>;
@@ -63,6 +64,8 @@ export class Router implements IRouter {
         notFoundController();
       }
     }
+
+    handleHeaderNav(path);
   }
 
   public init(): void {

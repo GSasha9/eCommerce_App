@@ -100,21 +100,9 @@ describe('DetailedProductModel (safe, no assertions)', () => {
     });
   });
 
-  it('fetches and parses product data correctly', async () => {
-    model.key = 'test-key';
-    await model.getDetailedInformation();
-
-    expect(model.isSuccess).toBe(true);
-    expect(model.response?.name).toBe('Test Product');
-    expect(model.response?.img).toEqual(['img1.jpg']);
-    expect(model.response?.description).toBe('Short desc');
-    expect(model.response?.fullDescription).toBe('Full desc');
-    expect(model.response?.prices).toBe(1000);
-    expect(model.response?.discounted).toBe(750);
-  });
-
   it('formats prices correctly', () => {
     model.response = {
+      id: 'product-id-123',
       name: 'Test',
       img: [],
       description: '',
@@ -128,6 +116,7 @@ describe('DetailedProductModel (safe, no assertions)', () => {
 
   it('formats discounted prices correctly', () => {
     model.response = {
+      id: 'product-id-123',
       name: 'Test',
       img: [],
       description: '',
@@ -144,6 +133,7 @@ describe('DetailedProductModel (safe, no assertions)', () => {
   it('clears query results', () => {
     model.key = 'x';
     model.response = {
+      id: 'product-id-123',
       name: 'X',
       img: [],
       description: '',

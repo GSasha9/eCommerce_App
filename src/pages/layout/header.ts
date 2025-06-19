@@ -2,6 +2,7 @@ import { authService } from '../../commerce-tools/auth-service.ts';
 import { CreateButton } from '../../components/button/create-button.ts';
 import { route } from '../../router';
 import { CreateElement } from '../../shared/utils/create-element.ts';
+import { genElement } from '../../shared/utils/gen-element.ts';
 
 export class Header {
   private readonly headerElement: HTMLElement;
@@ -62,24 +63,22 @@ export class Header {
         tag: 'li',
         classNames: ['header__menu-item'],
         textContent: '',
-        callback: (event: MouseEvent): void => {
-          const menuItems = navList.getElement().querySelectorAll<HTMLElement>('.header__menu-item');
-
-          menuItems.forEach((el) => el.classList.remove('header__menu-item-active'));
-
+        callback: (event): void => {
           const item = event.target;
 
-          if (!(item instanceof HTMLElement)) return;
+          if (!item || !(item instanceof HTMLElement)) return;
 
-          item.closest('.header__menu-item')?.classList.add('header__menu-item-active');
+          const li = item.closest('li');
+
+          if (!li) return;
+
+          const link = li.querySelector('a');
+
+          if (!link) return;
+
+          link.dispatchEvent(new Event('click', { bubbles: false }));
         },
       });
-
-      const path = window.location.pathname;
-
-      if (`/${item.toLocaleLowerCase()}` === path) {
-        li.getElement().classList.add('header__menu-item-active');
-      }
 
       const link: CreateElement = new CreateElement({
         tag: 'a',
@@ -103,10 +102,17 @@ export class Header {
       callback: (): void => {},
     });
 
+    const isAuthenticated: boolean = !!localStorage.getItem('ct_user_credentials');
+
     const regButton: CreateElement = new CreateElement({
       tag: 'div',
-      classNames: ['header__button', 'header__button--reg', 'root-button'],
-      textContent: 'Register',
+      classNames: [
+        'header__button',
+        'header__button--acc',
+        'root-button',
+        isAuthenticated ? 'header__button--cabinet' : 'header__button--reg',
+      ],
+      textContent: isAuthenticated ? 'Account' : 'Register',
       callback: (event): void => {
         event.preventDefault();
 
@@ -118,30 +124,43 @@ export class Header {
       },
     });
 
-    const isAuthenticated: boolean = !!localStorage.getItem('ct_user_credentials');
-
     const loginButton: CreateButton = new CreateButton({
       classNames: ['header__button', 'header__button--login', isAuthenticated ? 'logout' : 'login'],
       textContent: isAuthenticated ? 'Logout' : 'Login',
       disabled: false,
-      callback: (event: Event): void => {
-        event.preventDefault();
+      type: 'button',
+      callback: (): void => {},
+    });
 
-        if (isAuthenticated) {
-          if (event.target instanceof HTMLButtonElement) {
-            event.target.classList.remove('logout');
-            event.target.classList.add('login');
-            event.target.textContent = 'Login';
-            authService.logOutCustomer();
-            this.switchBtn();
-            route.navigate('/login');
-          }
-        } else {
-          this.switchBtn();
+    loginButton.getElement().addEventListener('click', (event): void => {
+      event.preventDefault();
+
+      const currentAuth = !!localStorage.getItem('ct_user_credentials');
+
+      if (currentAuth) {
+        if (event.target instanceof HTMLButtonElement) {
+          event.target.classList.remove('logout');
+          event.target.classList.add('login');
+          event.target.textContent = 'Login';
+          authService.logOutCustomer();
+          //Header.switchBtn(false);
           route.navigate('/login');
         }
-      },
+      } else {
+        route.navigate('/login');
+      }
     });
+
+    const cartIconWrapper = genElement('div', { className: 'cart-icon-wrapper' }, [
+      new CreateElement({
+        tag: 'button',
+        classNames: ['cart-logo'],
+        callback: (): void => {
+          route.navigate('/basket');
+        },
+      }).getElement(),
+      genElement('div', { className: 'count-item-icon', id: 'cart-count-icon' }, ['']),
+    ]);
 
     authContainer.addInnerElement(regButton.getElement());
     authContainer.addInnerElement(loginButton.getElement());
@@ -149,19 +168,18 @@ export class Header {
     header.addInnerElement(headerWrapper.getElement());
     headerWrapper.addInnerElement(logo.getElement());
     headerWrapper.addInnerElement(navContainer.getElement());
+    headerWrapper.addInnerElement(cartIconWrapper);
     headerWrapper.addInnerElement(authContainer.getElement());
 
     return header.getElement();
   }
 
   public static switchBtn(callAccount?: boolean): void {
-    const headerReg = document.querySelector('.header__button');
+    const headerReg = document.querySelector('.header__button--acc');
 
     if (!headerReg) return;
 
-    const isLoggedIn = localStorage.getItem('ct_user_credentials');
-
-    if (isLoggedIn || callAccount) {
+    if (callAccount) {
       headerReg.textContent = 'Account';
       headerReg.classList.add('header__button--cabinet');
       headerReg.classList.remove('header__button--reg');

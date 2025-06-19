@@ -1,4 +1,5 @@
 export interface IResponseDetailedProduct {
+  id: string;
   name: string;
   img: string[];
   description: string;

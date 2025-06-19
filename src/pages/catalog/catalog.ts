@@ -1,3 +1,4 @@
+import { authService } from '../../commerce-tools/auth-service';
 import { CreateButton } from '../../components/button/create-button';
 import { CreateInput } from '../../components/input/create-input';
 import type CatalogController from '../../controllers/catalog/catalog-controller';
@@ -5,8 +6,10 @@ import { updateSortAndFilter } from '../../controllers/catalog/utils/update-sort
 import { route } from '../../router';
 import type { IParameters } from '../../shared/models/interfaces';
 import { CreateElement } from '../../shared/utils/create-element';
+import { updateCountItemsCart } from '../../shared/utils/update-countItems-cart';
 import { View } from '../view';
 import type { IParametersCard } from './models/interfaces';
+import type { ProductParameters } from './models/interfaces/product-paameters';
 import { resetCallback } from './models/utils/reset-callback';
 
 import './styles.scss';
@@ -26,9 +29,10 @@ export class CatalogPage extends View {
   public sortSelect: CreateElement;
   public searchInput: CreateInput;
   public breadCrumbPath: CreateElement;
+  public imageWrappers: HTMLElement[] = [];
 
   private constructor(parameters: Partial<IParameters> = {}, controller: CatalogController) {
-    super({ tag: 'div', classNames: ['catalog-page'], ...parameters });
+    super({ tag: 'div', classNames: ['catalog-page', 'wrapper'], ...parameters });
     this.catalogController = controller;
     this.categoryList = new CreateElement({
       tag: 'ul',
@@ -44,12 +48,16 @@ export class CatalogPage extends View {
       callback: (): void => updateSortAndFilter(this.catalogController),
     });
 
+    this.sortSelectArrow.getElement().setAttribute('name', 'type');
+
     this.sortSelect = new CreateElement({
       tag: 'select',
       classNames: ['catalog-header__select'],
       textContent: '',
       callback: (): void => updateSortAndFilter(this.catalogController),
     });
+
+    this.sortSelect.getElement().setAttribute('name', 'direction');
 
     this.breadCrumbPath = new CreateElement({
       tag: 'div',
@@ -64,6 +72,8 @@ export class CatalogPage extends View {
       placeholder: 'What do you like to find?',
       callback: (): void => {},
     });
+
+    this.searchInput.getElement().setAttribute('name', 'search');
 
     this.productsContainer = new CreateElement({
       tag: 'div',
@@ -245,13 +255,21 @@ export class CatalogPage extends View {
 
   public addCard(parameters: IParametersCard): void {
     const img = new CreateElement({
-      tag: 'div',
-      classNames: ['card-img'],
+      tag: 'img',
+      classNames: ['spinner'],
       textContent: '',
       callback: (): void => {},
     });
 
-    if (typeof parameters.img === 'string') img.getElement().style.backgroundImage = `url("${parameters.img}")`;
+    const imgContainer = new CreateElement({
+      tag: 'div',
+      classNames: ['card-img-container'],
+      textContent: '',
+      callback: (): void => {},
+      children: [img],
+    });
+
+    if (typeof parameters.img === 'string') imgContainer.getElement().setAttribute('data-src', parameters.img);
 
     const title = new CreateElement({
       tag: 'h4',
@@ -299,9 +317,9 @@ export class CatalogPage extends View {
       prices.addInnerElement(discountPrice);
     }
 
-    const like = new CreateElement({
+    const attr = new CreateElement({
       tag: 'div',
-      classNames: ['card-like'],
+      classNames: [`card-attribute-height-${parameters.attr}`],
       textContent: '',
       callback: (): void => {},
     });
@@ -309,8 +327,40 @@ export class CatalogPage extends View {
     const button = new CreateButton({
       type: 'button',
       disabled: false,
-      textContent: 'Buy',
+      textContent: 'Add to cart',
       classNames: ['card-button'],
+      callback: (event): void => {
+        const button = event.target;
+
+        if (!(button instanceof HTMLButtonElement)) return;
+
+        const card = button.closest('.card');
+
+        const productId = card?.getAttribute('data-id');
+
+        const prodVariantId = card?.getAttribute('data-varId');
+
+        if (!productId || !prodVariantId) return;
+
+        const product: ProductParameters = {
+          id: productId,
+          varId: Number(prodVariantId),
+          quantity: 1,
+        };
+
+        button.setAttribute('disabled', 'true');
+
+        void (async function (): Promise<void> {
+          try {
+            button.textContent = 'Processing...';
+            await authService.addProductToCart(product);
+            button.textContent = 'In cart';
+            void updateCountItemsCart();
+          } catch (error) {
+            console.warn(error);
+          }
+        })();
+      },
     });
 
     const buttonsContainer = new CreateElement({
@@ -318,7 +368,7 @@ export class CatalogPage extends View {
       classNames: ['buttons-container'],
       textContent: '',
       callback: (): void => {},
-      children: [like, button],
+      children: [button],
     });
 
     const cardsFooter = new CreateElement({
@@ -326,7 +376,7 @@ export class CatalogPage extends View {
       classNames: ['card-footer'],
       textContent: '',
       callback: (): void => {},
-      children: [prices, buttonsContainer],
+      children: [prices, attr, buttonsContainer],
     });
 
     const card = new CreateElement({
@@ -344,8 +394,11 @@ export class CatalogPage extends View {
           route.navigate(`/detailed-product/${key}`);
         }
       },
-      children: [img, title, description, cardsFooter],
+      children: [imgContainer, title, description, cardsFooter],
     });
+
+    card.getElement().setAttribute('data-id', `${parameters.id}`);
+    card.getElement().setAttribute('data-varId', `${parameters.variantId}`);
 
     if (parameters.discount && parameters.discount !== '$') {
       const currentPrice = parseFloat(parameters.discount);
@@ -366,6 +419,40 @@ export class CatalogPage extends View {
     }
 
     this.productsContainer.addInnerElement(card);
+
+    this.imageWrappers.push(imgContainer.getElement());
+  }
+
+  public async handleCardsButton(): Promise<void> {
+    const cart = await authService.getCart();
+
+    if (!cart) return;
+
+    const products = cart.body.lineItems;
+
+    if (!products || products.length === 0) return;
+
+    const productsId = Array.from(products).map((el) => {
+      return el.productId;
+    });
+
+    const allCards = Array.from(this.productsContainer.getElement().querySelectorAll<HTMLElement>('.card'));
+
+    allCards.forEach((el) => {
+      const id = el.getAttribute('data-id');
+
+      if (!id) return;
+
+      if (productsId.indexOf(id) !== -1) {
+        const button = el.querySelector<HTMLButtonElement>('.card-button');
+
+        if (!(button instanceof HTMLButtonElement)) return;
+
+        button.textContent = 'In cart';
+
+        button.setAttribute('disabled', 'true');
+      }
+    });
   }
 
   public addPage(number: number): CreateElement {
@@ -454,6 +541,8 @@ export class CatalogPage extends View {
         this.filterPriceTo = input;
       }
 
+      input.getElement().setAttribute('name', 'prica-range');
+
       this.priceInputs.push(input.getElement());
 
       priceFilter.addInnerElement(input);
@@ -525,7 +614,7 @@ export class CatalogPage extends View {
     const promotion = new CreateElement({
       tag: 'div',
       classNames: ['promotion'],
-      textContent: 'promotion',
+      textContent: '',
       callback: (): void => {},
     });
 
@@ -610,7 +699,7 @@ export class CatalogPage extends View {
     });
 
     const headerSortLabel = new CreateElement({
-      tag: 'label',
+      tag: 'span',
       classNames: ['catalog-header__sort-label'],
       textContent: 'Sort by:',
       callback: (): void => {},
