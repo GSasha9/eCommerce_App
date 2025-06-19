@@ -17,6 +17,7 @@ import type { ProductParameters } from '../pages/catalog/models/interfaces/produ
 import { Header } from '../pages/layout/header';
 import { ErrorMessage, PRODUCTS_PER_PAGE } from '../shared/constants';
 import type { ProductPerPageResponse } from '../shared/models/type';
+import { updateCountItemsCart } from '../shared/utils/update-countItems-cart';
 import { UserState } from '../state/customer-state';
 import { CustomerProfileService } from './customer-profile-service/customer-profile-service';
 import type { AuthState } from './models/types';
@@ -133,6 +134,16 @@ export class AuthorizationService {
       localStorage.setItem('ct_user_credentials', JSON.stringify({ email, password }));
       Header.switchBtn(true);
 
+      if (response.body.cart) {
+        this.cartId = response.body.cart.id;
+      }
+
+      if (localStorage.getItem('plant-cart-id')) {
+        localStorage.setItem('plant-cart-id', this.cartId);
+      }
+
+      await updateCountItemsCart();
+
       return response.body;
     } catch (error) {
       console.error(ErrorMessage.LOGIN_FAILED, error);
@@ -179,12 +190,21 @@ export class AuthorizationService {
     }
   };
 
-  public logOutCustomer = (): void => {
+  public logOutCustomer = async (): Promise<void> => {
     this.api = this.initializeAnonymousSession();
 
     localStorage.removeItem('ct_user_token');
     localStorage.removeItem('ct_user_credentials');
+    localStorage.removeItem('plant-cart-id');
+    const newCart = await this.createCart();
+
+    if (newCart) {
+      this.cartId = newCart.body.id;
+    }
+
     this.isAuthenticated = false;
+
+    await updateCountItemsCart();
 
     Header.switchBtn();
   };
