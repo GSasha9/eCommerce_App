@@ -131,60 +131,7 @@ export class PersonalInfoElementsAccount extends CreateElement {
 
     this.addInnerElement([this.nameContainer, this.surnameContainer, this.birthdayContainer, this.editButton]);
 
-    if (this.inputName.getElement() instanceof HTMLInputElement) {
-      this.inputName.getElement().addEventListener('input', () => {
-        this.onInputChange('name');
-      });
-    }
-
-    if (this.inputSurname.getElement() instanceof HTMLInputElement) {
-      this.inputSurname.getElement().addEventListener('input', () => {
-        this.onInputChange('surname');
-      });
-    }
-
-    if (this.inputBirthday.getElement() instanceof HTMLInputElement) {
-      this.inputBirthday.getElement().addEventListener('input', () => {
-        this.onInputChange('birthday');
-      });
-    }
-
     UserState.getInstance().subscribe(this.onCustomerUpdate);
-  }
-
-  private onInputChange(field: 'name' | 'surname' | 'birthday'): void {
-    let value = '';
-
-    switch (field) {
-      case 'name': {
-        const element = this.inputName.getElement();
-
-        if (element instanceof HTMLInputElement) {
-          value = element.value;
-        }
-
-        break;
-      }
-      case 'surname': {
-        const element = this.inputSurname.getElement();
-
-        if (element instanceof HTMLInputElement) {
-          value = element.value;
-        }
-
-        break;
-      }
-      case 'birthday': {
-        const element = this.inputBirthday.getElement();
-
-        if (element instanceof HTMLInputElement) {
-          value = element.value;
-        }
-
-        break;
-      }
-    }
-    this.model.setStringValue(value, field);
   }
 
   public onCustomerUpdate = (customer: Customer | undefined): void => {

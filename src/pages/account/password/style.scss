@@ -45,7 +45,7 @@
   border: none;
 
   background-color: transparent;
-  background-image: $visibility-icon-off;
+  background-image: url('/images/svg/visibility-on.svg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
@@ -55,6 +55,6 @@
   }
 
   &.hide {
-    background-image: $visibility-icon-on;
+    background-image: url('/images/svg/visibility-off.svg');
   }
 }
