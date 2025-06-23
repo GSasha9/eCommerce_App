@@ -101,7 +101,7 @@ export class AddShippingAddressModal extends CreateElement {
 
     this.countryList = new Element({
       tag: 'select',
-      className: 'country-list',
+      className: 'country-list-new',
       name: 'new-country',
       id: 'new-country',
       children: [
@@ -152,17 +152,17 @@ export class AddShippingAddressModal extends CreateElement {
     });
     this.default = new CreateElement({
       tag: 'div',
-      classNames: ['checkbox'],
+      classNames: ['checkbox-new'],
       children: [this.checkboxDefault, this.defaultLabel],
     });
     this.asBilling = new CreateElement({
       tag: 'div',
-      classNames: ['checkbox'],
+      classNames: ['checkbox-new'],
       children: [this.checkboxAsBilling, this.asBillingLabel],
     });
     this.checkboxWrapper = new CreateElement({
       tag: 'div',
-      classNames: ['checkbox-wrapper'],
+      classNames: ['checkbox-wrapper-new'],
       children: [this.default, this.asBilling],
     });
 
@@ -190,17 +190,17 @@ export class AddShippingAddressModal extends CreateElement {
     });
     this.defaultAdress = new CreateElement({
       tag: 'div',
-      classNames: ['checkbox'],
+      classNames: ['checkbox-new'],
       children: [this.checkboxShipping, this.shippingLabel],
     });
     this.asBillingAdress = new CreateElement({
       tag: 'div',
-      classNames: ['checkbox'],
+      classNames: ['checkbox-new'],
       children: [this.billingAdress, this.billingLabel],
     });
     this.checkboxWrapperAdress = new CreateElement({
       tag: 'div',
-      classNames: ['checkbox-wrapper'],
+      classNames: ['checkbox-wrapper-new'],
       children: [this.defaultAdress, this.asBillingAdress],
     });
     this.error = new CreateElement({
@@ -208,13 +208,22 @@ export class AddShippingAddressModal extends CreateElement {
       classNames: ['error-wrapper'],
     });
 
-    const shippingGroup = new CreateElement({ tag: 'div', classNames: ['shipping-group'] });
+    const leftContainer = new CreateElement({
+      tag: 'div',
+      classNames: ['new-left-container'],
+      children: [streetContainer, cityContainer],
+    });
+
+    const rightContainer = new CreateElement({
+      tag: 'div',
+      classNames: ['new-right-container'],
+      children: [postalContainer, countryContainer],
+    });
+    const shippingGroup = new CreateElement({ tag: 'div', classNames: ['shipping-group-new'] });
 
     shippingGroup.addInnerElement([
-      streetContainer,
-      cityContainer,
-      postalContainer,
-      countryContainer,
+      leftContainer,
+      rightContainer,
       this.checkboxWrapper,
       this.checkboxWrapperAdress,
       this.error,
@@ -228,7 +237,7 @@ export class AddShippingAddressModal extends CreateElement {
     this.closeButton.textContent = 'Cancel';
     this.closeButton.className = 'btn';
     this.closeButton.addEventListener('click', () => this.close());
-    const buttonsContainer = new CreateElement({ tag: 'div', classNames: ['buttons-container'] });
+    const buttonsContainer = new CreateElement({ tag: 'div', classNames: ['buttons-container-new'] });
 
     buttonsContainer.getElement().append(this.saveButton, this.closeButton);
 

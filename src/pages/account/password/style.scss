@@ -1,7 +1,14 @@
+@use '../../../styles/scss/_variables' as *;
+
 .change-password-modal {
   place-self: center center;
   width: 80%;
   height: 80%;
+  border: none;
+}
+
+.change-password-modal::backdrop {
+  background-color: rgb(144 238 144 / 30%);
 }
 
 .modal-content {
@@ -15,13 +22,39 @@
   height: 100%;
 }
 
-.btn-toggle {
-  width: 40px;
-  height: 40px;
-  border-radius: 100px;
-}
-
 .input-container {
+  position: relative;
   display: flex;
   gap: 10px;
+}
+
+.btn-save,
+.btn-cancel {
+  width: 95px;
+}
+
+.btn-toggle {
+  cursor: pointer;
+
+  position: absolute;
+  top: 20%;
+  left: 85%;
+
+  width: 24px;
+  height: 24px;
+  border: none;
+
+  background-color: transparent;
+  background-image: $visibility-icon-off;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+
+  &:hover {
+    scale: 1.15;
+  }
+
+  &.hide {
+    background-image: $visibility-icon-on;
+  }
 }

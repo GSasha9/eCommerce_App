@@ -49,21 +49,21 @@
       width: 40%;
       height: fit-content;
       padding: 12px 8px;
-      border: 1px solid transparent;
 
-      &:hover {
-        background-color: $primary-button;
-      }
-    }
-
-    .green {
       color: white;
+
       background-color: $primary-button;
 
-      &:hover {
-        border: 1px solid $primary-button;
-        color: black;
-        background-color: $light-background;
+      &:active {
+        color: white;
+        background-color: #30c963;
+      }
+
+      @media screen and (hover: hover) {
+        &:hover {
+          color: white;
+          background-color: #30c963;
+        }
       }
     }
   }
@@ -317,7 +317,7 @@
   }
 
   @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-md) {
-    font-size: 14px;
+    font-size: 16px;
   }
 }
 
@@ -442,7 +442,7 @@
   }
 
   .header__menu-item-active:hover {
-    border-bottom: none;
+    border-bottom: 2px solid transparent;
     color: $primary-text-green;
     background-color: transparent;
   }

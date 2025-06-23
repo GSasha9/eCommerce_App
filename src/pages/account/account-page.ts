@@ -161,20 +161,18 @@ class AccountPage extends View {
         break;
     }
     const elem = this.containerForm.node.querySelector(`.input-${selectorName}`);
-    let message;
+    let message = '';
 
     if (isFormName(inputName)) {
-      message = MESSAGE_CONTENT[inputName];
+      message = MESSAGE_CONTENT[inputName] ?? '';
     }
 
-    const node = new CreateElement({
-      tag: 'div',
-      classNames: ['error-message'],
-      textContent: `${message}`,
-    });
-
     if (elem && elem instanceof HTMLElement) {
-      elem.append(node.getElement());
+      const errorNode = elem.querySelector('.error-message');
+
+      if (errorNode && errorNode instanceof HTMLElement) {
+        errorNode.textContent = message;
+      }
     }
   }
 
@@ -184,7 +182,7 @@ class AccountPage extends View {
     if (messages) {
       messages.forEach((message): void => {
         if (message instanceof HTMLElement) {
-          message.remove();
+          message.textContent = '';
         }
       });
     }

@@ -129,21 +129,44 @@ class RegistrationPage extends View {
   }
 
   public renderErrorMassage(inputName: string): void {
-    const elem = this.containerForm.node.querySelector(`.input-${inputName}`);
-    let message;
+    let normalizedInput = '';
+
+    switch (inputName) {
+      case 'postalCode':
+        normalizedInput = 'postal-code';
+
+        break;
+      case 'streetBilling':
+        normalizedInput = 'street-billing';
+
+        break;
+      case 'cityBilling':
+        normalizedInput = 'city-billing';
+
+        break;
+      case 'postalCodeBilling':
+        normalizedInput = 'postal-code-billing';
+
+        break;
+
+      default:
+        normalizedInput = inputName;
+
+        break;
+    }
+    const elem = this.containerForm.node.querySelector(`.input-${normalizedInput}`);
+    let message = '';
 
     if (isFormName(inputName)) {
-      message = MESSAGE_CONTENT[inputName];
+      message = MESSAGE_CONTENT[inputName] ?? '';
     }
 
-    const node = new CreateElement({
-      tag: 'div',
-      classNames: ['error-message'],
-      textContent: `${message}`,
-    });
-
     if (elem && elem instanceof HTMLElement) {
-      elem.append(node.getElement());
+      const errorNode = elem.querySelector('.error-message');
+
+      if (errorNode && message) {
+        errorNode.textContent = message;
+      }
     }
   }
 
@@ -153,7 +176,7 @@ class RegistrationPage extends View {
     if (messages) {
       messages.forEach((message): void => {
         if (message instanceof HTMLElement) {
-          message.remove();
+          message.textContent = '';
         }
       });
     }

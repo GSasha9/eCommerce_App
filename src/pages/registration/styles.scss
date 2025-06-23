@@ -61,6 +61,7 @@
   justify-content: flex-start;
 
   width: 48%;
+  min-width: 117px;
 }
 
 .error-message {
@@ -154,10 +155,32 @@
   flex-shrink: 1;
 }
 
-.country-list {
+.country-list,
+.country-list-new {
+  width: 100%;
+  min-width: 117px;
+  padding: 0.4rem 2rem 0.4rem 0.8rem;
   padding: $spacing-sm;
-  border: 1px solid $input-border;
+  border: 2px solid #3c8b4b;
   border-radius: $border-radius-input;
+
+  appearance: none;
+  background-color: white;
+  background-image: url('/images/arr.svg');
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+
+  transition: border-color 0.2s ease;
+
+  &:focus {
+    border-color: #30c963;
+    outline: none;
+  }
+
+  &:hover {
+    cursor: pointer;
+    border-color: #30c963;
+  }
 }
 
 .input-password {
@@ -193,5 +216,13 @@
 
   &.hide {
     background-image: $visibility-icon-on;
+  }
+}
+
+.error-message-large {
+  min-height: 56px;
+
+  @media screen and (width >= 0) and (width <= 540px) {
+    min-height: 83px;
   }
 }

@@ -22,6 +22,7 @@
   max-width: 95px;
   height: 35px;
   padding: 4px 6px;
+  border: none;
   border-radius: 5px;
 
   font-family: 'Cera Pro', sans-serif;
@@ -49,6 +50,8 @@
   gap: 20px;
   align-items: center;
   justify-content: space-between;
+
+  width: 100%;
 }
 
 .group-account {
@@ -62,15 +65,64 @@
 }
 
 .save {
+  color: white;
   background-color: darkred;
 }
 
 .error-message {
-  min-height: 45px;
+  min-height: 28px;
+
+  @media screen and (width >= 0) and (width <= 540px) {
+    min-height: 42px;
+  }
 }
 
 .container-btn {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+[class*='error-message-country-'],
+[class*='error-message-country-billing-'],
+[class*='error-message-country-billing-unsort-'] {
+  min-height: 70px;
+
+  @media screen and (width >= 0) and (width <= 600px) {
+    min-height: 86px;
+    font-size: 12px;
+  }
+}
+
+[class*='error-message-postal-code-'],
+[class*='error-message-postal-code-billing-'],
+[class*='error-message-postal-code-billing-unsort-'] {
+  min-height: 70px;
+
+  @media screen and (width >= 0) and (width <=600px) {
+    min-height: 86px;
+    font-size: 12px;
+  }
+}
+
+[class*='error-message-city-'],
+[class*='error-message-city-billing-'],
+[class*='error-message-city-billing-unsort-'] {
+  min-height: 40px;
+
+  @media screen and (width >= 0) and (width <= 600px) {
+    min-height: 44px;
+    font-size: 12px;
+  }
+}
+
+[class*='error-message-street-'],
+[class*='error-message-street-billing-'],
+[class*='error-message-street-billing-unsort-'] {
+  min-height: 40px;
+
+  @media screen and (width >= 0) and (width <= 600px) {
+    min-height: 44px;
+    font-size: 12px;
+  }
 }

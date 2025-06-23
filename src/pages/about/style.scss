@@ -10,6 +10,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  margin-top: 20px;
 }
 
 .error {
@@ -87,7 +89,7 @@
   align-items: center;
   justify-content: center;
 
-  width: 100%;
+  width: 97%;
 }
 
 .wrap-container img {
@@ -101,6 +103,7 @@
 
 .text-description {
   font-family: 'Cera Pro', sans-serif;
+  text-align: center;
 }
 
 .wrap-container p {
