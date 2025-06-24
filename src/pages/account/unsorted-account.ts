@@ -6,7 +6,7 @@ import { CreateInput } from '../../components/input/create-input.ts';
 import { Label } from '../../components/label/label.ts';
 import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import { BillingAddressModalModel } from '../../model/account/billing-account/billing-account-model.ts';
-import { COUNTRIES, MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
+import { COUNTRIES, MESSAGE_CONTENT, MESSAGE_CONTENT_MOBILE } from '../../shared/constants/messages-for-validator.ts';
 import type { IFormValues, IParameters } from '../../shared/models/interfaces';
 import { isValidErrorKey } from '../../shared/models/typeguards.ts/account-type-guards.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
@@ -283,12 +283,19 @@ export class UnsortedAddressAccount extends CreateElement {
       return;
     }
 
-    const message: string = MESSAGE_CONTENT[inputName] || '';
+    let message = '';
+
+    if (window.innerWidth < 520) {
+      message = MESSAGE_CONTENT_MOBILE[inputName] || '';
+    } else {
+      message = MESSAGE_CONTENT[inputName] || '';
+    }
+
     const errorContainer: unknown = this.errorContainers[inputName];
 
     if (errorContainer instanceof HTMLElement) {
       errorContainer.textContent = message;
-      errorContainer.style.color = 'darkred';
+      errorContainer.style.color = 'red';
     }
   }
 

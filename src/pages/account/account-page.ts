@@ -1,7 +1,7 @@
 import { CreateButton } from '../../components/button/create-button.ts';
 import Element from '../../components/element/element.ts';
 import { route } from '../../router';
-import { MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
+import { MESSAGE_CONTENT, MESSAGE_CONTENT_MOBILE } from '../../shared/constants/messages-for-validator.ts';
 import type { IParameters } from '../../shared/models/interfaces';
 import { isFormName } from '../../shared/models/typeguards.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
@@ -164,7 +164,11 @@ class AccountPage extends View {
     let message = '';
 
     if (isFormName(inputName)) {
-      message = MESSAGE_CONTENT[inputName] ?? '';
+      if (window.innerWidth < 520) {
+        message = MESSAGE_CONTENT_MOBILE[inputName] ?? '';
+      } else {
+        message = MESSAGE_CONTENT[inputName] ?? '';
+      }
     }
 
     if (elem && elem instanceof HTMLElement) {

@@ -6,7 +6,11 @@ import { CreateInput } from '../../../components/input/create-input.ts';
 import { Label } from '../../../components/label/label.ts';
 import type { IShippingAddressFormValues } from '../../../model/account/new-adress/new-adress.ts';
 import { ShippingAddressModalModel } from '../../../model/account/new-adress/new-adress.ts';
-import { COUNTRIES, MESSAGE_CONTENT } from '../../../shared/constants/messages-for-validator.ts';
+import {
+  COUNTRIES,
+  MESSAGE_CONTENT,
+  MESSAGE_CONTENT_MOBILE,
+} from '../../../shared/constants/messages-for-validator.ts';
 import type { IParameters } from '../../../shared/models/interfaces';
 import { isShippingAddressFormKey } from '../../../shared/models/typeguards.ts/account-type-guards.ts';
 import { CreateElement } from '../../../shared/utils/create-element.ts';
@@ -312,7 +316,13 @@ export class AddShippingAddressModal extends CreateElement {
     const errorContainer = this.errorContainers[inputName];
 
     if (errorContainer instanceof HTMLElement) {
-      const message: string = MESSAGE_CONTENT[inputName] || '';
+      let message = '';
+
+      if (window.innerWidth < 600) {
+        message = MESSAGE_CONTENT_MOBILE[inputName] || '';
+      } else {
+        message = MESSAGE_CONTENT[inputName] || '';
+      }
 
       errorContainer.textContent = message;
     }

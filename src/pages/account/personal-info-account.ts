@@ -131,7 +131,62 @@ export class PersonalInfoElementsAccount extends CreateElement {
 
     this.addInnerElement([this.nameContainer, this.surnameContainer, this.birthdayContainer, this.editButton]);
 
+    if (this.inputName.getElement() instanceof HTMLInputElement) {
+      this.inputName.getElement().addEventListener('input', () => {
+        this.onInputChange('name');
+      });
+    }
+
+    if (this.inputSurname.getElement() instanceof HTMLInputElement) {
+      this.inputSurname.getElement().addEventListener('input', () => {
+        this.onInputChange('surname');
+      });
+    }
+
+    if (this.inputBirthday.getElement() instanceof HTMLInputElement) {
+      this.inputBirthday.getElement().addEventListener('input', () => {
+        this.onInputChange('birthday');
+      });
+    }
+
     UserState.getInstance().subscribe(this.onCustomerUpdate);
+  }
+
+  private onInputChange(field: 'name' | 'surname' | 'birthday'): void {
+    let value = '';
+
+    switch (field) {
+      case 'name': {
+        const element = this.inputName.getElement();
+
+        if (element instanceof HTMLInputElement) {
+          value = element.value;
+        }
+
+        break;
+      }
+      case 'surname': {
+        const element = this.inputSurname.getElement();
+
+        if (element instanceof HTMLInputElement) {
+          value = element.value;
+        }
+
+        break;
+      }
+      case 'birthday': {
+        const element = this.inputBirthday.getElement();
+
+        if (element instanceof HTMLInputElement) {
+          value = element.value;
+        }
+
+        break;
+      }
+    }
+    this.model.setStringValue(value, field);
+    this.model.validatePersonalInfo();
+    this.displayErrors();
   }
 
   public onCustomerUpdate = (customer: Customer | undefined): void => {
@@ -160,7 +215,50 @@ export class PersonalInfoElementsAccount extends CreateElement {
       this.model.setStringValue(this.data.lastName ?? '', 'surname');
       this.model.setStringValue(this.data.dateOfBirth ?? '', 'birthday');
     }
+
+    this.clearErrors();
   };
+
+  private clearErrors(): void {
+    this.errorName.getElement().textContent = '';
+    this.errorSurname.getElement().textContent = '';
+    this.errorBirthday.getElement().textContent = '';
+  }
+
+  private displayErrors(): void {
+    this.clearErrors();
+    this.model.errorsAcc.forEach((field) => {
+      const message = PersonalInfoElementsAccount.getErrorMessageForField(field);
+
+      switch (field) {
+        case 'name':
+          this.errorName.getElement().textContent = message;
+
+          break;
+        case 'surname':
+          this.errorSurname.getElement().textContent = message;
+
+          break;
+        case 'birthday':
+          this.errorBirthday.getElement().textContent = message;
+
+          break;
+      }
+    });
+  }
+
+  private static getErrorMessageForField(field: string): string {
+    switch (field) {
+      case 'name':
+        return 'Please enter a valid first name.';
+      case 'surname':
+        return 'Please enter a valid last name.';
+      case 'birthday':
+        return 'Please enter a valid date of birth.';
+      default:
+        return '';
+    }
+  }
 
   private onEdit(isEdit: boolean): void {
     const btn = this.editButton.getElement();
@@ -222,6 +320,8 @@ export class PersonalInfoElementsAccount extends CreateElement {
     this.model.setStringValue(newBirthday, 'birthday');
 
     if (!this.model.validatePersonalInfo()) {
+      this.displayErrors();
+
       return;
     }
 
