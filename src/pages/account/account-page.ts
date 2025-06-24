@@ -1,7 +1,7 @@
 import { CreateButton } from '../../components/button/create-button.ts';
 import Element from '../../components/element/element.ts';
 import { route } from '../../router';
-import { MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
+import { MESSAGE_CONTENT, MESSAGE_CONTENT_MOBILE } from '../../shared/constants/messages-for-validator.ts';
 import type { IParameters } from '../../shared/models/interfaces';
 import { isFormName } from '../../shared/models/typeguards.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
@@ -161,20 +161,22 @@ class AccountPage extends View {
         break;
     }
     const elem = this.containerForm.node.querySelector(`.input-${selectorName}`);
-    let message;
+    let message = '';
 
     if (isFormName(inputName)) {
-      message = MESSAGE_CONTENT[inputName];
+      if (window.innerWidth < 520) {
+        message = MESSAGE_CONTENT_MOBILE[inputName] ?? '';
+      } else {
+        message = MESSAGE_CONTENT[inputName] ?? '';
+      }
     }
 
-    const node = new CreateElement({
-      tag: 'div',
-      classNames: ['error-message'],
-      textContent: `${message}`,
-    });
-
     if (elem && elem instanceof HTMLElement) {
-      elem.append(node.getElement());
+      const errorNode = elem.querySelector('.error-message');
+
+      if (errorNode && errorNode instanceof HTMLElement) {
+        errorNode.textContent = message;
+      }
     }
   }
 
@@ -184,7 +186,7 @@ class AccountPage extends View {
     if (messages) {
       messages.forEach((message): void => {
         if (message instanceof HTMLElement) {
-          message.remove();
+          message.textContent = '';
         }
       });
     }

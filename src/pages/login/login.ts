@@ -102,14 +102,11 @@ export class LoginPage extends View {
 
   public renderErrorMassage(inputName: string, message?: string): void {
     const elem = this.containerForm.node.querySelector(`.input-${inputName}`);
-    const node = new CreateElement({
-      tag: 'div',
-      classNames: ['error-message'],
-      textContent: `${message}`,
-    });
 
     if (elem && elem instanceof HTMLElement) {
-      elem.append(node.getElement());
+      const err = elem.querySelector('.error-message');
+
+      if (err && err instanceof HTMLElement && message) err.textContent = message;
     }
   }
 
@@ -119,7 +116,7 @@ export class LoginPage extends View {
     if (messages) {
       messages.forEach((message): void => {
         if (message instanceof HTMLElement) {
-          message.remove();
+          message.textContent = '';
         }
       });
     }

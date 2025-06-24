@@ -1,16 +1,86 @@
+@use '../../../styles/scss/variables' as *;
+
 .add-shipping-address-modal {
   place-self: center center;
   width: 80%;
   height: 80%;
+  border: none;
 }
 
 .modal-new-address {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
+}
+
+.add-shipping-address-modal::backdrop {
+  background-color: rgb(144 238 144 / 30%);
+}
+
+.shipping-group-new {
+  display: flex;
+  flex-direction: column;
 }
 
 .shipping-group,
 .billing-group {
   display: flex;
   flex-wrap: wrap;
+}
+
+.btn {
+  border: none;
+}
+
+@media screen and (hover: hover) {
+  .btn:hover,
+  .account-button:hover,
+  .btn-add-change:hover,
+  .edit:hover {
+    background-color: #30c963;
+  }
+
+  .btn:active,
+  .account-button:active,
+  .btn-add-change:active,
+  .edit:active {
+    background-color: #30c963;
+  }
+}
+
+input[type='checkbox'] {
+  accent-color: #4caf50;
+}
+
+.buttons-container-new {
+  display: flex;
+  gap: 30px;
+  align-self: center;
+  justify-content: center;
+
+  width: 300px;
+}
+
+.checkbox-new {
+  display: flex;
+  gap: 10px;
+}
+
+.new-left-container,
+.new-right-container {
+  display: flex;
+}
+
+.country-list-new {
+  max-width: 48%;
+}
+
+.checkbox-wrapper-new {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+
+  margin-bottom: 10px;
+  padding-top: 14px;
 }

@@ -107,9 +107,14 @@
 
 .modal-image.detailed {
   cursor: zoom-in;
+
   width: 300px;
   height: auto;
+  border: 1px solid rgb(70 163 88 / 20%);
+  border-radius: 12px;
+
   object-fit: cover;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
 
   @media (width<=575px) {
     width: 200px;
@@ -119,8 +124,11 @@
 
 .modal-image.big {
   flex-shrink: 1;
+
   width: 100%;
   height: auto;
+  border-radius: 12px;
+
   object-fit: cover;
 }
 
@@ -213,9 +221,9 @@
   border-radius: $border-radius-input;
 
   font-family: 'Cera Pro', sans-serif;
-  color: $text-secondary;
+  color: white;
 
-  background-color: rgb(222 221 219);
+  background-color: #46a358;
 
   transition: all 0.1s ease-out;
 
@@ -226,7 +234,7 @@
   }
 
   &:not(:disabled):hover {
-    background-color: rgb(201 199 193);
+    background-color: #30c963;
   }
 }
 

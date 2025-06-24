@@ -95,7 +95,9 @@ export class AuthorizationService {
     Header.switchBtn(true);
     const customer = await CustomerProfileService.fetchCustomerData();
 
-    UserState.getInstance().customer = customer;
+    if (customer) {
+      UserState.getInstance().customer = customer;
+    }
   };
 
   public signInCustomer = async (

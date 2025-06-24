@@ -1,14 +1,32 @@
+@use '../../../styles/scss/variables' as *;
+
 .buttons-container {
   display: flex;
+  gap: 15px;
   justify-content: space-around;
+
+  max-width: 90%;
   margin-top: 20px;
 
   .modal__button {
-    cursor: pointer;
-  }
+    width: 40%;
+    height: fit-content;
+    padding: 12px 8px;
 
-  .modal__confirm,
-  .modal__cancel {
-    color: rgb(86 86 86);
+    color: white;
+
+    background-color: $primary-button;
+
+    &:active {
+      color: white;
+      background-color: #30c963;
+    }
+
+    @media screen and (hover: hover) {
+      &:hover {
+        color: white;
+        background-color: #30c963;
+      }
+    }
   }
 }

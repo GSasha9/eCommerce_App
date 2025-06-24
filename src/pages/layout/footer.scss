@@ -1,14 +1,31 @@
 @use '../../styles/scss/fonts';
 @use '../../styles/scss/variables' as *;
 
-.footer-logo__img {
-  width: 32px;
-  height: 32px;
-  background: url('/images/rss-logo.svg') no-repeat center/cover;
-}
-
 .footer-logo__link {
   cursor: pointer;
+
+  position: relative;
+
+  display: inline-block;
+
+  padding-left: 36px;
+
+  color: #46a358;
+}
+
+.footer-logo__link::before {
+  cursor: pointer;
+  content: '';
+
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+
+  width: 32px;
+  height: 32px;
+
+  background: url('/images/rss-logo.svg') no-repeat center / cover;
 }
 
 .cart-logo {
@@ -63,4 +80,114 @@
   &:empty {
     background-color: transparent;
   }
+}
+
+.burger__btn {
+  cursor: pointer;
+
+  margin: 0;
+
+  font-family: 'Cera Pro', sans-serif;
+  font-size: $font-size-h1;
+  font-weight: $font-weight-black;
+  color: $primary-button;
+
+  @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
+    font-size: $font-size-h4;
+  }
+
+  @media screen and (min-width: $breakpoint-sm) and (max-width: $breakpoint-md) {
+    font-size: $font-size-h3;
+  }
+}
+
+.burger__container {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 5%;
+
+  overflow-y: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+  padding: 2rem;
+  border: none;
+
+  background-color: transparent;
+}
+
+.burger__container::backdrop {
+  background-color: rgb(144 238 144 / 30%);
+}
+
+.burger__close {
+  cursor: pointer;
+
+  align-self: flex-end;
+
+  margin-bottom: 1rem;
+  border: none;
+
+  font-size: 2rem;
+
+  background: none;
+}
+
+.burger__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+
+  width: 80%;
+  height: 70%;
+  border-radius: 20px;
+
+  background-color: rgb(255 255 255);
+
+  @media screen and (width >= 0) and (width <= 440px) {
+    width: 100%;
+  }
+}
+
+.header__auth-burger {
+  display: flex;
+  justify-content: space-around;
+  width: 90%;
+  margin-top: -20%;
+}
+
+.burger__container:not([open]) {
+  display: none;
+}
+
+.header__menu-burger {
+  flex-direction: column;
+}
+
+.header__menu-burger .header__menu-item {
+  font-size: 25px;
+}
+
+.burger-backet__container {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+.burger__close-btn {
+  cursor: pointer;
+
+  align-self: flex-end;
+
+  width: 25px;
+  height: 25px;
+  margin-top: -40px;
+  margin-right: 20px;
+
+  background-image: url('../../../public/images/close.svg');
 }

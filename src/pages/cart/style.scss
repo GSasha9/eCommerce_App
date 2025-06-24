@@ -94,13 +94,19 @@
   justify-content: space-between;
 
   padding: 8px 22px;
+  border-radius: 12px;
 
   background-color: rgb(249 247 247);
+}
+
+.wrapper-price {
+  color: $primary-button;
 }
 
 .line-item-img {
   width: 100px;
   height: 100px;
+  border-radius: 12px;
 }
 
 .quantity-button {
@@ -115,9 +121,9 @@
   border-radius: $border-radius-input;
 
   font-family: 'Cera Pro', sans-serif;
-  color: $text-secondary;
+  color: white;
 
-  background-color: rgb(222 221 219);
+  background-color: $primary-button;
 
   transition: all 0.1s ease-out;
 
@@ -125,10 +131,6 @@
     cursor: not-allowed;
     color: rgb(96 96 96);
     background-color: rgb(137 137 137);
-  }
-
-  &:not(:disabled):hover {
-    background-color: rgb(201 199 193);
   }
 }
 
@@ -203,16 +205,30 @@
 
 .button-remove-all {
   width: 100px;
-  border: 1px solid rgb(201 199 193);
+  color: white;
   text-align: right;
-  background-color: transparent;
+  background-color: $primary-button;
 }
 
 .button-quantity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   width: 28px;
   height: 28px;
   padding: 6px;
   border-radius: 50%;
+
+  color: white;
+
+  background-color: $primary-button;
+}
+
+@media screen and (hover: hover) {
+  .quantity-button:not(:disabled):hover {
+    background-color: #30c963;
+  }
 }
 
 .line-item-attr {
@@ -236,12 +252,19 @@
 
 .input-coupon {
   padding: $spacing-sm;
-  border: 1px solid $input-border;
-  border-radius: $border-radius-input;
-  color: $text-primary;
+  border: 2px solid #3c8b4b;
+  border-radius: 12px;
+  transition: border-color 0.2s ease;
 
   &::placeholder {
     color: $text-placeholder;
+  }
+
+  &:focus,
+  &:hover,
+  &:focus-visible {
+    border-color: #30c963;
+    outline: none;
   }
 }
 
@@ -332,4 +355,10 @@
     height: 24px;
     padding: 4px;
   }
+}
+
+.counter-product {
+  display: flex;
+  justify-content: center;
+  width: 20px;
 }

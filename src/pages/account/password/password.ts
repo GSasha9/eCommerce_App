@@ -60,7 +60,7 @@ export class ChangePasswordModal extends CreateElement {
 
     this.currentPwdToggle = new CreateElement({
       tag: 'button',
-      textContent: 'Show',
+      textContent: '',
       classNames: ['btn-toggle'],
       callback: (evt: Event): void => {
         evt.preventDefault();
@@ -69,7 +69,7 @@ export class ChangePasswordModal extends CreateElement {
     });
     this.newPwdToggle = new CreateElement({
       tag: 'button',
-      textContent: 'Show',
+      textContent: '',
       classNames: ['btn-toggle'],
       callback: (evt: Event): void => {
         evt.preventDefault();
@@ -78,7 +78,7 @@ export class ChangePasswordModal extends CreateElement {
     });
     this.confirmPwdToggle = new CreateElement({
       tag: 'button',
-      textContent: 'Show',
+      textContent: '',
       classNames: ['btn-toggle'],
       callback: (evt: Event): void => {
         evt.preventDefault();
@@ -161,6 +161,12 @@ export class ChangePasswordModal extends CreateElement {
       });
     }
 
+    this.getElement().addEventListener('click', (e: MouseEvent): void => {
+      if (e.target === this.getElement()) {
+        this.close();
+      }
+    });
+
     if (newPwdEl instanceof HTMLInputElement && confirmPwdEl instanceof HTMLInputElement) {
       newPwdEl.addEventListener('input', () => this.handleRealTimeValidation());
       confirmPwdEl.addEventListener('input', () => this.handleRealTimeValidation());
@@ -173,10 +179,10 @@ export class ChangePasswordModal extends CreateElement {
     if (inputEl instanceof HTMLInputElement) {
       if (inputEl.type === 'password') {
         inputEl.type = 'text';
-        toggleBtn.getElement().textContent = 'Hide';
+        toggleBtn.getElement().classList.add('hide');
       } else {
         inputEl.type = 'password';
-        toggleBtn.getElement().textContent = 'Show';
+        toggleBtn.getElement().classList.remove('hide');
       }
     }
   }

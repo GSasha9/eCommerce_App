@@ -23,6 +23,8 @@
 
 .reset-filters {
   width: 100% !important;
+  color: white;
+  background-color: #46a358;
 }
 
 .items-not-found {
@@ -85,6 +87,7 @@
   .filters {
     position: absolute;
     z-index: 15;
+    top: 0.1%;
     left: 1rem;
 
     display: initial;
@@ -120,7 +123,7 @@
 
   @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
     width: 380px;
-    font-size: 12px;
+    font-size: 14px;
   }
 }
 
@@ -150,6 +153,16 @@
 
     .price-filter-input {
       max-width: 140px;
+      border: 2px solid #3c8b4b;
+      border-radius: 12px;
+      transition: border-color 0.2s ease;
+
+      &:focus,
+      &:hover,
+      &:focus-visible {
+        border-color: #30c963;
+        outline: none;
+      }
     }
   }
 
@@ -251,12 +264,11 @@
 
   .catalog-header {
     display: flex;
-    align-items: center;
     justify-content: space-between;
 
     .catalog-header__list {
       display: flex;
-      gap: $spacing-xxl;
+      gap: 15px;
 
       .catalog-header__list-item {
         cursor: pointer;
@@ -264,12 +276,31 @@
       }
     }
 
-    .catalog-header__sort {
-      max-width: 250px;
+    .catalog-header__select,
+    .catalog-header__select-arrow {
+      max-width: 100px;
+      padding: 0.4rem 2rem 0.4rem 0.8rem;
+      border: 2px solid #3c8b4b;
+      border-radius: 12px;
 
-      .catalog-header__select {
-        max-width: 100px;
-        border: none;
+      font-size: 0.95rem;
+
+      appearance: none;
+      background-color: white;
+      background-image: url('/images/arr.svg');
+      background-repeat: no-repeat;
+      background-position: right 0.6rem center;
+
+      transition: border-color 0.2s ease;
+
+      &:focus {
+        border-color: #30c963;
+        outline: none;
+      }
+
+      &:hover {
+        cursor: pointer;
+        border-color: #30c963;
       }
     }
 
@@ -277,6 +308,11 @@
       gap: 20px;
       justify-content: right;
     }
+  }
+
+  .catalog-header__sort {
+    display: flex;
+    gap: 10px;
   }
 
   .catalog-breadcrumb {
@@ -308,6 +344,18 @@
 
   .catalog-search-input {
     width: 100%;
+    padding: 0.5rem;
+    border: 2px solid #3c8b4b;
+    border-radius: 12px;
+
+    transition: border-color 0.2s ease;
+  }
+
+  .catalog-search-input:focus,
+  .catalog-search-input:hover,
+  .catalog-search-input:focus-visible {
+    border-color: #30c963;
+    outline: none;
   }
 
   .catalog-footer {
@@ -337,6 +385,7 @@
   .card {
     position: relative;
 
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: $spacing-sm;
@@ -346,7 +395,7 @@
     border: 1px solid transparent;
     border-radius: 12px;
 
-    box-shadow: 0 2px 8px rgb(0 0 0 / 5%);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 12%);
 
     transition:
       transform 0.2s ease,
@@ -369,14 +418,19 @@
 
       width: 100%;
       height: 60%;
+      border-top-right-radius: 20px;
 
       background-repeat: no-repeat;
       background-position: center;
       background-size: cover;
 
       .card-img {
+        scale: 1.1;
+
         width: 100%;
         height: 100%;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
 
         opacity: 0;
         background-repeat: no-repeat;
@@ -394,6 +448,7 @@
     }
 
     .card-name {
+      margin-top: 8px;
       padding: 0 0.5rem;
     }
 
@@ -401,7 +456,7 @@
       overflow: hidden;
       display: -webkit-box;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2; /* Число строк */
+      -webkit-line-clamp: 2;
 
       padding: 0 0.5rem;
 
@@ -455,6 +510,7 @@
 
         .card-button {
           font-size: 0.9rem;
+          color: white;
           background-color: $primary-button;
 
           @media screen and (min-width: $breakpoint-xs) and (max-width: $breakpoint-sm) {
@@ -472,7 +528,20 @@
 
       border: 1px solid $border-color;
 
-      box-shadow: 0 6px 16px rgb(0 0 0 / 15%);
+      box-shadow: 0 6px 16px rgb(0 0 0 / 17%);
+
+      .card-footer > .price-container > .card-price,
+      .card-footer > .price-container > .card-discount-price {
+        color: #30c963;
+      }
+
+      .discount {
+        background-color: #30c963;
+      }
+
+      .card-footer > .buttons-container > .card-button {
+        background-color: #30c963;
+      }
 
       .card-footer > .buttons-container > .card-like {
         visibility: visible;

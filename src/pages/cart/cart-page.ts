@@ -89,7 +89,7 @@ class CartPage {
     const clearAllButton = genElement(
       'button',
       { className: 'quantity-button button-remove-all', name: 'remove-all' },
-      ['remove-all'],
+      ['Remove all'],
     );
     const lineItems = genElement('ul', { className: 'line-items' }, this.model.cart?.lineItems?.map(genLineItem));
 
@@ -149,7 +149,7 @@ const genLineItem = (item: LineItem): HTMLElement => {
           },
           ['-'],
         ),
-        genElement('div', {}, [String(item.quantity)]),
+        genElement('div', { className: 'counter-product' }, [String(item.quantity)]),
         genElement(
           'button',
           {
