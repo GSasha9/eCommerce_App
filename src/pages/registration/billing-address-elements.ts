@@ -19,6 +19,11 @@ export class BillingAddressElements extends CreateElement {
   public inputPostalCode: CreateInput;
   public checkboxDefault: CreateInput;
 
+  public streetError: CreateElement;
+  public cityError: CreateElement;
+  public postalCodeError: CreateElement;
+  public countryError: CreateElement;
+
   public street: CreateElement;
   public city: CreateElement;
   public country: CreateElement;
@@ -29,20 +34,40 @@ export class BillingAddressElements extends CreateElement {
   constructor(parameters: Partial<IParameters> = {}) {
     super({ tag: 'div', classNames: ['group'], ...parameters });
 
-    this.streetLabel = new Label({ classNames: ['label'], for: 'addressBilling', textContent: 'Street:' });
+    this.streetLabel = new Label({
+      classNames: ['label'],
+      for: 'addressBilling',
+      textContent: 'Street:',
+    });
     this.inputStreet = new CreateInput({
       classNames: ['street'],
       placeholder: 'your street',
       id: 'street-billing',
       name: 'street-billing',
     });
-    this.cityLabel = new Label({ classNames: ['label'], for: 'city-billing', textContent: 'City:' });
+    this.streetError = new CreateElement({
+      tag: 'div',
+      classNames: ['error-message'],
+      textContent: '',
+    });
+
+    this.cityLabel = new Label({
+      classNames: ['label'],
+      for: 'city-billing',
+      textContent: 'City:',
+    });
     this.inputCity = new CreateInput({
       classNames: ['city'],
       placeholder: 'your city',
       id: 'city-billing',
       name: 'city-billing',
     });
+    this.cityError = new CreateElement({
+      tag: 'div',
+      classNames: ['error-message'],
+      textContent: '',
+    });
+
     this.postalCodeLabel = new Label({
       classNames: ['label'],
       for: 'postal-code-billing',
@@ -54,7 +79,17 @@ export class BillingAddressElements extends CreateElement {
       id: 'postal-code-billing',
       name: 'postal-code-billing',
     });
-    this.countryLabel = new Label({ classNames: ['label'], for: 'country-billing', textContent: 'Country:' });
+    this.postalCodeError = new CreateElement({
+      tag: 'div',
+      classNames: ['error-message', 'error-message-large'],
+      textContent: '',
+    });
+
+    this.countryLabel = new Label({
+      classNames: ['label'],
+      for: 'country-billing',
+      textContent: 'Country:',
+    });
     this.countryList = new Element({
       tag: 'select',
       className: 'country-list',
@@ -78,6 +113,11 @@ export class BillingAddressElements extends CreateElement {
         ),
       ],
     });
+    this.countryError = new CreateElement({
+      tag: 'div',
+      classNames: ['error-message'],
+      textContent: '',
+    });
 
     this.defaultLabel = new Label({
       classNames: ['label'],
@@ -94,22 +134,22 @@ export class BillingAddressElements extends CreateElement {
     this.street = new CreateElement({
       tag: 'div',
       classNames: ['input', 'input-street-billing'],
-      children: [this.streetLabel, this.inputStreet],
+      children: [this.streetLabel, this.inputStreet, this.streetError],
     });
     this.city = new CreateElement({
       tag: 'div',
       classNames: ['input', 'input-city-billing'],
-      children: [this.cityLabel, this.inputCity],
+      children: [this.cityLabel, this.inputCity, this.cityError],
     });
     this.postalCode = new CreateElement({
       tag: 'div',
       classNames: ['input', 'input-postal-code-billing'],
-      children: [this.postalCodeLabel, this.inputPostalCode],
+      children: [this.postalCodeLabel, this.inputPostalCode, this.postalCodeError],
     });
     this.country = new CreateElement({
       tag: 'div',
       classNames: ['input', 'input-country-billing'],
-      children: [this.countryLabel, this.countryList.node],
+      children: [this.countryLabel, this.countryList.node, this.countryError],
     });
 
     this.default = new CreateElement({

@@ -2,7 +2,7 @@ import type { ProductProjection } from '@commercetools/platform-sdk';
 
 import { authService } from '../../commerce-tools/auth-service';
 import type CatalogController from '../../controllers/catalog/catalog-controller';
-import type { Filters } from '../../controllers/catalog/filters';
+import type { Filters } from '../../controllers/catalog/models/interfaces/filters';
 import type { ProductPerPageResponse } from '../../shared/models/type';
 
 export class CatalogModel {

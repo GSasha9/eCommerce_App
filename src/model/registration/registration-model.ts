@@ -111,17 +111,9 @@ class RegistrationModel {
   }
 
   public determineValidForm(): void {
-    if (this.errors.length === 0) {
-      this.isValidForm = true;
-    } else {
-      this.isValidForm = false;
-    }
+    const noEmptyFields = !Object.values(this.currentFormValues).some((value) => value === '');
 
-    if (Object.values(this.currentFormValues).some((value) => value === '')) {
-      this.isValidForm = false;
-    } else {
-      this.isValidForm = true;
-    }
+    this.isValidForm = this.errors.length === 0 && noEmptyFields;
   }
 }
 

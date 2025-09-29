@@ -27,3 +27,5 @@ export type { IResponseDetailedProduct } from './response-detailed-product.ts';
 export type { IImageModal } from './image-modal.ts';
 
 export type { IInitSliderProperties } from './init-slider-properties.ts';
+
+export type { Handlers } from './handler.ts';

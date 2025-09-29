@@ -6,7 +6,11 @@ import { CreateInput } from '../../../components/input/create-input.ts';
 import { Label } from '../../../components/label/label.ts';
 import type { IShippingAddressFormValues } from '../../../model/account/new-adress/new-adress.ts';
 import { ShippingAddressModalModel } from '../../../model/account/new-adress/new-adress.ts';
-import { COUNTRIES, MESSAGE_CONTENT } from '../../../shared/constants/messages-for-validator.ts';
+import {
+  COUNTRIES,
+  MESSAGE_CONTENT,
+  MESSAGE_CONTENT_MOBILE,
+} from '../../../shared/constants/messages-for-validator.ts';
 import type { IParameters } from '../../../shared/models/interfaces';
 import { isShippingAddressFormKey } from '../../../shared/models/typeguards.ts/account-type-guards.ts';
 import { CreateElement } from '../../../shared/utils/create-element.ts';
@@ -101,7 +105,7 @@ export class AddShippingAddressModal extends CreateElement {
 
     this.countryList = new Element({
       tag: 'select',
-      className: 'country-list',
+      className: 'country-list-new',
       name: 'new-country',
       id: 'new-country',
       children: [
@@ -152,17 +156,17 @@ export class AddShippingAddressModal extends CreateElement {
     });
     this.default = new CreateElement({
       tag: 'div',
-      classNames: ['checkbox'],
+      classNames: ['checkbox-new'],
       children: [this.checkboxDefault, this.defaultLabel],
     });
     this.asBilling = new CreateElement({
       tag: 'div',
-      classNames: ['checkbox'],
+      classNames: ['checkbox-new'],
       children: [this.checkboxAsBilling, this.asBillingLabel],
     });
     this.checkboxWrapper = new CreateElement({
       tag: 'div',
-      classNames: ['checkbox-wrapper'],
+      classNames: ['checkbox-wrapper-new'],
       children: [this.default, this.asBilling],
     });
 
@@ -190,17 +194,17 @@ export class AddShippingAddressModal extends CreateElement {
     });
     this.defaultAdress = new CreateElement({
       tag: 'div',
-      classNames: ['checkbox'],
+      classNames: ['checkbox-new'],
       children: [this.checkboxShipping, this.shippingLabel],
     });
     this.asBillingAdress = new CreateElement({
       tag: 'div',
-      classNames: ['checkbox'],
+      classNames: ['checkbox-new'],
       children: [this.billingAdress, this.billingLabel],
     });
     this.checkboxWrapperAdress = new CreateElement({
       tag: 'div',
-      classNames: ['checkbox-wrapper'],
+      classNames: ['checkbox-wrapper-new'],
       children: [this.defaultAdress, this.asBillingAdress],
     });
     this.error = new CreateElement({
@@ -208,13 +212,22 @@ export class AddShippingAddressModal extends CreateElement {
       classNames: ['error-wrapper'],
     });
 
-    const shippingGroup = new CreateElement({ tag: 'div', classNames: ['shipping-group'] });
+    const leftContainer = new CreateElement({
+      tag: 'div',
+      classNames: ['new-left-container'],
+      children: [streetContainer, cityContainer],
+    });
+
+    const rightContainer = new CreateElement({
+      tag: 'div',
+      classNames: ['new-right-container'],
+      children: [postalContainer, countryContainer],
+    });
+    const shippingGroup = new CreateElement({ tag: 'div', classNames: ['shipping-group-new'] });
 
     shippingGroup.addInnerElement([
-      streetContainer,
-      cityContainer,
-      postalContainer,
-      countryContainer,
+      leftContainer,
+      rightContainer,
       this.checkboxWrapper,
       this.checkboxWrapperAdress,
       this.error,
@@ -228,7 +241,7 @@ export class AddShippingAddressModal extends CreateElement {
     this.closeButton.textContent = 'Cancel';
     this.closeButton.className = 'btn';
     this.closeButton.addEventListener('click', () => this.close());
-    const buttonsContainer = new CreateElement({ tag: 'div', classNames: ['buttons-container'] });
+    const buttonsContainer = new CreateElement({ tag: 'div', classNames: ['buttons-container-new'] });
 
     buttonsContainer.getElement().append(this.saveButton, this.closeButton);
 
@@ -303,7 +316,13 @@ export class AddShippingAddressModal extends CreateElement {
     const errorContainer = this.errorContainers[inputName];
 
     if (errorContainer instanceof HTMLElement) {
-      const message: string = MESSAGE_CONTENT[inputName] || '';
+      let message = '';
+
+      if (window.innerWidth < 600) {
+        message = MESSAGE_CONTENT_MOBILE[inputName] || '';
+      } else {
+        message = MESSAGE_CONTENT[inputName] || '';
+      }
 
       errorContainer.textContent = message;
     }

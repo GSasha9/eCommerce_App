@@ -47,7 +47,6 @@ export class AccountModel {
 
   public validatePersonalInfo(): boolean {
     this.errorsAcc.length = 0;
-
     const name = this.currentFormValuesAccount.name;
 
     if (!name || !Validator.isName(name)) {
@@ -90,17 +89,13 @@ export class AccountModel {
   }
 
   public determineValidForm(): void {
-    if (this.errorsAcc.length === 0) {
-      this.isValidForm = true;
-    } else {
-      this.isValidForm = false;
-    }
+    const hasNoErrors = this.errorsAcc.length === 0;
 
-    if (Object.values(this.currentFormValuesAccount).some((value) => value === '')) {
-      this.isValidForm = false;
-    } else {
-      this.isValidForm = true;
-    }
+    const noEmptyFields = !Object.entries(this.currentFormValuesAccount)
+      .filter((entry): entry is [string, string] => typeof entry[1] === 'string')
+      .some(([, value]) => value.trim() === '');
+
+    this.isValidForm = hasNoErrors && noEmptyFields;
   }
 
   public validateForm(): void {

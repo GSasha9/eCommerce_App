@@ -6,6 +6,7 @@ import DetailedProductPage from '../../pages/detailed-product/detailed-product-p
 describe('DetailedProductPage.genDescription', () => {
   const modelMock: DetailedProductModel = {
     response: {
+      id: 'product-id-123',
       name: 'Test Product',
       img: ['image.jpg'],
       description: 'A short description',

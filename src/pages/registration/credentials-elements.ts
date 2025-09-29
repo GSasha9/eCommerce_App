@@ -15,6 +15,9 @@ export class CredentialElements extends CreateElement {
   public password: CreateElement;
   public visibilityIcon: Element<'button'>;
 
+  public emailError: CreateElement;
+  public passwordError: CreateElement;
+
   constructor(parameters: Partial<IParameters> = {}) {
     super({ tag: 'div', classNames: ['group'], ...parameters });
 
@@ -24,6 +27,11 @@ export class CredentialElements extends CreateElement {
       id: 'email',
       name: 'email',
       placeholder: 'your email',
+    });
+    this.emailError = new CreateElement({
+      tag: 'div',
+      classNames: ['error-message'],
+      textContent: '',
     });
 
     this.passwordLabel = new Label({ classNames: ['label'], for: 'password', textContent: 'Password:' });
@@ -39,16 +47,21 @@ export class CredentialElements extends CreateElement {
       placeholder: '********',
       type: 'password',
     });
+    this.passwordError = new CreateElement({
+      tag: 'div',
+      classNames: ['error-message', 'error-message-large'],
+      textContent: '',
+    });
 
     this.email = new CreateElement({
       tag: 'div',
       classNames: ['input', 'input-email'],
-      children: [this.emailLabel, this.inputEmail],
+      children: [this.emailLabel, this.inputEmail, this.emailError],
     });
     this.password = new CreateElement({
       tag: 'div',
       classNames: ['input', 'input-password'],
-      children: [this.passwordLabel, this.visibilityIcon.node, this.inputPassword],
+      children: [this.passwordLabel, this.visibilityIcon.node, this.inputPassword, this.passwordError],
     });
 
     this.addInnerElement([this.email, this.password]);

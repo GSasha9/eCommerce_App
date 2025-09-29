@@ -5,6 +5,8 @@ import type { CommercetoolsApiError } from '../type';
 
 export const isHTMLElement = (value: unknown): value is HTMLElement => value instanceof HTMLElement;
 
+export const isHTMLButtonElement = (value: unknown): value is HTMLButtonElement => value instanceof HTMLButtonElement;
+
 export const isHTMLInputElement = (value: unknown): value is HTMLInputElement => value instanceof HTMLInputElement;
 
 export const isHTMLSelectElement = (value: unknown): value is HTMLSelectElement => value instanceof HTMLSelectElement;

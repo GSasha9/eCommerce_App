@@ -1,6 +1,6 @@
-import type { Sort } from './models/interfaces';
-import type { RangeOfPrice } from './models/interfaces';
-import type { CategoryId } from './models/types';
+import type { CategoryId } from '../types';
+import type { Sort } from '.';
+import type { RangeOfPrice } from '.';
 
 export interface Filters {
   categoriesId?: CategoryId;

@@ -5,7 +5,7 @@ import { LoginModel } from '../../model/login/login-model.ts';
 import { Layout } from '../../pages/layout/layout.ts';
 import { LoginPage } from '../../pages/login/login.ts';
 import { route } from '../../router';
-import { MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
+import { MESSAGE_CONTENT, MESSAGE_CONTENT_MOBILE } from '../../shared/constants/messages-for-validator.ts';
 import { isFormName, isHTMLInputElement, isHTMLSelectElement } from '../../shared/models/typeguards.ts';
 import { UserState } from '../../state/customer-state.ts';
 
@@ -30,7 +30,7 @@ export class LoginController {
 
       loginButton.addEventListener('click', (evt: Event): void => {
         evt.preventDefault();
-        authService.logOutCustomer();
+        void authService.logOutCustomer();
 
         loginButton.classList.remove('logout');
         loginButton.classList.add('login');
@@ -63,10 +63,11 @@ export class LoginController {
         email: this.loginModel.currentFormValues.email,
         password: this.loginModel.currentFormValues.password,
       };
+      const id = localStorage.getItem('plant-cart-id') || '';
 
       if (data.email && data.password)
         try {
-          const response = await authService.signInCustomer(data.email, data.password);
+          const response = await authService.signInCustomer(data.email, data.password, id);
 
           if (response) {
             const modal = new ModalGreeting(`Hello, ${response.customer.firstName}`);
@@ -116,7 +117,13 @@ export class LoginController {
     const { errors, isValidForm } = this.loginModel.validateForm();
 
     this.loginPage.deleteErrorMessage();
-    errors.forEach((name) => this.loginPage.renderErrorMassage(name, MESSAGE_CONTENT[name]));
+    errors.forEach((name) => {
+      if (window.innerWidth < 520) {
+        this.loginPage.renderErrorMassage(name, MESSAGE_CONTENT_MOBILE[name]);
+      } else {
+        this.loginPage.renderErrorMassage(name, MESSAGE_CONTENT[name]);
+      }
+    });
     this.loginPage.renderDisabledLogin(!isValidForm);
   };
 

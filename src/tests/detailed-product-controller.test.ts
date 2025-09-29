@@ -60,7 +60,7 @@ describe('DetailedProductController', () => {
       value: null,
     });
 
-    controller.onClick(event);
+    void controller.onClick(event);
     expect(ImageModal).not.toHaveBeenCalled();
   });
 
@@ -76,6 +76,7 @@ describe('DetailedProductController', () => {
     });
 
     model.response = {
+      id: 'product-id-123',
       name: 'Test',
       img: ['img.jpg'],
       description: 'desc',
@@ -84,7 +85,7 @@ describe('DetailedProductController', () => {
       pricesFractionDigits: 2,
     };
 
-    controller.onClick(event);
+    void controller.onClick(event);
 
     expect(ImageModal).toHaveBeenCalledWith({
       images: ['img.jpg'],

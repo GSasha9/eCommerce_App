@@ -2,6 +2,7 @@ import { route, ROUTES_URL } from '../router';
 import type { Router } from '../router/router.ts';
 import { AboutController } from './about/about-controller.ts';
 import { AccountController } from './account/account-controller.ts';
+import { CartController } from './cart/cart-controller.ts';
 import CatalogController from './catalog/catalog-controller.ts';
 import { DetailedProductController } from './detailed-product/detailed-product-controller.ts';
 import { HomeController } from './home/home-controller.ts';
@@ -19,6 +20,7 @@ export class Controller {
   private catalogController: CatalogController;
   private detailedProductController: DetailedProductController;
   private accountController: AccountController;
+  private cartController: CartController;
 
   constructor() {
     this.homeController = new HomeController();
@@ -29,6 +31,7 @@ export class Controller {
     this.catalogController = new CatalogController();
     this.detailedProductController = new DetailedProductController();
     this.accountController = new AccountController();
+    this.cartController = new CartController();
     this.router = route;
     this.setupRoutes();
     this.router.init();
@@ -57,6 +60,10 @@ export class Controller {
 
     this.router.addRoute(ROUTES_URL.PRODUCT, () => {
       void this.detailedProductController.render();
+    });
+
+    this.router.addRoute(ROUTES_URL.BASKET, () => {
+      void this.cartController.render();
     });
 
     this.router.addRoute(ROUTES_URL.ABOUT, () => {

@@ -26,3 +26,19 @@ export const MESSAGE_CONTENT: Partial<Record<keyof IFormValues, string>> = {
   postalCodeBilling: 'Must follow the format for the country(BY "211111", DE "11111", US "11111-1111", GB "AA1A 1AA")',
   countryBilling: 'Please select a country',
 };
+
+export const MESSAGE_CONTENT_MOBILE: Partial<Record<keyof IFormValues, string>> = {
+  email: 'Invalid email (example@email.com)',
+  password: 'Minimum 8 characters, 1 uppercase letter, 1 special (!@#$%^&*) and 1 number',
+  name: 'Must contain at least one character and no special characters or numbers',
+  surname: 'Must contain at least one character and no special characters or numbers',
+  birthday: 'You must be at least 13 years old.',
+  street: 'Must contain at least one character',
+  city: 'Must contain at least one character and no special characters or numbers',
+  postalCode: 'You need to select a country and must follow the format for the country',
+  country: 'Please select a country',
+  streetBilling: 'Must contain at least one character',
+  cityBilling: 'Must contain at least one character and no special characters or numbers',
+  postalCodeBilling: 'Must follow (BY "211111", DE "11111", US "11111-1111", GB "AA1A 1AA")',
+  countryBilling: 'Please select a country',
+};

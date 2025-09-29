@@ -6,7 +6,7 @@ import { CreateInput } from '../../components/input/create-input.ts';
 import { Label } from '../../components/label/label.ts';
 import { ModalGreeting } from '../../components/modals/modal-greeting.ts';
 import { BillingAddressModalModel } from '../../model/account/billing-account/billing-account-model.ts';
-import { COUNTRIES, MESSAGE_CONTENT } from '../../shared/constants/messages-for-validator.ts';
+import { COUNTRIES, MESSAGE_CONTENT, MESSAGE_CONTENT_MOBILE } from '../../shared/constants/messages-for-validator.ts';
 import type { IFormValues, IParameters } from '../../shared/models/interfaces';
 import { isValidErrorKey } from '../../shared/models/typeguards.ts/account-type-guards.ts';
 import { CreateElement } from '../../shared/utils/create-element.ts';
@@ -69,7 +69,6 @@ export class UnsortedAddressAccount extends CreateElement {
     const streetErrorDiv = document.createElement('div');
 
     streetErrorDiv.className = `error-message-street-billing-unsort-${ind}`;
-    streetErrorDiv.style.minHeight = '50px';
     this.errorContainers['street'] = streetErrorDiv;
 
     const streetContainer = new CreateElement({
@@ -99,7 +98,6 @@ export class UnsortedAddressAccount extends CreateElement {
     const cityErrorDiv = document.createElement('div');
 
     cityErrorDiv.className = `error-message-city-billing-unsort-${ind}`;
-    cityErrorDiv.style.minHeight = '50px';
     this.errorContainers['city'] = cityErrorDiv;
 
     const cityContainer = new CreateElement({
@@ -129,7 +127,6 @@ export class UnsortedAddressAccount extends CreateElement {
     const postalErrorDiv = document.createElement('div');
 
     postalErrorDiv.className = `error-message-postal-code-billing-unsort-${ind}`;
-    postalErrorDiv.style.minHeight = '50px';
     this.errorContainers['postalCode'] = postalErrorDiv;
     const postalContainer = new CreateElement({
       tag: 'div',
@@ -175,7 +172,6 @@ export class UnsortedAddressAccount extends CreateElement {
     const countryErrorDiv = document.createElement('div');
 
     countryErrorDiv.className = `error-message-country-billing-unsort-${ind}`;
-    countryErrorDiv.style.minHeight = '50px';
     this.errorContainers['country'] = countryErrorDiv;
     const countryContainer = new CreateElement({
       tag: 'div',
@@ -287,12 +283,19 @@ export class UnsortedAddressAccount extends CreateElement {
       return;
     }
 
-    const message: string = MESSAGE_CONTENT[inputName] || '';
+    let message = '';
+
+    if (window.innerWidth < 520) {
+      message = MESSAGE_CONTENT_MOBILE[inputName] || '';
+    } else {
+      message = MESSAGE_CONTENT[inputName] || '';
+    }
+
     const errorContainer: unknown = this.errorContainers[inputName];
 
     if (errorContainer instanceof HTMLElement) {
       errorContainer.textContent = message;
-      errorContainer.style.color = 'darkred';
+      errorContainer.style.color = 'red';
     }
   }
 
