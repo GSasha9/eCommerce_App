@@ -1,0 +1,23 @@
+@use '../../styles/scss/variables' as *;
+@use '../../styles/scss/fonts';
+
+.root-input {
+  padding: $spacing-sm;
+  border: 2px solid #3c8b4b;
+  border-radius: $border-radius-input;
+
+  color: $text-primary;
+
+  transition: border-color 0.2s ease;
+
+  &::placeholder {
+    color: $text-placeholder;
+  }
+
+  &:focus,
+  &:hover,
+  &:focus-visible {
+    border-color: #30c963;
+    outline: none;
+  }
+}
